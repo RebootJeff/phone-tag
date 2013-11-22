@@ -1,0 +1,14 @@
+{
+  "name": "phone-tag",
+  "version": "0.0.1",
+  "homepage": "https://github.com/RebootJeff/phone-tag",
+  "authors": [
+    "Leighton Kaina <leighton.kaina@gmail.com>",
+    "Ryan Roxas <ryanaroxas@gmail.com>",
+    "Ken Huh <ballaholicken@gmail.com>",
+    "Jeff Lee <leejeffc@gmail.com>"
+  ],
+  "dependencies": {
+    "backbone": "~1.1.0"
+  }
+}
