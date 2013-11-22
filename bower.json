@@ -9,6 +9,7 @@
     "Jeff Lee <leejeffc@gmail.com>"
   ],
   "dependencies": {
-    "backbone": "~1.1.0"
+    "backbone": "~1.1.0",
+    "handlebars": "~1.1.2"
   }
 }
