@@ -5,7 +5,7 @@ Mobile, geolocation-based game of tag
 
 # Authors
 
-Leighton Kaina
-Ryan Roxas
-Ken Huh
-Jeff Lee
+1. Leighton Kaina
+2. Ryan Roxas
+3. Ken Huh
+4. Jeff Lee
