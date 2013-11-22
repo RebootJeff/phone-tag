@@ -5,6 +5,7 @@
   "private": true,
   "dependencies": {
     "express": "~3.4.4",
-    "mocha": "~1.14.0"
+    "mocha": "~1.14.0",
+    "chai": "~1.8.1"
   }
 }
