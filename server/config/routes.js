@@ -1,4 +1,4 @@
-var mainController = require('../controllers/mainController');
+var mainController = require('../app/controllers/mainController');
 
 module.exports = function(app){
 
