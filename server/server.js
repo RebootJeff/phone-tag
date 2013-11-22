@@ -29,8 +29,8 @@ fs.readdirSync(models_path).forEach(function(file){
   if (~file.indexOf('.js')) require(models_path + '/' + file);
 });
 
-// app configuration
-require('./config/config')(app);
+// app environment configuration
+require('./config/environments')(app);
 
 // routes
 require('./config/routes')(app);
