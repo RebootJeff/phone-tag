@@ -4,9 +4,39 @@
 
 var express = require('express');
 var path = require('path');
+var fs = require('fs');
+var mongoose = require('mongoose');
 
 var app = express();
 var env = process.env['NODE_ENV'] || 'development';
+var credentials;
+
+switch(env){
+  case "development":
+    credentials = require('./config/credentials')[env];
+    break;
+  case "test":
+    credentials = require('./config/credentials')[env];
+    break;
+  case "production":
+    credentials = require('./config/productionCredentials')[env];
+    break;
+}
+
+// models
+var models_path = __dirname + '/models'
+fs.readdirSync(models_path).forEach(function(file){
+  if (~file.indexOf('.js')) require(models_path + '/' + file);
+});
+
+// app configuration
+require('./config/config')(app);
+
+// routes
+require('./config/routes')(app);
+
+// database connection
+mongoose.connect(credentials.db);
 
 // development only
 if( app.get('env') === 'development' ) {
