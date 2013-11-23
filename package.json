@@ -25,7 +25,8 @@
     "mongoose": "~3.8.1",
     "jade": "~0.35.0",
     "passport-facebook": "~1.0.2",
-    "mongoose-findorcreate": "~0.1.2"
+    "mongoose-findorcreate": "~0.1.2",
+    "passport": "~0.1.17"
   },
   "devDependencies": {
     "grunt": "~0.4.2",
