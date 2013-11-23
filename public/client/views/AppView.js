@@ -1,11 +1,16 @@
-var AppView = Backbone.View.extend({
+define(['backbone', 'jquery'], function(Backbone, $){
+  var AppView = Backbone.View.extend({
 
-  initialize: function(){
-    this.render();
-  },
+    el: $('body'),
 
-  render: function(){
-    this.$el.html('<h1>Hello World</h1>');
-    return this;
-  }
+    initialize: function(){
+      this.render();
+    },
+
+    render: function(){
+      this.$el.append("<h1>Hello</h1>");
+      return this;
+    }
+  });
+  return AppView;
 });
