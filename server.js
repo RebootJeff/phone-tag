@@ -5,6 +5,7 @@
 var express = require('express');
 var path = require('path');
 var fs = require('fs');
+var io = require('socket.io');
 var mongoose = require('mongoose');
 var passport = require('passport');
 var FacebookStrategy = require('passport-facebook').Strategy;
@@ -50,6 +51,9 @@ if( app.get('env') === 'development' ) {
 
 // runs the server
 var port = process.env.PORT || 3000;
+var server = app.listen(port);
+var ioObj = io.listen(server, { log: false });
+//game logic handled here
+// require('./config/socket/socket')(ioObj);
 console.log("Express application is listening to port", port);
-module.exports = app;
-app.listen(port);
+exports = module.exports = app;
