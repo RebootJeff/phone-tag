@@ -5,12 +5,13 @@
 var express = require('express');
 var path = require('path');
 var fs = require('fs');
-var io = require('socket.io');
 var mongoose = require('mongoose');
 var passport = require('passport');
 var FacebookStrategy = require('passport-facebook').Strategy;
 
 var app = express();
+//var server = require('http').createServer(app);
+var io = require('socket.io');
 var env = process.env['NODE_ENV'] || 'development';
 var credentials;
 
@@ -27,7 +28,7 @@ switch(env){
 }
 
 // models
-var models_path = __dirname + '/app/models'
+var models_path = __dirname + '/app/models';
 fs.readdirSync(models_path).forEach(function(file){
   if (~file.indexOf('.js')) require(models_path + '/' + file);
 });
@@ -51,9 +52,10 @@ if( app.get('env') === 'development' ) {
 
 // runs the server
 var port = process.env.PORT || 3000;
-var server = app.listen(port);
-var ioObj = io.listen(server, { log: false });
-//game logic handled here
-// require('./config/socket/socket')(ioObj);
 console.log("Express application is listening to port", port);
-exports = module.exports = app;
+module.exports = app;
+var socket = app.listen(port);
+var ioObj = io.listen(socket);
+
+// socket connection
+require('./config/socket/socket')(ioObj);
