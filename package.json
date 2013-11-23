@@ -1,0 +1,33 @@
+{
+  "name": "phone-tag",
+  "version": "0.0.0",
+  "description": "a geolocation based multiplayer game.",
+  "main": "index.js",
+  "scripts": {
+    "test": "grunt nodeunit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lkaina/phone-tag.git"
+  },
+  "keywords": [
+    "geolocation",
+    "game",
+    "multiplayer"
+  ],
+  "author": "Team Huh",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/lkaina/phone-tag/issues"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.2",
+    "grunt-contrib-stylus": "~0.10.0",
+    "grunt-mocha": "~0.4.5",
+    "grunt-karma": "~0.6.2",
+    "grunt-contrib-jshint": "~0.7.2",
+    "grunt-phonegap": "~0.6.2",
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt-contrib-handlebars": "~0.6.0"
+  }
+}
