@@ -41,9 +41,9 @@ describe('Player Model', function(){
     player.deaths++;
     player.save(function(err){
       expect(err).not.exist;
-      expect(player.totalScore).equal(400);
-      expect(player.currentScore).equal(100);
-      expect(player.deaths).equal(3);
+      player.totalScore.should.eql(400);
+      player.currentScore.should.eql(100);
+      player.deaths.should.eql(3);
       done();
     });
   });

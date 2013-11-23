@@ -12,7 +12,7 @@ describe('< Server Routes Tests >', function(){
 
   describe('Express Application', function(){
     it('should exist', function(){
-      expect(app).exist;
+      app.should.exist;
     });
   });
 
@@ -23,8 +23,8 @@ describe('< Server Routes Tests >', function(){
       agent.get('http://localhost:3000')
       .end(function(err, res){
         expect(err).not.exist;
-        expect(res.status).equal(302);
-        expect(res.redirects).equal([ 'http://localhost:3000/login' ]);
+        res.status.should.eql(200);
+        res.redirects.should.eql([ 'http://localhost:3000/login' ]);
         done();
       });
     });
@@ -33,7 +33,7 @@ describe('< Server Routes Tests >', function(){
       agent.get('http://localhost:3000/login')
       .end(function(err, res){
         expect(err).not.exist;
-        expect(res.status).equal(200);
+        res.status.should.eql(200);
         done();
       });
     });

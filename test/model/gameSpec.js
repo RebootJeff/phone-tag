@@ -39,10 +39,10 @@ describe('Game Model', function(){
     game.players.push({ name: "Ken", deaths: 3 });
     game.save(function(err){
       expect(err).not.exist;
-      expect(game.players.length).equal(1);
-      expect(game.startTime).exist;
-      expect(game.endTime).exist;
-      expect(game.winner.length).equal(0);
+      game.players.length.should.eql(1);
+      game.startTime.should.exist;
+      game.endTime.should.exist;
+      game.winner.length.should.equal(0);
       done();
     });
   });
