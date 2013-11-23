@@ -1,13 +1,14 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var userSchema = new Schema({
+var playerSchema = new Schema({
   username: String,
   email: String,
   photoUrl: String,
-  lottery: [Schema.betSchema],
-  token: String,
-  tokenSecret: String
+  totalScore: Integer,
+  currentScore: Integer,
+  deaths: Integer,
+  wins: Integer
 });
 
-mongoose.model('User', userSchema);
+mongoose.model('Player', playerSchema);
