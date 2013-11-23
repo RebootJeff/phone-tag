@@ -10,6 +10,8 @@ var passport = require('passport');
 var FacebookStrategy = require('passport-facebook').Strategy;
 
 var app = express();
+//var server = require('http').createServer(app);
+var io = require('socket.io');
 var env = process.env['NODE_ENV'] || 'development';
 var credentials;
 
@@ -26,7 +28,7 @@ switch(env){
 }
 
 // models
-var models_path = __dirname + '/app/models'
+var models_path = __dirname + '/app/models';
 fs.readdirSync(models_path).forEach(function(file){
   if (~file.indexOf('.js')) require(models_path + '/' + file);
 });
@@ -52,4 +54,8 @@ if( app.get('env') === 'development' ) {
 var port = process.env.PORT || 3000;
 console.log("Express application is listening to port", port);
 module.exports = app;
-app.listen(port);
+var socket = app.listen(port);
+var ioObj = io.listen(socket);
+
+// socket connection
+require('./config/socket/socket')(ioObj);
