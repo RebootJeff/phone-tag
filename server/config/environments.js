@@ -2,7 +2,7 @@ var express = require('express');
 var path = require('path');
 var rootPath = path.join(__dirname, '../../');
 
-module.exports = function(app){
+module.exports = function(app, passport){
 
   console.log(rootPath);
   app.set('port', process.env.PORT || 3000);
@@ -14,6 +14,8 @@ module.exports = function(app){
   app.use(express.methodOverride());
   app.use(express.cookieParser("phoneTag"));
   app.use(express.session());
+  app.use(passport.initialize());
+  app.use(passport.session());
   app.use(app.router);
   app.use(express.static(rootPath + '/client-app/www'));
 

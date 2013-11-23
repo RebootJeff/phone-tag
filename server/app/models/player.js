@@ -1,14 +1,17 @@
 var mongoose = require('mongoose');
+var findOrCreate = require('mongoose-findOrCreate');
 var Schema = mongoose.Schema;
 
 var playerSchema = new Schema({
-  username: String,
+  facebookID: Number,
+  name: String,
   email: String,
   photoUrl: String,
-  totalScore: Integer,
-  currentScore: Integer,
-  deaths: Integer,
-  wins: Integer
+  totalScore: Number,
+  currentScore: Number,
+  deaths: Number,
+  wins: Number
 });
 
+playerSchema.plugin(findOrCreate);
 mongoose.model('Player', playerSchema);

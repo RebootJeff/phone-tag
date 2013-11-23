@@ -6,6 +6,8 @@ var express = require('express');
 var path = require('path');
 var fs = require('fs');
 var mongoose = require('mongoose');
+var passport = require('passport');
+var FacebookStrategy = require('passport-facebook').Strategy;
 
 var app = express();
 var env = process.env['NODE_ENV'] || 'development';
@@ -29,11 +31,14 @@ fs.readdirSync(models_path).forEach(function(file){
   if (~file.indexOf('.js')) require(models_path + '/' + file);
 });
 
+// passport-facebook
+require('./config/passport')(passport, FacebookStrategy, credentials);
+
 // app environment configuration
-require('./config/environments')(app);
+require('./config/environments')(app, passport);
 
 // routes
-require('./config/routes')(app);
+require('./config/routes')(app, passport);
 
 // database connection
 mongoose.connect(credentials.db);
