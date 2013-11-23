@@ -10,6 +10,7 @@
   ],
   "dependencies": {
     "backbone": "~1.1.0",
-    "handlebars": "~1.1.2"
+    "handlebars": "~1.1.2",
+    "underscore": "~1.5.2"
   }
 }
