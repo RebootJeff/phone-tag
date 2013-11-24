@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var findOrCreate = require('mongoose-findOrCreate');
 var Schema = mongoose.Schema;
 
-var playerSchema = new Schema({
+var userSchema = new Schema({
   facebookID: Number,
   name: String,
   email: String,
@@ -13,5 +13,5 @@ var playerSchema = new Schema({
   wins: Number
 });
 
-playerSchema.plugin(findOrCreate);
-mongoose.model('Player', playerSchema);
+userSchema.plugin(findOrCreate);
+mongoose.model('User', userSchema);
