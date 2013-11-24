@@ -1,15 +1,15 @@
 var mongoose = require('mongoose');
-var Player = mongoose.model('Player');
+var User = mongoose.model('User');
 
 module.exports = function(passport, FacebookStrategy, credentials){
-  
+
   // passport session serialization
-  passport.serializeUser(function (player, done) {
-    done(null, player);
+  passport.serializeUser(function (user, done) {
+    done(null, user);
   });
 
-  passport.deserializeUser(function (player, done) {
-    done(null, player);
+  passport.deserializeUser(function (user, done) {
+    done(null, user);
   });
 
   passport.use(new FacebookStrategy({
@@ -18,10 +18,10 @@ module.exports = function(passport, FacebookStrategy, credentials){
     callbackURL: credentials.facebook.callbackURL
   }, function(accessToken, refreshToken, profile, done){
     console.log(profile);
-    Player.findOrCreate({ "facebookID": profile.id }, function(err, player){
-      player.name = profile.displayName;
-      player.save();
-      done(null, player);
+    User.findOrCreate({ "facebookID": profile.id }, function(err, user){
+      user.name = profile.displayName;
+      user.save();
+      done(null, user);
     });
   }
   ));

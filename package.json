@@ -27,7 +27,8 @@
     "passport-facebook": "~1.0.2",
     "mongoose-findorcreate": "~0.1.2",
     "passport": "~0.1.17",
-    "superagent": "~0.15.7"
+    "superagent": "~0.15.7",
+    "socket.io": "~0.9.16"
   },
   "devDependencies": {
     "grunt": "~0.4.2",
