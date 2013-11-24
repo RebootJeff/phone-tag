@@ -1,11 +1,17 @@
 !!! 5
 html(lang="en")
- head
-  title= "phoneTag"
+  head
+   title= "phoneTag"
+   script(src="/socket.io/lib/socket.io.js")
+   script.
+    var socket = io.connect('http://localhost:3000');
+    socket.on('message', function(data){
+      console.log(data.message);
+    });
   body
    h1.
     This is PhoneTag
    h3.
-    Welcome #{player.name}
+    Welcome #{user.name}
    a(href='/logout').
     Logout

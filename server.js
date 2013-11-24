@@ -10,7 +10,6 @@ var passport = require('passport');
 var FacebookStrategy = require('passport-facebook').Strategy;
 
 var app = express();
-//var server = require('http').createServer(app);
 var io = require('socket.io');
 var env = process.env['NODE_ENV'] || 'development';
 var credentials;
@@ -53,9 +52,10 @@ if( app.get('env') === 'development' ) {
 // runs the server
 var port = process.env.PORT || 3000;
 console.log("Express application is listening to port", port);
-module.exports = app;
 var socket = app.listen(port);
 var ioObj = io.listen(socket);
 
 // socket connection
 require('./config/socket/socket')(ioObj);
+
+module.exports = app;
