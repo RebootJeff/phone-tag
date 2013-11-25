@@ -1,14 +1,13 @@
-define(['backbone'], function(Backbone){
+define(['backbone','templates/home'], function(Backbone, Template){
   var AppView = Backbone.View.extend({
 
-    el: $('body'),
+    template: Template,
 
     initialize: function(){
       this.render();
     },
 
     render: function(){
-      this.$el.append("<h1>Hello</h1>");
       return this;
     }
   });
