@@ -36,7 +36,7 @@ describe('Login page Test', function(){
   });
 
   it('should redirect to Index page after facebook login', function(done){
-    client.click('#facebook', function(err, some){
+    client.click('#facebook', function(err, clickResult){
       client.pause(3000, function(err, result){
         client.url(function(err, urlResult){
           expect(urlResult).equal('http://localhost:3000');
@@ -49,17 +49,6 @@ describe('Login page Test', function(){
   it('should have "Login with Twitter" link', function(done){
     client.getText('#twitter', function(err, twitterLink){
       expect(twitterLink).equal('Login with Twitter');
-      done();
-    });
-  });
-
-  it('should redirect to Index page after twitter login', function(done){
-    client.click('#twitter', function(err, some){
-      client.pause(3000, function(err, result){
-        client.url(function(err, urlResult){
-          expect(urlResult).equal('http://localhost:3000');
-        });
-      });
       done();
     });
   });

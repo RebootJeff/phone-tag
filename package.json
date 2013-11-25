@@ -41,6 +41,7 @@
     "grunt-contrib-handlebars": "~0.6.0",
     "mocha": "~1.14.0",
     "superagent": "~0.15.7",
+    "yadda": "~0.8.5",
     "webdriverjs": "~0.7.14"
   }
 }
