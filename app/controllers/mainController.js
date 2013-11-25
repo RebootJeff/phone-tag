@@ -1,17 +1,12 @@
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
+var path = require('path');
+var rootPath = path.join(__dirname, '../views');
 
 exports.index = function(req, res){
-  res.render('index', {
-    user: req.user
-  });
+  res.sendfile(rootPath + '/index.html');
 };
 
 exports.login = function(req, res){
-  res.render('login');
-};
-
-exports.logout = function(req, res){
-  req.logout();
-  res.redirect('/login');
+  res.sendfile(rootPath + '/login.html');
 };
