@@ -6,7 +6,10 @@ module.exports = function(app, passport){
   // GET
   app.get('/', authorization.authorize, mainController.index);
   app.get('/login', mainController.login);
-  app.get('/logout', mainController.logout);
+  app.get('/logout', function(req, res){
+    req.logout();
+    res.redirect('/login');
+  });
 
   // Passport-Facebook
   app.get('/auth/facebook', passport.authenticate('facebook'));
