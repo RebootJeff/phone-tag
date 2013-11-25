@@ -10,3 +10,8 @@ exports.index = function(req, res){
 exports.login = function(req, res){
   res.sendfile(rootPath + '/login.html');
 };
+
+exports.logout = function(req, res){
+  req.logout();
+  res.redirect('/login');
+};
