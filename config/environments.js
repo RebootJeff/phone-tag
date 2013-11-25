@@ -4,7 +4,6 @@ var rootPath = path.join(__dirname, '../');
 
 module.exports = function(app, passport){
 
-  console.log(rootPath);
   app.set('port', process.env.PORT || 3000);
   app.set('views', rootPath + 'app/views');
   app.set('view engine', 'jade');

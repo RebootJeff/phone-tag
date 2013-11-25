@@ -1,9 +1,9 @@
 var mongoose = require('mongoose');
-var Player = mongoose.model('Player');
+var User = mongoose.model('User');
 
 exports.index = function(req, res){
   res.render('index', {
-    player: req.user
+    user: req.user
   });
 };
 
