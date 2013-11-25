@@ -22,24 +22,25 @@
   },
   "dependencies": {
     "express": "~3.4.4",
-    "mongoose": "~3.8.1",
     "jade": "~0.35.0",
-    "passport-facebook": "~1.0.2",
+    "mongoose": "~3.8.1",
     "mongoose-findorcreate": "~0.1.2",
     "passport": "~0.1.17",
-    "superagent": "~0.15.7",
+    "passport-facebook": "~1.0.2",
     "socket.io": "~0.9.16"
   },
   "devDependencies": {
-    "grunt": "~0.4.2",
-    "mocha": "~1.14.0",
     "chai": "~1.8.1",
+    "grunt": "~0.4.2",
     "grunt-contrib-stylus": "~0.10.0",
     "grunt-mocha": "~0.4.5",
     "grunt-karma": "~0.6.2",
     "grunt-contrib-jshint": "~0.7.2",
     "grunt-phonegap": "~0.6.2",
     "grunt-contrib-watch": "~0.5.3",
-    "grunt-contrib-handlebars": "~0.6.0"
+    "grunt-contrib-handlebars": "~0.6.0",
+    "mocha": "~1.14.0",
+    "superagent": "~0.15.7",
+    "webdriverjs": "~0.7.14"
   }
 }

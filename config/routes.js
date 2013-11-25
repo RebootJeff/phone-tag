@@ -1,10 +1,10 @@
 var mainController = require('../app/controllers/mainController');
-var middlewares = require('./middlewares');
+var authorization = require('./middlewares/authorization');
 
 module.exports = function(app, passport){
 
   // GET
-  app.get('/', middlewares.authorize, mainController.index);
+  app.get('/', authorization.authorize, mainController.index);
   app.get('/login', mainController.login);
   app.get('/logout', mainController.logout);
 
