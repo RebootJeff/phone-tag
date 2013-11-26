@@ -27,7 +27,7 @@ describe('Index page Test', function(){
 
   // TODO: Change Powerup links
   it('should have "Powerup1" link', function(done){
-    client.getAttribute('#Powerup1', 'src' function(err, Powerup1Link){
+    client.getAttribute('#Powerup1', 'src', function(err, Powerup1Link){
       expect(Powerup1Link).equal('some/path');
       done();
     });
