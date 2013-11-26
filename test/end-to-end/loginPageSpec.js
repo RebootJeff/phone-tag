@@ -14,6 +14,7 @@ describe('Login page Test', function(){
     });
   });
 
+  // TODO: May not want title
   it('should see the correct title', function(done) {
     client.getTitle(function(err, title){
       expect(title).equal('phoneTag');
@@ -28,20 +29,11 @@ describe('Login page Test', function(){
     });
   });
 
+  // TODO: test for window size, link locations, and colors
+
   it('should have "Login with Facebook" link', function(done){
     client.getText('#facebook', function(err, facebookLink){
       expect(facebookLink).equal('Login with Facebook');
-      done();
-    });
-  });
-
-  it('should redirect to Index page after facebook login', function(done){
-    client.click('#facebook', function(err, clickResult){
-      client.pause(3000, function(err, result){
-        client.url(function(err, urlResult){
-          expect(urlResult).equal('http://localhost:3000');
-        });
-      });
       done();
     });
   });
