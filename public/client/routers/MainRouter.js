@@ -1,25 +1,46 @@
-define([ "jquery", "backbone", "../models/app"], function($, Backbone, App){
+define([ "jquery", "backbone", "../views/GameView", "../views/HomeView", "../models/map"], function($, Backbone, GameView, HomeView, Map){
   var Router = Backbone.Router.extend({
-    initialize: function(){
-      new App();
-      Backbone.history.start();
+    initialize: function(options){
+      this.$el = options.el;
     },
 
     routes: {
       "": "home",
-      "about": "about"
+      "leaderboard": "leaderboard",
+      "game": "game",
+      "inventory": "inventory"
+    },
+
+    swapView: function(view){
+      this.$el.append(view.render().el);
     },
 
     home: function(){
-      console.log("home is getting called");
+      if(!$('#home').length){
+        var homeView = new HomeView();
+        this.swapView(homeView);
+      }
       $.mobile.changePage("#home" , {reverse: false, changeHash: false});
     },
 
-    about: function(){
-      console.log("about is getting called");
-      $.mobile.changePage("#about" , {reverse: false, changeHash: false});
-    }
-  });
-  return Router;
+    leaderboard: function(){
+      $.mobile.changePage("#leaderboard" , {reverse: false, changeHash: false});
+    },
 
+    game: function(){
+      if(!$('#game').length){
+        var gameView = new GameView();
+        this.swapView(gameView);
+        new Map();
+      }
+      $.mobile.changePage("#game" , {reverse: false, changeHash: false});
+    },
+
+    inventory: function(){
+      $.mobile.changePage("#inventory", {reverse: false, changeHash: false});
+    }
+
+  });
+
+  return Router;
 });
