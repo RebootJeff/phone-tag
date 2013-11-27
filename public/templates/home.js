@@ -21,6 +21,7 @@ define(['handlebars'], function(Handlebars){
       "<div data-role='content'>"+
         "<p>Some data should be here</p>"+
       "</div>"+
-    "</div>"
+    "</div>";
+
   return Handlebars.compile(content);
 });
