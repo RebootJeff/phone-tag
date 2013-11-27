@@ -1,10 +1,10 @@
 require.config({
   paths: {
-    backbone: 'lib/backbone/backbone',
-    handlebars: 'lib/handlebars/handlebars',
-    jquery: 'lib/jquery/jquery',
-    underscore: 'lib/underscore/underscore',
-    text : "lib/requirejs-text/text"
+    backbone: 'lib/backbone/backbone-min',
+    handlebars: 'lib/handlebars/handlebars.min',
+    jquery: 'lib/zepto/zepto.min',
+    underscore: 'lib/lodash/dist/lodash.min',
+    text : 'lib/requirejs-text/text'
   },
   shim: {
     'backbone': {
@@ -13,6 +13,9 @@ require.config({
     },
     'handlebars': {
       exports: 'Handlebars'
+    },
+    'jquery': {
+      exports: '$'
     }
   }
 });
