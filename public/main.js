@@ -17,7 +17,7 @@ require.config({
   }
 });
 
-require(["jquery", "backbone", "models/app"], function($, Backbone, App){
+require(["jquery", "backbone"], function($, Backbone){
   $(document).ready(function(){
     if (window.location.hash && window.location.hash == '#_=_') {
       if (window.history && history.pushState) {
@@ -36,8 +36,8 @@ require(["jquery", "backbone", "models/app"], function($, Backbone, App){
     }
   });
 
-  require(["jqueryMobile"], function(){
-    new App();
+  require(["models/app", "views/AppView", "jqueryMobile"], function(App, AppView){
+    new AppView({model: new App()});
   });
 
   $(document).bind("mobileinit", function(){
