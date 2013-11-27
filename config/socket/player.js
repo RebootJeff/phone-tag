@@ -1,4 +1,7 @@
-var Player = function(socket, user) {
+var Player = function(socket, user, room) {
+  this.name = user;
+  this.room = room;
+  this.location = {};
   this.socket = socket;
   this.user = user;
   this.score = 0;
@@ -15,11 +18,15 @@ var Player = function(socket, user) {
   this.isInvincible = false;
   this.hasDecoy = false;
 
+  //game statistics
+  this.kills = 0;
+  this.deaths = 0;
 };
 
 Player.prototype.setLocation = function(lat, lon) {
   this.lat = lat;
   this.lon = lon;
+  this.location = {lat: this.lat, lon: this.lon };
 };
 
 Player.prototype.setPowerup = function(powerUp) {
@@ -40,3 +47,5 @@ Player.prototype.dead = function() {
 Player.prototype.gameOver = function() {
   this.isActive = false;
 };
+
+module.exports = Player;
