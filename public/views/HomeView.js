@@ -1,4 +1,4 @@
-define(['backbone', '../templates/home'], function(Backbone, HomeTemplate){
+define(['backbone', 'handlebars', 'text!../templates/home.html'], function(Backbone, Handlebars, HomeTemplate){
   var HomeView = Backbone.View.extend({
     template: HomeTemplate,
 
@@ -6,10 +6,9 @@ define(['backbone', '../templates/home'], function(Backbone, HomeTemplate){
     },
 
     render: function(){
-      this.el = this.template();
+      this.el = Handlebars.compile(this.template);
       return this;
     }
-
   });
   return HomeView;
 });
