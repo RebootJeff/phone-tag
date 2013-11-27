@@ -12,12 +12,14 @@ define([ "jquery", "backbone", "../views/GameView", "../views/HomeView", "../mod
       "inventory": "inventory"
     },
 
+    routeOptions: {reverse: false, changeHash: false},
+
     swapView: function(view){
       this.$el.append(view.render().el);
     },
 
     login: function(){
-      $.mobile.changePage("#login" , {reverse: false, changeHash: false});
+      $.mobile.changePage("#login", this.routeOptions);
     },
 
     home: function(){
@@ -25,11 +27,11 @@ define([ "jquery", "backbone", "../views/GameView", "../views/HomeView", "../mod
         var homeView = new HomeView();
         this.swapView(homeView);
       }
-      $.mobile.changePage("#home" , {reverse: false, changeHash: false});
+      $.mobile.changePage("#home", this.routeOptions);
     },
 
     leaderboard: function(){
-      $.mobile.changePage("#leaderboard" , {reverse: false, changeHash: false});
+      $.mobile.changePage("#leaderboard", this.routeOptions);
     },
 
     game: function(){
@@ -38,13 +40,12 @@ define([ "jquery", "backbone", "../views/GameView", "../views/HomeView", "../mod
         this.swapView(gameView);
         new Map();
       }
-      $.mobile.changePage("#game" , {reverse: false, changeHash: false});
+      $.mobile.changePage("#game", this.routeOptions);
     },
 
     inventory: function(){
-      $.mobile.changePage("#inventory", {reverse: false, changeHash: false});
+      $.mobile.changePage("#inventory", this.routeOptions);
     }
-
   });
 
   return Router;
