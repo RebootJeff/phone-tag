@@ -1,4 +1,4 @@
-define([ "jquery", "backbone", "../views/GameView", "../views/HomeView", "../models/map"], function($, Backbone, GameView, HomeView, Map){
+define([ "jquery", "backbone", "../views/GameView", "../views/HomeView", "../views/InventoryView", "../views/LeaderboardView", "../views/LoginView", "../models/map"], function($, Backbone, GameView, HomeView, InventoryView, LeaderboardView, LoginView, Map){
   var Router = Backbone.Router.extend({
     initialize: function(options){
       this.$el = options.el;
@@ -12,39 +12,34 @@ define([ "jquery", "backbone", "../views/GameView", "../views/HomeView", "../mod
       "inventory": "inventory"
     },
 
-    routeOptions: {reverse: false, changeHash: false},
-
     swapView: function(view){
-      this.$el.append(view.render().el);
+      this.$el.html(view.render().el);
     },
 
     login: function(){
-      $.mobile.changePage("#login", this.routeOptions);
+      var loginView = new LoginView();
+      this.swapView(loginView);
     },
 
     home: function(){
-      if(!$('#home').length){
         var homeView = new HomeView();
         this.swapView(homeView);
-      }
-      $.mobile.changePage("#home", this.routeOptions);
     },
 
     leaderboard: function(){
-      $.mobile.changePage("#leaderboard", this.routeOptions);
+      var leaderboardView = new LeaderboardView();
+      this.swapView(leaderboardView);
     },
 
     game: function(){
-      if(!$('#game').length){
-        var gameView = new GameView();
-        this.swapView(gameView);
-        new Map();
-      }
-      $.mobile.changePage("#game", this.routeOptions);
+      var gameView = new GameView();
+      this.swapView(gameView);
+      new Map();
     },
 
     inventory: function(){
-      $.mobile.changePage("#inventory", this.routeOptions);
+      var inventoryView = new InventoryView();
+      this.swapView(inventoryView);
     }
   });
 
