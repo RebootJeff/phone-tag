@@ -13,30 +13,11 @@ html(lang="en")
       });
   body
     #container
-      div#home(data-role='page')
+      div#login(data-role='page')
         div(data-role='header')
           h1.
-            Home
-          a.logout(href='/logout').
-            Logout
+            This is PhoneTag
         div(data-role='content')
-          h3.
-            Welcome #{user.name}
-          p
-            a.game(href='#').
-              Join
-          p
-            a.leaderboard(href='#').
-              Leaderboard
-      div#leaderboard(data-role='page')
-        div(data-role='header')
-          h1.
-            Leaderboard
-          a.home(href='#home').
-            Back
-          a.logout(href='/logout').
-            Logout
-        div(data-role='content')
-          p.
-            Some data should be here
+          a.login(href="/auth/facebook").
+            Login with Facebook
     script(data-main="main" src="lib/requirejs/require.js")

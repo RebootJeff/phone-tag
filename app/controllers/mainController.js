@@ -2,16 +2,14 @@ var mongoose = require('mongoose');
 var User = mongoose.model('User');
 
 exports.index = function(req, res){
-  res.render('index', {
-    user: req.user
-  });
+  res.render('index');
 };
 
-exports.login = function(req, res){
-  res.render('login');
+exports.userAuth = function(req, res){
+  res.send(req.isAuthenticated() ? req.user : null );
 };
 
 exports.logout = function(req, res){
   req.logout();
-  res.redirect('/login');
+  res.redirect('/');
 };
