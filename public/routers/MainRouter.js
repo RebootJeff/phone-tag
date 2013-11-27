@@ -5,7 +5,8 @@ define([ "jquery", "backbone", "../views/GameView", "../views/HomeView", "../mod
     },
 
     routes: {
-      "": "home",
+      "": "login",
+      "home": "home",
       "leaderboard": "leaderboard",
       "game": "game",
       "inventory": "inventory"
@@ -13,6 +14,10 @@ define([ "jquery", "backbone", "../views/GameView", "../views/HomeView", "../mod
 
     swapView: function(view){
       this.$el.append(view.render().el);
+    },
+
+    login: function(){
+      $.mobile.changePage("#login" , {reverse: false, changeHash: false});
     },
 
     home: function(){
