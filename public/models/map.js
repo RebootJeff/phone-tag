@@ -10,7 +10,7 @@ define(['backbone'], function(Backbone){
 
     // Map styles
     mapOptions: {
-      center: new google.maps.LatLng(37.7837749,-122.4167),
+      center: new google.maps.LatLng(37.7837749, -122.4167),
       zoom: 11
     },
 
@@ -38,7 +38,7 @@ define(['backbone'], function(Backbone){
 
     // Map functions
     createMarker: function(latLng){
-      latLng = latLng || new google.maps.LatLng( 37.7837749,-122.4167);
+      latLng = latLng || new google.maps.LatLng(37.7837749, -122.4167);
       new google.maps.Marker({
         position: latLng,
         map: this.map
