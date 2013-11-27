@@ -3,7 +3,6 @@ require.config({
     backbone: 'lib/backbone/backbone',
     handlebars: 'lib/handlebars/handlebars',
     jquery: 'lib/jquery/jquery',
-    jqueryMobile: 'lib/jquery-mobile-bower/js/jquery.mobile-1.3.2',
     underscore: 'lib/underscore/underscore',
     text : "lib/requirejs-text/text"
   },
@@ -37,15 +36,7 @@ require(["jquery", "backbone"], function($, Backbone){
     }
   });
 
-  require(["models/app", "views/AppView", "jqueryMobile"], function(App, AppView){
+  require(["models/app", "views/AppView"], function(App, AppView){
     new AppView({model: new App()});
   });
-
-  $(document).bind("mobileinit", function(){
-    // Prevents all anchor click handling including the addition of active button state and alternate link bluring.
-    $.mobile.ajaxEnabled = false;
-    // Disabling this will prevent jQuery Mobile from handling hash changes
-    $.mobile.hashListeningEnabled = false;
-  });
-
 });
