@@ -5,7 +5,8 @@ define(['backbone', 'routers/MainRouter'], function(Backbone, Router){
 
     initialize: function(){
       this.router = new Router({el: this.$el.find('#container')});
-      // this.router.on('route', this.updateNav, this);
+      this.router.on('route', this.checkAuth, this);
+      this.model.on('loggedIn', this.renderHomeView, this);
       Backbone.history.start({pushState: true});
     },
 
@@ -18,7 +19,7 @@ define(['backbone', 'routers/MainRouter'], function(Backbone, Router){
 
     renderHomeView: function(e){
       e && e.preventDefault();
-      this.router.navigate('/', {trigger:true});
+      this.router.navigate('/home', {trigger:true});
     },
 
     renderLeaderboardView: function(e){
@@ -34,6 +35,12 @@ define(['backbone', 'routers/MainRouter'], function(Backbone, Router){
     renderInventoryView: function(e){
       e && e.preventDefault();
       this.router.navigate('/inventory', {trigger:true});
+    },
+
+    checkAuth: function(){
+      if(!this.model.get('user')){
+        this.model.trigger('createPlayer');
+      }
     }
   });
   return AppView;
