@@ -12,19 +12,19 @@ var FacebookStrategy = require('passport-facebook').Strategy;
 var app = express();
 var io = require('socket.io');
 var env = process.env['NODE_ENV'] || 'development';
-var credentials;
+var credentials = require('./config/credentials')[env];
 
-switch(env){
-  case "development":
-    credentials = require('./config/credentials')[env];
-    break;
-  case "test":
-    credentials = require('./config/credentials')[env];
-    break;
-  case "production":
-    credentials = require('./config/productionCredentials')[env];
-    break;
-}
+// switch(env){
+//   case "development":
+//     credentials = require('./config/credentials')[env];
+//     break;
+//   case "test":
+//     credentials = require('./config/credentials')[env];
+//     break;
+//   case "production":
+//     credentials = require('./config/credentials')[env];
+//     break;
+// }
 
 // models
 var models_path = __dirname + '/app/models';
