@@ -1,4 +1,4 @@
-define(['backbone', '../templates/game'], function(Backbone, GameTemplate){
+define(['backbone', 'handlebars', 'text!../templates/game.html'], function(Backbone, Handlebars, GameTemplate){
   var GameView = Backbone.View.extend({
     template: GameTemplate,
 
@@ -6,7 +6,7 @@ define(['backbone', '../templates/game'], function(Backbone, GameTemplate){
     },
 
     render: function(){
-      this.el = (this.template());
+      this.el = Handlebars.compile(this.template);
       return this;
     }
 
