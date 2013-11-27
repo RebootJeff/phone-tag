@@ -1,3 +1,4 @@
+public/lib
 .DS_Store
 node_modules
 **/credentials.js
