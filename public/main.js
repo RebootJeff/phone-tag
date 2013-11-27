@@ -20,11 +20,11 @@ require.config({
   }
 });
 
-require(["jquery", "backbone"], function($, Backbone){
+require(['jquery', 'backbone'], function($, Backbone){
   $(document).ready(function(){
     if (window.location.hash && window.location.hash == '#_=_') {
       if (window.history && history.pushState) {
-        window.history.pushState("", document.title, window.location.pathname);
+        window.history.pushState('', document.title, window.location.pathname);
       }else{
         // Prevent scrolling by storing the page's current scroll offset
         var scroll = {
@@ -39,7 +39,7 @@ require(["jquery", "backbone"], function($, Backbone){
     }
   });
 
-  require(["models/app", "views/AppView"], function(App, AppView){
+  require(['models/app', 'views/AppView'], function(App, AppView){
     new AppView({model: new App()});
   });
 });
