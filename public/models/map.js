@@ -36,7 +36,7 @@ define(['backbone'], function(Backbone){
     ],
 
     gpsOptions: {
-      enableHighAccuracy: false,
+      enableHighAccuracy: true,
       timeout: 5000,
       maximumAge: 0
     },
@@ -71,7 +71,7 @@ define(['backbone'], function(Backbone){
       navigator.geolocation.getCurrentPosition(setCurrentPosition, that.handleError, that.gpsOptions);
     },
 
-    // Getting timeout error ()
+    // Getting timeout error at watchLocation
     handleError: function(err){
       console.warn('ERROR(' + err.code + '): ' + err.message);
     },
@@ -83,7 +83,7 @@ define(['backbone'], function(Backbone){
         marker.setPosition(currentPosition);
         that.map.panTo(currentPosition);
       };
-      navigator.geolocation.watchPosition(watchCurrentPosition, null, that.gpsOptions);
+      navigator.geolocation.watchPosition(watchCurrentPosition, that.handleError, that.gpsOptions);
     }
   });
   return map;
