@@ -4,7 +4,8 @@ require.config({
     handlebars: 'lib/handlebars/handlebars',
     jquery: 'lib/jquery/jquery',
     jqueryMobile: 'lib/jquery-mobile-bower/js/jquery.mobile-1.3.2',
-    underscore: 'lib/underscore/underscore'
+    underscore: 'lib/underscore/underscore',
+    text : "lib/requirejs-text/text"
   },
   shim: {
     'backbone': {

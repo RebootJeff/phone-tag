@@ -14,7 +14,9 @@ define(['backbone', 'routers/MainRouter'], function(Backbone, Router){
       "click a.home":  "renderHomeView",
       "click a.leaderboard": "renderLeaderboardView",
       "click a.game": "renderGameView",
-      "click a.inventory": "renderInventoryView"
+      "click a.inventory": "renderInventoryView",
+      "click button.tag": "tag",
+      "click #inventory li": "inventory"
     },
 
     renderHomeView: function(e){
@@ -41,6 +43,16 @@ define(['backbone', 'routers/MainRouter'], function(Backbone, Router){
       if(!this.model.get('user')){
         this.model.trigger('createPlayer');
       }
+    },
+
+    tag: function(e){
+      e && e.preventDefault();
+      console.log("Tag clicked");
+    },
+
+    inventory: function(e){
+      e && e.preventDefault();
+      console.log("Inventory is clicked:", e.currentTarget);
     }
   });
   return AppView;
