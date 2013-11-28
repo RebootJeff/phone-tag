@@ -11,5 +11,5 @@ exports.userAuth = function(req, res){
 
 exports.logout = function(req, res){
   req.logout();
-  res.redirect('/');
+  res.send(200);
 };

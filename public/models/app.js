@@ -5,13 +5,18 @@ define(['backbone', './player'], function(Backbone, Player){
     },
 
     createPlayer: function(){
-      var that = this;
+      this.set('username', $('input').val());
       this.set('user', new Player());
-      this.get('user').fetch({
-        success: function(){
-          that.trigger('loggedIn');
-        }
-      });
+      // var that = this;
+      // this.set('user', new Player());
+      // this.get('user').fetch({
+      //   success: function(){
+      //     that.trigger('loggedIn');
+      //   }
+      // });
+
+      // Todo: Send player info to socket (server)
+      this.trigger('loggedIn');
     }
   });
   return App;
