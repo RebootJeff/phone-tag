@@ -31,7 +31,8 @@
     "mongoose-findorcreate": "~0.1.2",
     "passport": "~0.1.17",
     "passport-facebook": "~1.0.2",
-    "socket.io": "~0.9.16"
+    "socket.io": "~0.9.16",
+    "bower": "~1.2.7"
   },
   "devDependencies": {
     "chai": "~1.8.1",
