@@ -1,10 +1,10 @@
 require.config({
   paths: {
-    backbone: 'lib/backbone/backbone',
-    handlebars: 'lib/handlebars/handlebars',
-    jquery: 'lib/jquery/jquery',
-    underscore: 'lib/underscore/underscore',
-    text : "lib/requirejs-text/text"
+    backbone: 'lib/backbone/backbone-min',
+    handlebars: 'lib/handlebars/handlebars.min',
+    jquery: 'lib/zepto/zepto.min',
+    underscore: 'lib/lodash/dist/lodash.min',
+    text : 'lib/requirejs-text/text'
   },
   shim: {
     'backbone': {
@@ -13,15 +13,18 @@ require.config({
     },
     'handlebars': {
       exports: 'Handlebars'
+    },
+    'jquery': {
+      exports: '$'
     }
   }
 });
 
-require(["jquery", "backbone"], function($, Backbone){
+require(['jquery', 'backbone'], function($, Backbone){
   $(document).ready(function(){
     if (window.location.hash && window.location.hash == '#_=_') {
       if (window.history && history.pushState) {
-        window.history.pushState("", document.title, window.location.pathname);
+        window.history.pushState('', document.title, window.location.pathname);
       }else{
         // Prevent scrolling by storing the page's current scroll offset
         var scroll = {
@@ -36,7 +39,7 @@ require(["jquery", "backbone"], function($, Backbone){
     }
   });
 
-  require(["models/app", "views/AppView"], function(App, AppView){
+  require(['models/app', 'views/AppView'], function(App, AppView){
     new AppView({model: new App()});
   });
 });
