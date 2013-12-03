@@ -20,13 +20,13 @@ define([ 'jquery', 'backbone', '../views/GameView', '../models/game', '../views/
     home: function(){
       if($('#home').length === 0){
         new HomeView();
-      }else{
+      } else {
         this.slidePageFrom($('#leaderboard'), $('#home'), 'left');
       }
     },
 
     join: function(){
-      this.app.set('game', new Game({currentPlayer: this.app.get('user')}));
+      this.app.set('game', new Game({currentPlayer: this.app.get('user'), socket: this.app.socket}));
       new JoinView({model: this.app.get('game'), user: this.app.get('user')});
     },
 
@@ -36,12 +36,9 @@ define([ 'jquery', 'backbone', '../views/GameView', '../models/game', '../views/
 
     game: function(){
       if($('#game').length === 0){
-        var that = this;
-        this.app.get('game').socket.on('gameStarting', function(){
-          new GameView({model: that.app.get('game'), socket: that.app.get('game').socket});
-        });
-        this.app.get('game').socket.emit('startGame');
-      }else{
+        var game = this.app.get('game');
+        new GameView({model: game, socket: game.socket});
+      } else {
         this.slidePageFrom($('#inventory'), $('#game'), 'left');
       }
     },
@@ -56,6 +53,5 @@ define([ 'jquery', 'backbone', '../views/GameView', '../models/game', '../views/
       start.removeClass().addClass('page transition ' + startClass);
     }
   });
-
   return Router;
 });

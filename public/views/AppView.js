@@ -7,6 +7,7 @@ define(['backbone', 'routers/MainRouter'], function(Backbone, Router){
       this.router = new Router({app: this.model});
       // this.router.on('route', function(){console.log(this.model.get('user'));}, this);
       this.model.on('loggedIn', this.renderHomeView, this);
+      this.model.on('renderGameViews', this.renderGameView, this);
       Backbone.history.start({pushState: true});
     },
 
@@ -16,11 +17,13 @@ define(['backbone', 'routers/MainRouter'], function(Backbone, Router){
       'click a.home':  'renderHomeView',
       'click a.leaderboard': 'renderLeaderboardView',
       'click a.join': 'renderJoinView',
-      'click button.start, a.game': 'renderGameView',
+      'click a.game': 'renderGameView',
+      'click button.start': 'sendStartGame',
       'click a.inventory': 'renderInventoryView',
       'click button.tag': 'tag',
       'click #inventory li': 'inventory',
-      'click a.quit': 'renderHomeView'
+      'click a.quit': 'renderHomeView',
+      'renderGameViews': 'renderGameView'
     },
 
     login: function(e){
@@ -36,6 +39,11 @@ define(['backbone', 'routers/MainRouter'], function(Backbone, Router){
       //   that.router.navigate('/', {trigger:true});
       // });
       this.router.navigate('/', {trigger:true});
+    },
+
+    sendStartGame: function(e){
+      e && e.preventDefault();
+      this.model.socket.emit('startGame', this.model.get('game').get('gameID'));
     },
 
     renderHomeView: function(e){

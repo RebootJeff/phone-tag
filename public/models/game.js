@@ -3,9 +3,10 @@ define(['backbone', './currentPlayer','../collections/otherPlayers'], function(B
     initialize: function(options){
       // Create players
       this.set('gameID', 1);
-      var currentPlayer = new CurrentPlayer({name: options.currentPlayer, roomID: this.get('gameID')});
+      var currentPlayer = new CurrentPlayer({name: options.currentPlayer, roomID: this.get('gameID'), socket:this.socket});
       this.set('currentPlayer', currentPlayer);
       this.set('otherPlayers', new OtherPlayers());
+      this.socket = options.socket;
       this.socketSetup();
     },
 
@@ -24,7 +25,6 @@ define(['backbone', './currentPlayer','../collections/otherPlayers'], function(B
       var user = this.get('currentPlayer');
 
       // Socket connection and listeners
-      this.socket = io.connect();
       this.socket.emit('joinGame', {user: user.get('name'), roomID: user.get('roomID')});
       this.socket.on('playerAdded', function(data){that.addPlayers(data);});
       this.socket.on('sendLocationsToPlayer', function(data){that.updateLocations(data);});

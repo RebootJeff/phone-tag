@@ -40,7 +40,7 @@ define(['backbone'], function(Backbone){
 
     gpsOptions: {
       enableHighAccuracy: false,
-      timeout: 5000,
+      // timeout: 10000,
       maximumAge: 5000
     },
 
@@ -53,14 +53,16 @@ define(['backbone'], function(Backbone){
     },
 
     createMarker: function(data){
-      var latLng = new google.maps.LatLng(data.lat, data.lng);
-      console.log("latLng is:", latLng);
+      var latLng = new google.maps.LatLng(data.location.lat, data.location.lng);
+      console.log("lat is: ", data.location.lat);
+      console.log("lng is: ", data.location.lng);
       var marker = new google.maps.Marker({
         position: latLng,
         map: this.map
       });
       marker.id = data.name;
       this.markers.push(marker);
+      var that = this;
       if(marker.id === this.get('currentPlayer').get('name')){
         this.watchLocation(marker);
       }
@@ -88,7 +90,7 @@ define(['backbone'], function(Backbone){
       for(var i = 0; i < this.markers.length; i++){
         marker = this.markers[i];
         if(marker.id !== this.get('currentPlayer').get('name')){
-          marker.setPosition(locations[marker.id]);
+          marker.setPosition(new google.maps.LatLng(locations[marker.id].lat, locations[marker.id].lng));
         }
       }
     },
