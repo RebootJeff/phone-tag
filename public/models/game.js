@@ -10,6 +10,7 @@ define(['backbone', './currentPlayer','../collections/otherPlayers'], function(B
     },
 
     addPlayers: function(playersList){
+      console.log("playersAdded emitted");
       var players = [];
       for(var player in playersList){
         players.push(playersList[player]);

@@ -7,40 +7,42 @@ module.exports = function(io){
   var _count = 1;
 
   io.sockets.on('connection', function(socket) {
-    console.log('SOCKET WORKING');
-    socket.emit('message', { message: 'Welcome to PhoneTag' });
-
-    socket.on('createGame', function(data){
-      console.log('Creating Game');
-      var roomID = _count++;
-      var game = new Game(roomID);
-      var player = new Player(socket, data.user, roomID);
-      game.addPlayer(player);
-      _allGames[roomID] = game;
-      socket.join(roomID);
-    });
+    // socket.on('createGame', function(data){
+    //   console.log('Creating Game');
+    //   var roomID = _count++;
+    //   var game = new Game(roomID);
+    //   var player = new Player(socket, data.user, roomID);
+    //   game.addPlayer(player);
+    //   _allGames[roomID] = game;
+    //   socket.join(roomID);
+    // });
 
     socket.on('joinGame', function(data){
       console.log('Join game clicked!');
+      var game;
       var player = new Player(socket, data.user, data.roomID);
-      var game = new Game(data.roomID);
-      _allGames[data.roomID] = game;
+      if(!_allGames[data.roomID]){
+        game = new Game(data.roomID);
+        _allGames[data.roomID] = game;
+      }else{
+        game = _allGames[data.roomID];
+      }
       game.addPlayer(player);
-      socket.join(data.roomID);
-      socket.emit('playerAdded', game.players);
+      this.join(data.roomID);
+      this.broadcast.to(data.roomID).emit('playerAdded', game.players);
     });
 
     socket.on('startGame', function(){
       console.log('Game starting!');
-      this.emit('gameStarting');
+      this.broadcast.to('1').emit('gameStarting');
     });
 
-    socket.on('newPlayerAdded', function(data){
-      console.log('New player added!');
+    socket.on('newPlayerMarker', function(data){
+      console.log('New player marker added!');
       var game = _allGames[data.roomID];
       var player = game.getPlayer(data.name);
       player.location = (data.location);
-      this.emit('createMarker', data);
+      this.broadcast.to(data.roomID).emit('createMarker', data);
     });
 
     socket.on('sendLocationFromPlayer', function(data){
@@ -48,7 +50,7 @@ module.exports = function(io){
       var player = game.getPlayer(data.name);
       player.location = (data.location);
       var newLocations = game.updateLocations();
-      socket.emit('sendLocationsToPlayer', newLocations);
+      this.broadcast.to(data.roomID).emit('sendLocationsToPlayer', newLocations);
     });
 
     socket.on('tapPlayer', function(data){

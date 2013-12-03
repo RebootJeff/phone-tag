@@ -39,7 +39,7 @@ define(['backbone'], function(Backbone){
     ],
 
     gpsOptions: {
-      enableHighAccuracy: true,
+      enableHighAccuracy: false,
       timeout: 5000,
       maximumAge: 5000
     },
@@ -54,6 +54,7 @@ define(['backbone'], function(Backbone){
 
     createMarker: function(data){
       var latLng = new google.maps.LatLng(data.lat, data.lng);
+      console.log("latLng is:", latLng);
       var marker = new google.maps.Marker({
         position: latLng,
         map: this.map
@@ -77,7 +78,7 @@ define(['backbone'], function(Backbone){
         playerLocation.roomID = that.get('currentPlayer').get('roomID');
         playerLocation.location = {lat: position.coords.latitude, lng:position.coords.longitude};
 
-        that.get('socket').emit('newPlayerAdded', playerLocation);
+        that.get('socket').emit('newPlayerMarker', playerLocation);
       };
     navigator.geolocation.getCurrentPosition(setCurrentPosition, that.handleError, that.gpsOptions);
     },

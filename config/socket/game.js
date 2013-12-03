@@ -28,6 +28,9 @@ Game.prototype.getRoomID = function(){
 };
 
 Game.prototype.getPlayer = function(playerName) {
+  console.log("inside getPlayer. this is:",this);
+  console.log("inside getPlayer. this.players is:",this.players);
+  console.log("playerName is:", playerName);
   return this.players[playerName];
 };
 
