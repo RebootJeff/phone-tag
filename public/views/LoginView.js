@@ -3,10 +3,11 @@ define(['backbone', 'handlebars', 'text!../templates/login.html'], function(Back
     template: LoginTemplate,
 
     initialize: function(){
+      this.render();
     },
 
     render: function(){
-      this.el = Handlebars.compile(this.template);
+      $('#container').html(Handlebars.compile(this.template));
       return this;
     }
   });

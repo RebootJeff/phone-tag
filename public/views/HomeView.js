@@ -3,10 +3,11 @@ define(['backbone', 'handlebars', 'text!../templates/home.html'], function(Backb
     template: HomeTemplate,
 
     initialize: function(){
+      this.render();
     },
 
     render: function(){
-      this.el = Handlebars.compile(this.template);
+      $('#container').html(Handlebars.compile(this.template));
       return this;
     }
   });
