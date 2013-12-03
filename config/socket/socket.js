@@ -64,10 +64,6 @@ module.exports = function(io){
       socket(id).emit('dead', { message: 'you are dead' });
     });
 
-    socket.on('tapPlayer', function(data){
-      console.log('Tapped Player, YAY!');
-    });
-
     var sendLocations = function(gameID){
       var game = _allGames[gameID];
       var newLocations;

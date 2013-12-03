@@ -13,7 +13,10 @@ define(['backbone'], function(Backbone){
     // Map options
     mapOptions: {
       center: new google.maps.LatLng(37.7837749, -122.4167),
-      zoom: 11
+      minZoom: 19,
+      maxZoom: 21,
+      draggable: false,
+      panControl: false
     },
 
     styles: [
@@ -39,7 +42,7 @@ define(['backbone'], function(Backbone){
     ],
 
     gpsOptions: {
-      enableHighAccuracy: false,
+      enableHighAccuracy: true,
       // timeout: 10000,
       maximumAge: 5000
     },
@@ -54,17 +57,17 @@ define(['backbone'], function(Backbone){
 
     createMarker: function(data){
       var latLng = new google.maps.LatLng(data.location.lat, data.location.lng);
-      console.log("lat is: ", data.location.lat);
-      console.log("lng is: ", data.location.lng);
       var marker = new google.maps.Marker({
         position: latLng,
-        map: this.map
+        map: this.map,
+        icon: '../styles/images/evil.png'
       });
       marker.id = data.name;
       this.markers.push(marker);
       var that = this;
       if(marker.id === this.get('currentPlayer').get('name')){
         this.watchLocation(marker);
+        marker.setIcon('../styles/images/wink.png');
       }
     },
 
@@ -73,7 +76,7 @@ define(['backbone'], function(Backbone){
       var setCurrentPosition = function(position){
         var currentPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
         that.map.setCenter(currentPosition);
-        that.map.setZoom(16);
+        that.map.setZoom(21);
 
         var playerLocation = {};
         playerLocation.name = that.get('currentPlayer').get('name');
@@ -91,8 +94,14 @@ define(['backbone'], function(Backbone){
         marker = this.markers[i];
         if(marker.id !== this.get('currentPlayer').get('name')){
           marker.setPosition(new google.maps.LatLng(locations[marker.id].lat, locations[marker.id].lng));
+          this.setDistanceFromUser(marker);
+          console.log('distance from current player is: ',marker.distanceFromCurrentPlayer);
         }
       }
+    },
+
+    setDistanceFromUser: function(marker){
+      marker.distanceFromCurrentPlayer = google.maps.geometry.spherical.computeDistanceBetween(this.currentPlayerMarker.position, marker.position);
     },
 
     handleError: function(err){
@@ -111,8 +120,9 @@ define(['backbone'], function(Backbone){
         playerLocation.roomID = that.get('currentPlayer').get('roomID');
         playerLocation.location = {lat: position.coords.latitude, lng:position.coords.longitude};
 
+        that.currentPlayerMarker = marker;
         marker.setPosition(currentPosition);
-        that.map.panTo(currentPosition);
+        that.map.setCenter(currentPosition);
         socket.emit('sendLocationFromPlayer', playerLocation);
       };
       navigator.geolocation.watchPosition(watchCurrentPosition, that.handleError, that.gpsOptions);
