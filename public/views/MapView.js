@@ -1,4 +1,4 @@
-define(['backbone', 'handlebars', 'text!../templates/map.html', '../models/Map'], function(Backbone, Handlebars, MapTemplate, Map){
+define(['backbone', 'handlebars', 'text!../templates/map.html', '../models/map'], function(Backbone, Handlebars, MapTemplate, Map){
   var MapView = Backbone.View.extend({
     template: MapTemplate,
 
