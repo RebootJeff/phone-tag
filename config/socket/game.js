@@ -17,7 +17,7 @@ Game.prototype.addPlayer = function(player){
 
 Game.prototype.updateLocations = function(){
   var currentLocations = {};
-  for( var playerName in this.players){
+  for(var playerName in this.players){
     currentLocations[playerName] = this.players[playerName].location;
   }
   return currentLocations;
