@@ -8,6 +8,7 @@ define(['backbone'], function(Backbone){
       var that = this;
       this.get('socket').on('createMarker', function(data){that.createMarker(data);});
       this.get('socket').on('sendLocationsToPlayer', function(data){that.updateMarkers(data);});
+      this.get('socket').on('someoneLeft', function(data){ that.removeMarker(data); });
     },
 
     // Map options
@@ -96,12 +97,29 @@ define(['backbone'], function(Backbone){
           marker.setPosition(new google.maps.LatLng(locations[marker.id].lat, locations[marker.id].lng));
           this.setDistanceFromUser(marker);
           console.log('distance from current player is: ',marker.distanceFromCurrentPlayer);
+          if(locations[marker.id]){
+            marker.setPosition(new google.maps.LatLng(locations[marker.id].lat, locations[marker.id].lng));            
+          }
         }
       }
     },
 
     setDistanceFromUser: function(marker){
       marker.distanceFromCurrentPlayer = google.maps.geometry.spherical.computeDistanceBetween(this.currentPlayerMarker.position, marker.position);
+    },
+
+    removeMarker: function(data){
+      console.log(data);
+      var playerName = data.username;
+      var newLocations = data.newLocations;
+      var markers = this.markers;
+      for( var i = 0; i < markers.length; i++ ){
+        var marker = markers[i];
+        if( marker.id === playerName ){
+          marker.setVisible(false);
+        }
+      }
+      this.updateMarkers(newLocations);
     },
 
     handleError: function(err){
