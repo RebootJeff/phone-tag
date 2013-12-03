@@ -53,7 +53,9 @@ module.exports = function(io){
     socket.on('sendLocationFromPlayer', function(data){
       var game = _allGames[data.roomID];
       var player = game.getPlayer(data.name);
-      player.location = data.location;
+      if( player ){
+        player.location = data.location;        
+      }
     });
 
     socket.on('tapPlayer', function(data){
@@ -62,6 +64,18 @@ module.exports = function(io){
       id = data.socketId;
       Players.find();
       socket(id).emit('dead', { message: 'you are dead' });
+    });
+
+    // data = { gameID: gameID, username: username };
+    socket.on('leaveGame', function(data){
+      console.log("Quit", data);
+      // remove player from game
+      var game = _allGames[data.gameID];
+      var newLocations = game.removePlayer(data.username).updateLocations();
+      // notify all other players
+      socket.leave(data.gameID);
+      var obj = { username: data.username, newLocations: newLocations };
+      socket.broadcast.to(data.gameID).emit('someoneLeft', obj);
     });
 
     var sendLocations = function(gameID){
