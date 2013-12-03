@@ -1,5 +1,6 @@
 public/lib
 .DS_Store
 node_modules
+gruntfile.js
 **/credentials.js
 selenium-server.jar

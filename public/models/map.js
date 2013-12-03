@@ -1,10 +1,13 @@
 define(['backbone'], function(Backbone){
   var map = Backbone.Model.extend({
 
-    initialize: function(){
+    initialize: function(options){
       google.maps.visualRefresh = true;
       this.createMap();
       this.setCurrentMarker();
+      var that = this;
+      this.get('socket').on('createMarker', function(data){that.createMarker(data);});
+      this.get('socket').on('sendLocationsToPlayer', function(data){that.updateMarkers(data);});
     },
 
     // Map options
@@ -36,9 +39,9 @@ define(['backbone'], function(Backbone){
     ],
 
     gpsOptions: {
-      enableHighAccuracy: true,
-      timeout: 5000,
-      maximumAge: 0
+      enableHighAccuracy: false,
+      // timeout: 10000,
+      maximumAge: 5000
     },
 
     markers: [],
@@ -49,29 +52,49 @@ define(['backbone'], function(Backbone){
       this.map.setOptions({styles: this.styles});
     },
 
-    createMarker: function(latLng){
-      latLng = latLng || new google.maps.LatLng(37.7837749, -122.4167);
+    createMarker: function(data){
+      var latLng = new google.maps.LatLng(data.location.lat, data.location.lng);
+      console.log("lat is: ", data.location.lat);
+      console.log("lng is: ", data.location.lng);
       var marker = new google.maps.Marker({
         position: latLng,
         map: this.map
       });
+      marker.id = data.name;
       this.markers.push(marker);
-      this.watchLocation(marker);
+      var that = this;
+      if(marker.id === this.get('currentPlayer').get('name')){
+        this.watchLocation(marker);
+      }
     },
 
     setCurrentMarker: function(){
       var that = this;
       var setCurrentPosition = function(position){
         var currentPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-        that.createMarker(currentPosition);
-        that.center = currentPosition;
+        that.map.setCenter(currentPosition);
         that.map.setZoom(16);
-        that.map.setCenter(that.center);
+
+        var playerLocation = {};
+        playerLocation.name = that.get('currentPlayer').get('name');
+        playerLocation.roomID = that.get('currentPlayer').get('roomID');
+        playerLocation.location = {lat: position.coords.latitude, lng:position.coords.longitude};
+
+        that.get('socket').emit('newPlayerMarker', playerLocation);
       };
-      navigator.geolocation.getCurrentPosition(setCurrentPosition, that.handleError, that.gpsOptions);
+    navigator.geolocation.getCurrentPosition(setCurrentPosition, that.handleError, that.gpsOptions);
     },
 
-    // Getting timeout error at watchLocation
+    updateMarkers: function(locations){
+      var marker;
+      for(var i = 0; i < this.markers.length; i++){
+        marker = this.markers[i];
+        if(marker.id !== this.get('currentPlayer').get('name')){
+          marker.setPosition(new google.maps.LatLng(locations[marker.id].lat, locations[marker.id].lng));
+        }
+      }
+    },
+
     handleError: function(err){
       console.warn('ERROR(' + err.code + '): ' + err.message);
     },
@@ -79,9 +102,18 @@ define(['backbone'], function(Backbone){
     watchLocation: function(marker){
       var that = this;
       var watchCurrentPosition = function(position){
+        console.log("watchCurrentPosition is getting called");
+        var socket = that.get('socket');
         var currentPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+
+        var playerLocation = {};
+        playerLocation.name = that.get('currentPlayer').get('name');
+        playerLocation.roomID = that.get('currentPlayer').get('roomID');
+        playerLocation.location = {lat: position.coords.latitude, lng:position.coords.longitude};
+
         marker.setPosition(currentPosition);
         that.map.panTo(currentPosition);
+        socket.emit('sendLocationFromPlayer', playerLocation);
       };
       navigator.geolocation.watchPosition(watchCurrentPosition, that.handleError, that.gpsOptions);
     }

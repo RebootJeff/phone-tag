@@ -1,12 +1,14 @@
-define(['backbone', 'handlebars', 'text!../templates/game.html'], function(Backbone, Handlebars, GameTemplate){
+define(['backbone', 'handlebars', 'text!../templates/game.html','./MapView'], function(Backbone, Handlebars, GameTemplate, MapView){
   var GameView = Backbone.View.extend({
     template: GameTemplate,
 
-    initialize: function(){
+    initialize: function(options){
+      this.render();
+      new MapView({currentPlayer: this.model.get('currentPlayer'), socket: options.socket});
     },
 
     render: function(){
-      this.el = Handlebars.compile(this.template);
+      $('#container').html(Handlebars.compile(this.template));
       return this;
     }
 

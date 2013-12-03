@@ -1,21 +1,16 @@
-define(['backbone', './player'], function(Backbone, Player){
+define(['backbone'], function(Backbone){
   var App = Backbone.Model.extend({
     initialize: function(){
-      this.on('createPlayer', this.createPlayer, this);
+      var that = this;
+      this.on('setUser', this.setUser, this);
+      this.socket = io.connect();
+      this.socket.on('renderGameViews', function(){
+        that.trigger('renderGameViews');
+      });
     },
 
-    createPlayer: function(){
-      this.set('username', $('input').val());
-      this.set('user', new Player());
-      // var that = this;
-      // this.set('user', new Player());
-      // this.get('user').fetch({
-      //   success: function(){
-      //     that.trigger('loggedIn');
-      //   }
-      // });
-
-      // Todo: Send player info to socket (server)
+    setUser: function(){
+      this.set('user', $('input').val());
       this.trigger('loggedIn');
     }
   });

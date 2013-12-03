@@ -4,9 +4,10 @@ define(['backbone', 'routers/MainRouter'], function(Backbone, Router){
     el: $('body'),
 
     initialize: function(){
-      this.router = new Router({el: this.$el.find('#container')});
-      this.router.on('route', function(){console.log(this.model.get('username'));}, this);
+      this.router = new Router({app: this.model});
+      // this.router.on('route', function(){console.log(this.model.get('user'));}, this);
       this.model.on('loggedIn', this.renderHomeView, this);
+      this.model.on('renderGameViews', this.renderGameView, this);
       Backbone.history.start({pushState: true});
     },
 
@@ -15,16 +16,20 @@ define(['backbone', 'routers/MainRouter'], function(Backbone, Router){
       'click a.logout': 'logout',
       'click a.home':  'renderHomeView',
       'click a.leaderboard': 'renderLeaderboardView',
+      'click a.join': 'renderJoinView',
       'click a.game': 'renderGameView',
+      'click button.start': 'sendStartGame',
       'click a.inventory': 'renderInventoryView',
       'click button.tag': 'tag',
-      'click #inventory li': 'inventory'
+      'click #inventory li': 'inventory',
+      'click a.quit': 'renderHomeView',
+      'renderGameViews': 'renderGameView'
     },
 
     login: function(e){
       e && e.preventDefault();
       // Todo send it to the server
-      this.model.trigger('createPlayer');
+      this.model.trigger('setUser');
     },
 
     logout: function(){
@@ -36,9 +41,19 @@ define(['backbone', 'routers/MainRouter'], function(Backbone, Router){
       this.router.navigate('/', {trigger:true});
     },
 
+    sendStartGame: function(e){
+      e && e.preventDefault();
+      this.model.socket.emit('startGame', this.model.get('game').get('gameID'));
+    },
+
     renderHomeView: function(e){
       e && e.preventDefault();
       this.router.navigate('/home', {trigger:true});
+    },
+
+    renderJoinView: function(e){
+      e && e.preventDefault();
+      this.router.navigate('/join', {trigger:true});
     },
 
     renderLeaderboardView: function(e){
@@ -71,6 +86,7 @@ define(['backbone', 'routers/MainRouter'], function(Backbone, Router){
       e && e.preventDefault();
       console.log('Inventory is clicked:', e.currentTarget);
     }
+
   });
   return AppView;
 });

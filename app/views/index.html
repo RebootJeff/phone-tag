@@ -6,12 +6,7 @@
     <link rel='stylesheet' href='styles/styles.css'>
     <script type='text/javascript' src='https://maps.googleapis.com/maps/api/js?sensor=false'></script>
     <script src='/socket.io/lib/socket.io.js'></script>
-    <script>
-      var socket = io.connect('http://localhost:3000');
-      socket.on('message', function(data){
-        console.log(data.message);
-      });
-    </script>
+    <!-- Maybe include socket in requirejs -->
   </head>
   <body>
     <section id='container'></section>
