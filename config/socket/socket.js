@@ -6,7 +6,7 @@ module.exports = function(io){
   var _allGames = {};
   var _count = 1;
 
-  var _maxPlayers = 2;
+  var _maxPlayers = 4;
 
   io.sockets.on('connection', function(socket) {
     // socket.on('createGame', function(data){
@@ -16,34 +16,34 @@ module.exports = function(io){
     //   var player = new Player(socket, data.user, roomID);
     //   game.addPlayer(player);
     //   _allGames;
-    socket.on('joinGame', function(data){
-      console.log('Join game clicked!');
-      var game;
-      var player = new Player(socket, data.user, data.roomID);
-      if(!_allGames[data.roomID]){
-        game = new Game(data.roomID);
-        _allGames[data.roomID] = game;
-      }else{
-        game = _allGames[data.roomID];
+    socket.on('joinGame', function(userData){
+      var game, player;
+      if (!_allGames[_count].playerCount) {
+        game = new Game(_count);
+      } else if (_allGames[_count].playerCount < _maxPlayers) {
+        game = _allGames[_count];
       }
+      player = new Player(socket, userData.user, _count);
       game.addPlayer(player);
-      this.join(data.roomID);
-      io.sockets.in(data.roomID).emit('playerAdded', game.players);
+      this.join(_count);
+      io.sockets.in(_count).emit('playerAdded', game.players);
+      if (game.playerCount >= _maxPlayers){
+        _count++;
+        io.sockets.in(_count).emit('renderGameViews');
+      }
     });
 
-    socket.on('startGame', function(gameID){
-      console.log('Game starting!');
-      var game = _allGames[gameID];
-      if (Object.keys(game.players).length === _maxPlayers) {
-        io.sockets.in(gameID).emit('renderGameViews');
-      }
-    });
+    // socket.on('startGame', function(gameID){
+    //   var game = _allGames[gameID];
+    //   if (Object.keys(game.players).length === _maxPlayers) {
+    //     io.sockets.in(gameID).emit('renderGameViews');
+    //   }
+    // });
 
     socket.on('newPlayerMarker', function(data){
-      console.log('New player marker added!');
       var game = _allGames[data.roomID];
       var player = game.getPlayer(data.name);
-      player.location = (data.location);
+      player.location = data.location;
       io.sockets.in(data.roomID).emit('createMarker', data);
       if (Object.keys(game.players).length === _maxPlayers){
         sendLocations(data.roomID);
@@ -54,12 +54,11 @@ module.exports = function(io){
       var game = _allGames[data.roomID];
       var player = game.getPlayer(data.name);
       if( player ){
-        player.location = data.location;        
+        player.location = data.location;
       }
     });
 
     socket.on('tapPlayer', function(data){
-      console.log('Tapped Player, YAY!');
       player = data.player;
       id = data.socketId;
       Players.find();
@@ -83,9 +82,6 @@ module.exports = function(io){
       var newLocations;
       setInterval(function(){
         newLocations = game.updateLocations();
-        console.log("sending locations to clients");
-        console.log("location data:", newLocations);
-        console.log(new Date());
         io.sockets.in(gameID).emit('sendLocationsToPlayer', newLocations);
       }, 2000);
     };

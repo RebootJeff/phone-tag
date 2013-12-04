@@ -2,9 +2,11 @@ var Player = require('./player');
 
 var Game = function(room) {
   this.players = {};
+  this.playerCount = 0;
   this.teamCount = 0;
   this.timeLimit = 25;
   this.roomID = room;
+  this.gameStarted = false;
 
   this.winners = [];
   this.mapLocation = [];
@@ -13,10 +15,12 @@ var Game = function(room) {
 
 Game.prototype.addPlayer = function(player){
   this.players[player.name] = player;
+  this.playerCount++;
 };
 
 Game.prototype.removePlayer = function(playerName){
   delete this.players[playerName];
+  this.playerCount--;
   return this;
 }
 

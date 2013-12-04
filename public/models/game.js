@@ -2,8 +2,9 @@ define(['backbone', './currentPlayer','../collections/otherPlayers'], function(B
   var Game = Backbone.Model.extend({
     initialize: function(options){
       // Create players
-      this.set('gameID', 1);
-      var currentPlayer = new CurrentPlayer({name: options.currentPlayer, roomID: this.get('gameID'), socket:this.socket});
+      // this.set('gameID', 1);
+      // var currentPlayer = new CurrentPlayer({name: options.currentPlayer, roomID: this.get('gameID'), socket:this.socket});
+      var currentPlayer = new CurrentPlayer({name: options.currentPlayer, socket:this.socket});
       this.set('currentPlayer', currentPlayer);
       this.set('otherPlayers', new OtherPlayers());
       this.socket = options.socket;
@@ -11,7 +12,6 @@ define(['backbone', './currentPlayer','../collections/otherPlayers'], function(B
     },
 
     addPlayers: function(playersList){
-      console.log("playersAdded emitted");
       var players = [];
       for(var player in playersList){
         players.push(playersList[player]);
@@ -25,17 +25,22 @@ define(['backbone', './currentPlayer','../collections/otherPlayers'], function(B
       var user = this.get('currentPlayer');
 
       // Socket connection and listeners
-      this.socket.emit('joinGame', {user: user.get('name'), roomID: user.get('roomID')});
-      this.socket.on('playerAdded', function(data){that.addPlayers(data);});
-      this.socket.on('sendLocationsToPlayer', function(data){that.updateLocations(data);});
-    },
-
-    updateLocations: function(data){
-      var players = this.get('otherPlayers').models;
-      for (var i = 0; i < players.length; i++) {
-        players[i].set('location', data[players[i].get('name')]);
-      }
+      // this.socket.emit('joinGame', {user: user.get('name'), roomID: user.get('roomID')});
+      this.socket.emit('joinGame', {user: user.get('name')});
+      this.socket.on('playerAdded', function(data){
+        that.addPlayers(data);
+      });
+      // this.socket.on('sendLocationsToPlayer', function(data){
+      //   that.updateLocations(data);
+      // });
     }
+
+    // updateLocations: function(data){
+    //   var players = this.get('otherPlayers').models;
+    //   for (var i = 0; i < players.length; i++) {
+    //     players[i].set('location', data[players[i].get('name')]);
+    //   }
+    // }
 
   });
   return Game;
