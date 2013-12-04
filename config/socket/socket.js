@@ -54,7 +54,7 @@ module.exports = function(io){
       var game = _allGames[data.roomID];
       var player = game.getPlayer(data.name);
       if( player ){
-        player.location = data.location;        
+        player.location = data.location;
       }
     });
 

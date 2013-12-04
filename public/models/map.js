@@ -14,7 +14,8 @@ define(['backbone'], function(Backbone){
       minZoom: 19,
       maxZoom: 21,
       draggable: false,
-      panControl: false
+      panControl: false,
+      zoomControl: false
     },
 
     styles: [
@@ -58,6 +59,7 @@ define(['backbone'], function(Backbone){
       var marker = new google.maps.Marker({
         position: latLng,
         map: this.map,
+        visible: false,
         icon: '../styles/images/evil.png'
       });
       marker.id = data.name;
@@ -65,7 +67,10 @@ define(['backbone'], function(Backbone){
       var that = this;
       if(marker.id === this.get('currentPlayer').get('name')){
         this.watchLocation(marker);
+        marker.setVisible(true);
         marker.setIcon('../styles/images/wink.png');
+      }else{
+        setInterval(function(){that.markerRadarDisplay(marker);}, 5000);
       }
     },
 
@@ -95,7 +100,7 @@ define(['backbone'], function(Backbone){
           this.setDistanceFromUser(marker);
           console.log('distance from current player is: ',marker.distanceFromCurrentPlayer);
           if(locations[marker.id]){
-            marker.setPosition(new google.maps.LatLng(locations[marker.id].lat, locations[marker.id].lng));            
+            marker.setPosition(new google.maps.LatLng(locations[marker.id].lat, locations[marker.id].lng));
           }
         }
       }
@@ -152,7 +157,7 @@ define(['backbone'], function(Backbone){
 
       for(var i = 0; i < this.markers.length; i++){
         marker = this.markers[i];
-        if(marker.distanceFromCurrentPlayer < 20 && marker.id !== this.get('currentPlayer').get('name')){
+        if(marker.distanceFromCurrentPlayer < 10 && marker.id !== this.get('currentPlayer').get('name')){
           player = {player: marker.id, roomID: this.get('currentPlayer').get('roomID')};
           tagged.push(player);
         }
@@ -197,6 +202,23 @@ define(['backbone'], function(Backbone){
       this.get('socket').on('sendLocationsToPlayer', function(data){that.updateMarkers(data);});
       this.get('socket').on('playerAlive', function(data){that.setPlayerAlive(data);});
       this.get('socket').on('playerDead', function(data){that.setPlayerDead(data);});
+    },
+
+    markerRadarDisplay: function(marker){
+      if(marker.id !== this.get('currentPlayer').get('name')){
+        if(marker.timer){clearInterval(marker.timer);}
+        timeShown = marker.distanceFromCurrentPlayer / 150 * 5000;
+        if(timeShown < 800){
+          timeShown = 800;
+        }else if(timeShown >= 5000){
+          timeShown = 5000;
+        }
+        var that = this;
+        marker.setVisible(true);
+        // console.log('The time shown should be: '+ timeShown + 'ms');
+        var timer = setInterval(function(){marker.setVisible(false);}, timeShown);
+        marker.timer = timer;
+      }
     }
   });
   return map;
