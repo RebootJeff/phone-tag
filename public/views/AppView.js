@@ -22,7 +22,7 @@ define(['backbone', 'routers/MainRouter'], function(Backbone, Router){
       'click a.inventory': 'renderInventoryView',
       'click button.tag': 'tag',
       'click #inventory li': 'inventory',
-      'click a.quit': 'renderQuitView',
+      'click a.quit': 'quitGame',
       'renderGameViews': 'renderGameView'
     },
 
@@ -46,7 +46,7 @@ define(['backbone', 'routers/MainRouter'], function(Backbone, Router){
       this.model.socket.emit('startGame', this.model.get('game').get('gameID'));
     },
 
-    renderQuitView: function(e){
+    quitGame: function(e){
       e && e.preventDefault();
       var gameID = this.model.get('game').get('gameID');
       var username = this.model.get('user');
