@@ -14,7 +14,8 @@ define(['backbone'], function(Backbone){
       minZoom: 19,
       maxZoom: 21,
       draggable: false,
-      panControl: false
+      panControl: false,
+      zoomControl: false
     },
 
     styles: [
@@ -95,7 +96,7 @@ define(['backbone'], function(Backbone){
           this.setDistanceFromUser(marker);
           console.log('distance from current player is: ',marker.distanceFromCurrentPlayer);
           if(locations[marker.id]){
-            marker.setPosition(new google.maps.LatLng(locations[marker.id].lat, locations[marker.id].lng));            
+            marker.setPosition(new google.maps.LatLng(locations[marker.id].lat, locations[marker.id].lng));
           }
         }
       }
@@ -152,7 +153,7 @@ define(['backbone'], function(Backbone){
 
       for(var i = 0; i < this.markers.length; i++){
         marker = this.markers[i];
-        if(marker.distanceFromCurrentPlayer < 20 && marker.id !== this.get('currentPlayer').get('name')){
+        if(marker.distanceFromCurrentPlayer < 10 && marker.id !== this.get('currentPlayer').get('name')){
           player = {player: marker.id, roomID: this.get('currentPlayer').get('roomID')};
           tagged.push(player);
         }
