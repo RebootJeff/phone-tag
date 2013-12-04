@@ -59,6 +59,7 @@ define(['backbone'], function(Backbone){
       var marker = new google.maps.Marker({
         position: latLng,
         map: this.map,
+        visible: false,
         icon: '../styles/images/evil.png'
       });
       marker.id = data.name;
@@ -66,6 +67,7 @@ define(['backbone'], function(Backbone){
       var that = this;
       if(marker.id === this.get('currentPlayer').get('name')){
         this.watchLocation(marker);
+        marker.setVisible(true);
         marker.setIcon('../styles/images/wink.png');
       }
     },
@@ -94,6 +96,7 @@ define(['backbone'], function(Backbone){
         if(marker.id !== this.get('currentPlayer').get('name')){
           marker.setPosition(new google.maps.LatLng(locations[marker.id].lat, locations[marker.id].lng));
           this.setDistanceFromUser(marker);
+          this.markerRadarDisplay(marker);
           console.log('distance from current player is: ',marker.distanceFromCurrentPlayer);
           if(locations[marker.id]){
             marker.setPosition(new google.maps.LatLng(locations[marker.id].lat, locations[marker.id].lng));
@@ -198,6 +201,20 @@ define(['backbone'], function(Backbone){
       this.get('socket').on('sendLocationsToPlayer', function(data){that.updateMarkers(data);});
       this.get('socket').on('playerAlive', function(data){that.setPlayerAlive(data);});
       this.get('socket').on('playerDead', function(data){that.setPlayerDead(data);});
+    },
+
+    markerRadarDisplay: function(marker){
+      if(marker.id !== this.get('currentPlayer').get('name')){
+        displayFreq = marker.distanceFromCurrentPlayer / 150 * 2000;
+        if(displayFreq < 700){
+          displayFreq = 700;
+        }else if(displayFreq >= 2000){
+          displayFreq = 2000;
+        }
+        var that = this;
+        marker.setVisible(true);
+        setTimeout(function(){marker.setVisible(false);}, displayFreq);
+      }
     }
   });
   return map;
