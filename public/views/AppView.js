@@ -22,7 +22,7 @@ define(['backbone', 'routers/MainRouter'], function(Backbone, Router){
       'click a.inventory': 'renderInventoryView',
       'click button.tag': 'tag',
       'click #inventory li': 'inventory',
-      'click a.quit': 'renderHomeView',
+      'click a.quit': 'renderQuitView',
       'renderGameViews': 'renderGameView'
     },
 
@@ -44,6 +44,15 @@ define(['backbone', 'routers/MainRouter'], function(Backbone, Router){
     sendStartGame: function(e){
       e && e.preventDefault();
       this.model.socket.emit('startGame', this.model.get('game').get('gameID'));
+    },
+
+    renderQuitView: function(e){
+      e && e.preventDefault();
+      var gameID = this.model.get('game').get('gameID');
+      var username = this.model.get('user');
+      var obj = { gameID: gameID, username: username };
+      this.model.socket.emit('leaveGame', obj);
+      this.router.navigate('/', {trigger:true});
     },
 
     renderHomeView: function(e){
@@ -80,6 +89,7 @@ define(['backbone', 'routers/MainRouter'], function(Backbone, Router){
     tag: function(e){
       e && e.preventDefault();
       console.log('Tag clicked');
+      this.model.get('game').trigger('tag');
     },
 
     inventory: function(e){

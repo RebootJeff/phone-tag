@@ -53,19 +53,45 @@ module.exports = function(io){
     socket.on('sendLocationFromPlayer', function(data){
       var game = _allGames[data.roomID];
       var player = game.getPlayer(data.name);
-      player.location = data.location;
+      if( player ){
+        player.location = data.location;
+      }
     });
 
-    socket.on('tapPlayer', function(data){
-      console.log('Tapped Player, YAY!');
-      player = data.player;
-      id = data.socketId;
-      Players.find();
-      socket(id).emit('dead', { message: 'you are dead' });
+    socket.on('tagPlayers', function(response){
+      console.log('Players tagged, YAY!');
+      var gameID = response.roomID,
+          game = _allGames[gameID],
+          taggedPlayers = response.taggedPlayers,
+          tagger = game.getPlayer(response.tagger),
+          player;
+
+      for(var i = 0; i < taggedPlayers.length; i++){
+        player = game.getPlayer(taggedPlayers[i].player);
+        if(player.isAlive){
+          player.isAlive = false;
+          player.deaths++;
+          tagger.kills++;
+          playerKilled = {name: player.name, roomID: gameID};
+          setTimeout(function(){
+            player.isAlive = true;
+            io.sockets.in(gameID).emit('playerAlive', playerKilled);
+          }, 10000);
+          io.sockets.in(gameID).emit('playerDead', playerKilled);
+        }
+      }
     });
 
-    socket.on('tapPlayer', function(data){
-      console.log('Tapped Player, YAY!');
+    // data = { gameID: gameID, username: username };
+    socket.on('leaveGame', function(data){
+      console.log("Quit", data);
+      // remove player from game
+      var game = _allGames[data.gameID];
+      var newLocations = game.removePlayer(data.username).updateLocations();
+      // notify all other players
+      socket.leave(data.gameID);
+      var obj = { username: data.username, newLocations: newLocations };
+      socket.broadcast.to(data.gameID).emit('someoneLeft', obj);
     });
 
     var sendLocations = function(gameID){

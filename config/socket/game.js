@@ -15,6 +15,11 @@ Game.prototype.addPlayer = function(player){
   this.players[player.name] = player;
 };
 
+Game.prototype.removePlayer = function(playerName){
+  delete this.players[playerName];
+  return this;
+}
+
 Game.prototype.updateLocations = function(){
   var currentLocations = {};
   for(var playerName in this.players){
@@ -45,10 +50,6 @@ Game.prototype.sendStats = function(data) {
 
 Game.prototype.addPowerUp = function() {
   //add random powerup to random location
-};
-
-Game.prototype.addPlayer = function(player) {
-  this.players[player.name] = player;
 };
 
 module.exports = Game;
