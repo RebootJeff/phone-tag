@@ -69,6 +69,8 @@ define(['backbone'], function(Backbone){
         this.watchLocation(marker);
         marker.setVisible(true);
         marker.setIcon('../styles/images/wink.png');
+      }else{
+        setInterval(function(){that.markerRadarDisplay(marker);}, 5000);
       }
     },
 
@@ -96,7 +98,6 @@ define(['backbone'], function(Backbone){
         if(marker.id !== this.get('currentPlayer').get('name')){
           marker.setPosition(new google.maps.LatLng(locations[marker.id].lat, locations[marker.id].lng));
           this.setDistanceFromUser(marker);
-          this.markerRadarDisplay(marker);
           console.log('distance from current player is: ',marker.distanceFromCurrentPlayer);
           if(locations[marker.id]){
             marker.setPosition(new google.maps.LatLng(locations[marker.id].lat, locations[marker.id].lng));
@@ -205,15 +206,18 @@ define(['backbone'], function(Backbone){
 
     markerRadarDisplay: function(marker){
       if(marker.id !== this.get('currentPlayer').get('name')){
-        displayFreq = marker.distanceFromCurrentPlayer / 150 * 2000;
-        if(displayFreq < 700){
-          displayFreq = 700;
-        }else if(displayFreq >= 2000){
-          displayFreq = 2000;
+        if(marker.timer){clearInterval(marker.timer);}
+        timeShown = marker.distanceFromCurrentPlayer / 150 * 5000;
+        if(timeShown < 800){
+          timeShown = 800;
+        }else if(timeShown >= 5000){
+          timeShown = 5000;
         }
         var that = this;
         marker.setVisible(true);
-        setTimeout(function(){marker.setVisible(false);}, displayFreq);
+        // console.log('The time shown should be: '+ timeShown + 'ms');
+        var timer = setInterval(function(){marker.setVisible(false);}, timeShown);
+        marker.timer = timer;
       }
     }
   });
