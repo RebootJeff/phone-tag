@@ -26,8 +26,8 @@ define([ 'jquery', 'backbone', '../views/GameView', '../models/game', '../views/
     },
 
     join: function(){
-      this.app.set('game', new Game({currentPlayer: this.app.get('user'), socket: this.app.socket}));
-      new JoinView({model: this.app.get('game'), user: this.app.get('user')});
+      this.app.set('currentGame', new Game({playerName: this.app.get('user'), socket: this.app.socket}));
+      new JoinView({model: this.app.get('currentGame'), user: this.app.get('user')});
     },
 
     leaderboard: function(){
@@ -36,9 +36,13 @@ define([ 'jquery', 'backbone', '../views/GameView', '../models/game', '../views/
 
     game: function(){
       if($('#game').length === 0){
-        var game = this.app.get('game');
+        var game = this.app.get('currentGame');
+        var that = this;
         new GameView({model: game, socket: game.socket});
-      } else {
+        setTimeout(function(){
+          that.slidePageFrom($('#loadMap'), $('#game'), 'right');
+        }, 5000);
+      } else if (this.app.get('currentGame').get('started')) {
         this.slidePageFrom($('#inventory'), $('#game'), 'left');
       }
     },

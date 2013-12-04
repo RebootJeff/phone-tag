@@ -6,7 +6,7 @@ module.exports = function(io){
   var _allGames = {};
   var _count = 1;
 
-  var _maxPlayers = 4;
+  var _maxPlayers = 1;
 
   io.sockets.on('connection', function(socket) {
     // socket.on('createGame', function(data){
@@ -18,18 +18,21 @@ module.exports = function(io){
     //   _allGames;
     socket.on('joinGame', function(userData){
       var game, player;
-      if (!_allGames[_count].playerCount) {
-        game = new Game(_count);
-      } else if (_allGames[_count].playerCount < _maxPlayers) {
+      if (_allGames[_count] && _allGames[_count].playerCount < _maxPlayers) {
+        console.log('joining game ', _count);
         game = _allGames[_count];
+      } else {
+        console.log('creating game ', _count);
+        game = new Game(_count);
+        _allGames[_count] = game;
       }
       player = new Player(socket, userData.user, _count);
       game.addPlayer(player);
       this.join(_count);
       io.sockets.in(_count).emit('playerAdded', game.players);
       if (game.playerCount >= _maxPlayers){
+        io.sockets.in(_count).emit('renderGameViews', {roomID:_count});
         _count++;
-        io.sockets.in(_count).emit('renderGameViews');
       }
     });
 
@@ -41,6 +44,7 @@ module.exports = function(io){
     // });
 
     socket.on('newPlayerMarker', function(data){
+      console.log('hereeeees the DATA!!!!', data);
       var game = _allGames[data.roomID];
       var player = game.getPlayer(data.name);
       player.location = data.location;

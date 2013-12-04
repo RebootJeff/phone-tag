@@ -4,7 +4,7 @@ define(['backbone', './currentPlayer','../collections/otherPlayers'], function(B
       // Create players
       // this.set('gameID', 1);
       // var currentPlayer = new CurrentPlayer({name: options.currentPlayer, roomID: this.get('gameID'), socket:this.socket});
-      var currentPlayer = new CurrentPlayer({name: options.currentPlayer, socket:this.socket});
+      var currentPlayer = new CurrentPlayer({name: options.playerName, socket:this.socket});
       this.set('currentPlayer', currentPlayer);
       this.set('otherPlayers', new OtherPlayers());
       this.socket = options.socket;

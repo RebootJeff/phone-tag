@@ -4,8 +4,15 @@ define(['backbone'], function(Backbone){
       var that = this;
       this.on('setUser', this.setUser, this);
       this.socket = io.connect();
-      this.socket.on('renderGameViews', function(){
-        that.trigger('renderGameViews');
+      this.socket.on('renderGameViews', function(data){
+        that.set('currentGameRoomID', data.roomID);
+        var currentGame = that.get('currentGame');
+        var currentPlayer = currentGame.get('currentPlayer');
+        currentGame.set('roomID', data.roomID);
+        currentPlayer.set('roomID', data.roomID);
+        setTimeout(function(){
+          that.trigger('renderGameViews');
+        }, 5000);
       });
     },
 
