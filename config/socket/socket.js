@@ -22,6 +22,7 @@ module.exports = function(io){
       var player = new Player(socket, data.user, data.roomID);
       if(!_allGames[data.roomID]){
         game = new Game(data.roomID);
+        game.generatePowerUp();
         _allGames[data.roomID] = game;
       }else{
         game = _allGames[data.roomID];
@@ -64,6 +65,19 @@ module.exports = function(io){
       id = data.socketId;
       Players.find();
       socket(id).emit('dead', { message: 'you are dead' });
+    });
+
+    // playerLocation.name = that.get('currentPlayer').get('name');
+    // playerLocation.roomID = that.get('currentPlayer').get('roomID');
+    // playerLocation.location = {lat: position.coords.latitude, lng:position.coords.longitude};
+    socket.on('generatePowerUp', function(data){
+      var game = _allGames[data.roomID];
+      if( !game.powerUp.name ){
+        var powerUpCollection = ["poop"];
+        var randomIndex = Math.floor(Math.random() * powerUpCollection.length + 1);
+        game.generatePowerUp(powerUpCollection[randomIndex], data.location.lat, data.location.lng);
+        io.sockets.in(data.roomID).emit('addPowerUpToMap', game.powerUp);
+      }
     });
 
     // data = { gameID: gameID, username: username };

@@ -6,8 +6,11 @@ define(['backbone'], function(Backbone){
       this.createMap();
       this.setCurrentMarker();
       var that = this;
-      this.get('socket').on('createMarker', function(data){that.createMarker(data);});
-      this.get('socket').on('sendLocationsToPlayer', function(data){that.updateMarkers(data);});
+      this.get('socket').on('createMarker', function(data){ that.createMarker(data); });
+      this.get('socket').on('sendLocationsToPlayer', function(data){ that.updateMarkers(data); });
+      this.get('socket').on('addPowerUpToMap', function(data){
+        if( data.name ) that.addPowerUpToMap(data);
+      });
       this.get('socket').on('someoneLeft', function(data){ that.removeMarker(data); });
     },
 
@@ -85,6 +88,7 @@ define(['backbone'], function(Backbone){
         playerLocation.location = {lat: position.coords.latitude, lng:position.coords.longitude};
 
         that.get('socket').emit('newPlayerMarker', playerLocation);
+        that.get('socket').emit('generatePowerUp', playerLocation);
       };
     navigator.geolocation.getCurrentPosition(setCurrentPosition, that.handleError, that.gpsOptions);
     },
@@ -96,7 +100,7 @@ define(['backbone'], function(Backbone){
         if(marker.id !== this.get('currentPlayer').get('name')){
           marker.setPosition(new google.maps.LatLng(locations[marker.id].lat, locations[marker.id].lng));
           this.setDistanceFromUser(marker);
-          console.log('distance from current player is: ',marker.distanceFromCurrentPlayer);
+          console.log('distance from current player is: ', marker.distanceFromCurrentPlayer);
           if(locations[marker.id]){
             marker.setPosition(new google.maps.LatLng(locations[marker.id].lat, locations[marker.id].lng));            
           }
@@ -109,7 +113,6 @@ define(['backbone'], function(Backbone){
     },
 
     removeMarker: function(data){
-      console.log(data);
       var playerName = data.username;
       var newLocations = data.newLocations;
       var markers = this.markers;
@@ -120,6 +123,20 @@ define(['backbone'], function(Backbone){
         }
       }
       this.updateMarkers(newLocations);
+    },
+
+    addPowerUpToMap: function(powerUp){
+      var that = this;
+      var lat = powerUp.lat;
+      var lng = powerUp.lng;
+      var title = powerUp.name;
+
+      var myLatlng = new google.maps.LatLng(lat, lng);
+      var marker = new google.maps.Marker({
+        position: myLatlng,
+        map: that.map,
+        title: title
+      });
     },
 
     handleError: function(err){
