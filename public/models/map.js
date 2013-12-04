@@ -5,10 +5,7 @@ define(['backbone'], function(Backbone){
       google.maps.visualRefresh = true;
       this.createMap();
       this.setCurrentMarker();
-      var that = this;
-      this.get('socket').on('createMarker', function(data){that.createMarker(data);});
-      this.get('socket').on('sendLocationsToPlayer', function(data){that.updateMarkers(data);});
-      this.get('socket').on('someoneLeft', function(data){ that.removeMarker(data); });
+      this.socketSetup();
     },
 
     // Map options
@@ -86,7 +83,7 @@ define(['backbone'], function(Backbone){
 
         that.get('socket').emit('newPlayerMarker', playerLocation);
       };
-    navigator.geolocation.getCurrentPosition(setCurrentPosition, that.handleError, that.gpsOptions);
+      navigator.geolocation.getCurrentPosition(setCurrentPosition, that.handleError, that.gpsOptions);
     },
 
     updateMarkers: function(locations){
@@ -128,6 +125,7 @@ define(['backbone'], function(Backbone){
 
     watchLocation: function(marker){
       var that = this;
+
       var watchCurrentPosition = function(position){
         console.log("watchCurrentPosition is getting called");
         var socket = that.get('socket');
@@ -139,11 +137,66 @@ define(['backbone'], function(Backbone){
         playerLocation.location = {lat: position.coords.latitude, lng:position.coords.longitude};
 
         that.currentPlayerMarker = marker;
+        that.map.panTo(currentPosition);
         marker.setPosition(currentPosition);
-        that.map.setCenter(currentPosition);
         socket.emit('sendLocationFromPlayer', playerLocation);
       };
       navigator.geolocation.watchPosition(watchCurrentPosition, that.handleError, that.gpsOptions);
+    },
+
+    checkPlayersToTag: function(){
+      var tagged = [],
+          marker,
+          player,
+          response;
+
+      for(var i = 0; i < this.markers.length; i++){
+        marker = this.markers[i];
+        if(marker.distanceFromCurrentPlayer < 20 && marker.id !== this.get('currentPlayer').get('name')){
+          player = {player: marker.id, roomID: this.get('currentPlayer').get('roomID')};
+          tagged.push(player);
+        }
+      }
+      response = {
+        taggedPlayers: tagged,
+        tagger: this.get('currentPlayer').get('name'),
+        roomID: this.get('currentPlayer').get('roomID')
+      };
+      this.get('socket').emit('tagPlayers', response);
+    },
+
+    setPlayerDead: function(player){
+      var marker;
+
+      for(var i = 0; i < this.markers.length; i++){
+        marker = this.markers[i];
+        if(marker.id === player.name){
+          marker.setIcon('../styles/images/heart-broken.png');
+          return;
+        }
+      }
+    },
+
+    setPlayerAlive: function(player){
+      var marker;
+      if(player.name === this.get('currentPlayer').get('name')){
+        return this.currentPlayerMarker.setIcon('../styles/images/wink.png');
+      }
+
+      for(var i = 0; i < this.markers.length; i++){
+        marker = this.markers[i];
+        if(marker.id === player.name){
+          return marker.setIcon('../styles/images/evil.png');
+        }
+      }
+    },
+
+    socketSetup: function(){
+      var that = this;
+      this.get('socket').on('createMarker', function(data){that.createMarker(data);});
+      this.get('socket').on('sendLocationsToPlayer', function(data){that.updateMarkers(data);});
+      this.get('socket').on('playerAlive', function(data){that.setPlayerAlive(data);});
+      this.get('socket').on('playerDead', function(data){that.setPlayerDead(data);});
     }
   });
   return map;

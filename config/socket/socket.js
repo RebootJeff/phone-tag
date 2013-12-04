@@ -58,12 +58,28 @@ module.exports = function(io){
       }
     });
 
-    socket.on('tapPlayer', function(data){
-      console.log('Tapped Player, YAY!');
-      player = data.player;
-      id = data.socketId;
-      Players.find();
-      socket(id).emit('dead', { message: 'you are dead' });
+    socket.on('tagPlayers', function(response){
+      console.log('Players tagged, YAY!');
+      var gameID = response.roomID,
+          game = _allGames[gameID],
+          taggedPlayers = response.taggedPlayers,
+          tagger = game.getPlayer(response.tagger),
+          player;
+
+      for(var i = 0; i < taggedPlayers.length; i++){
+        player = game.getPlayer(taggedPlayers[i].player);
+        if(player.isAlive){
+          player.isAlive = false;
+          player.deaths++;
+          tagger.kills++;
+          playerKilled = {name: player.name, roomID: gameID};
+          setTimeout(function(){
+            player.isAlive = true;
+            io.sockets.in(gameID).emit('playerAlive', playerKilled);
+          }, 10000);
+          io.sockets.in(gameID).emit('playerDead', playerKilled);
+        }
+      }
     });
 
     // data = { gameID: gameID, username: username };

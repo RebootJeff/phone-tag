@@ -89,6 +89,7 @@ define(['backbone', 'routers/MainRouter'], function(Backbone, Router){
     tag: function(e){
       e && e.preventDefault();
       console.log('Tag clicked');
+      this.model.get('game').trigger('tag');
     },
 
     inventory: function(e){
