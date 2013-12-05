@@ -5,6 +5,11 @@ body {
   font-size: 20px;
   background-color: #000;
   color: #fff;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
 }
 input[type='text'] {
   width: 80%;
@@ -53,6 +58,9 @@ button {
 h1 {
   font-weight: 400;
   font-size: 2.5em;
+}
+table {
+  margin: auto;
 }
 .page {
   position: absolute;
@@ -109,4 +117,9 @@ h1 {
 }
 .modal.closed {
   top: -50%;
+}
+#map-canvas {
+  position: absolute;
+  width: 100%;
+  height: 50%;
 }

@@ -1,6 +1,6 @@
-define(['backbone', 'handlebars', 'text!../templates/join.html', '../models/currentPlayer', '../models/otherPlayer'], function(Backbone, Handlebars, JoinTemplate, CurrentPlayer, OtherPlayer){
+define(['backbone', 'handlebars', '../templates/join', '../models/currentPlayer', '../models/otherPlayer'], function(Backbone, Handlebars, JoinTemplate, CurrentPlayer, OtherPlayer){
   var JoinView = Backbone.View.extend({
-    template: JoinTemplate,
+    template: Handlebars.compile(JoinTemplate),
 
     initialize: function(options){
       this.model.on('joinRender', this.render, this);
@@ -8,11 +8,12 @@ define(['backbone', 'handlebars', 'text!../templates/join.html', '../models/curr
     },
 
     render: function(){
-      $('#container').html(Handlebars.compile(this.template));
-      var playerList = this.model.get('otherPlayers').models;
-      for (var i = 0; i < playerList.length; i++) {
-        $('tbody').append('<tr><td>' + playerList[i].get('name') + '</td></tr>');
-      }
+      $('#container').html(this.template);
+      var playerList = this.model.get('otherPlayers');
+      playerList.map(function(model){
+        $('tbody').append('<tr><td>' + model.get('name') + '</td></tr>');
+      });
+
       return this;
     }
 

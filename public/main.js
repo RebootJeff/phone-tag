@@ -2,25 +2,25 @@ require.config({
   paths: {
     backbone: 'lib/backbone/backbone-min',
     handlebars: 'lib/handlebars/handlebars.min',
-    jquery: 'lib/zepto/zepto.min',
+    zepto: 'lib/zepto/zepto.min',
     underscore: 'lib/lodash/dist/lodash.min',
     text : 'lib/requirejs-text/text'
   },
   shim: {
     'backbone': {
-      deps: ['underscore', 'jquery'],
+      deps: ['underscore', 'zepto'],
       exports: 'Backbone'
     },
     'handlebars': {
       exports: 'Handlebars'
     },
-    'jquery': {
+    'zepto': {
       exports: '$'
     }
   }
 });
 
-require(['jquery', 'backbone'], function($, Backbone){
+require(['zepto', 'backbone'], function($, Backbone){
   $(document).ready(function(){
     if (window.location.hash && window.location.hash == '#_=_') {
       if (window.history && history.pushState) {
