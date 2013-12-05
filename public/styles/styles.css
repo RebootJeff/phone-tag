@@ -104,12 +104,11 @@ table {
   -o-transition-duration: 0.25s;
   transition-duration: 0.25s;
 }
-
 #map-canvas {
   position: absolute;
   width: 100%;
   height: 50%;
-
+}
 .modal {
   height: 50%;
   width: 100%;

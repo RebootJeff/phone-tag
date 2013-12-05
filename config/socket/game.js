@@ -1,6 +1,6 @@
 var Game = function(room) {
 
-  this.timeLimit = 2;    //in minutes
+  this.timeLimit = 0.25;    //in minutes
   this.loadTime = 5;     //in seconds
 
   this.roomID = room;
