@@ -40,6 +40,7 @@ define(['backbone', './currentPlayer','../collections/otherPlayers'], function(B
       this.on('centerMap', this.centerMap, this);
       this.on('zoomOut', this.zoomOut, this);
       this.on('zoomIn', this.zoomIn, this);
+      this.on('powerUp', this.powerUp, this);
     },
 
     updateLocations: function(data){
@@ -55,6 +56,10 @@ define(['backbone', './currentPlayer','../collections/otherPlayers'], function(B
 
     tagPlayers: function(){
       this.get('map').checkPlayersToTag();
+    },
+
+    powerUp: function(){
+      this.get('map').checkItemsToPowerUp();
     },
 
     zoomOut: function(){

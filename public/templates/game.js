@@ -17,6 +17,7 @@ define(function(){
     "<section class='content'>" +
       "<button class='toggleModal'>Map Controls</button>" +
       "<button class='tag'>Tag</button>" +
+      "<button class='powerUp'>POWER UP</button>" +
     "</section>" +
   "</section>" +
 

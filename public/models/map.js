@@ -48,6 +48,8 @@ define(['backbone'], function(Backbone){
 
     markers: [],
 
+    powerUp: null,
+
     // Map functions
     createMap: function(){
       this.map = new google.maps.Map($("#map-canvas")[0], this.mapOptions);
@@ -87,6 +89,7 @@ define(['backbone'], function(Backbone){
         playerLocation.location = {lat: position.coords.latitude, lng:position.coords.longitude};
 
         that.get('socket').emit('newPlayerMarker', playerLocation);
+        that.get('socket').emit('generatePowerUp', playerLocation);
       };
       navigator.geolocation.getCurrentPosition(setCurrentPosition, that.handleError, that.gpsOptions);
     },
@@ -98,7 +101,7 @@ define(['backbone'], function(Backbone){
         if(marker.id !== this.get('currentPlayer').get('name')){
           marker.setPosition(new google.maps.LatLng(locations[marker.id].lat, locations[marker.id].lng));
           this.setDistanceFromUser(marker);
-          console.log('distance from current player is: ',marker.distanceFromCurrentPlayer);
+          console.log('distance from current player is: ', marker.distanceFromCurrentPlayer);
           if(locations[marker.id]){
             marker.setPosition(new google.maps.LatLng(locations[marker.id].lat, locations[marker.id].lng));
           }
@@ -111,17 +114,49 @@ define(['backbone'], function(Backbone){
     },
 
     removeMarker: function(data){
-      console.log(data);
       var playerName = data.username;
       var newLocations = data.newLocations;
       var markers = this.markers;
       for( var i = 0; i < markers.length; i++ ){
         var marker = markers[i];
         if( marker.id === playerName ){
-          marker.setVisible(false);
+          marker.setMap(null);
+          markers.splice(i, 1);
         }
       }
       this.updateMarkers(newLocations);
+    },
+
+    hideMarker: function(data){
+      var playerName = data;
+      var markers = this.markers;
+      var map = this.map;
+      for( var i = 0; i < markers.length; i++ ){
+        var marker = markers[i];
+        if( marker.id === playerName ){
+          marker.setMap(null);
+          setTimeout(function(){
+            console.log("10 SECS");
+            marker.setMap(map);
+          }, 10000);
+        }
+      }
+    },
+
+    addPowerUpToMap: function(powerUp){
+      var that = this;
+      var lat = powerUp.lat;
+      var lng = powerUp.lng;
+      var title = powerUp.name;
+
+      var myLatlng = new google.maps.LatLng(lat, lng);
+      var marker = new google.maps.Marker({
+        position: myLatlng,
+        map: that.map,
+        title: title
+      });
+
+      this.powerUp = {marker: marker, name: title};
     },
 
     handleError: function(err){
@@ -147,6 +182,16 @@ define(['backbone'], function(Backbone){
         socket.emit('sendLocationFromPlayer', playerLocation);
       };
       navigator.geolocation.watchPosition(watchCurrentPosition, that.handleError, that.gpsOptions);
+    },
+
+    checkItemsToPowerUp: function(){
+      var marker = this.powerUp.marker;
+      marker.distanceFromCurrentPlayer = google.maps.geometry.spherical.computeDistanceBetween(this.currentPlayerMarker.position, marker.position);
+      if( marker && marker.distanceFromCurrentPlayer < 10 ){
+        var data = { player: this.get('currentPlayer').get('name'), roomID: this.get('currentPlayer').get('roomID'), item: this.powerUp.name };
+        this.get('socket').emit('addItemToPlayer', data);
+        this.powerUp = null;
+      }
     },
 
     checkPlayersToTag: function(){
@@ -202,6 +247,9 @@ define(['backbone'], function(Backbone){
       this.get('socket').on('sendLocationsToPlayer', function(data){that.updateMarkers(data);});
       this.get('socket').on('playerAlive', function(data){that.setPlayerAlive(data);});
       this.get('socket').on('playerDead', function(data){that.setPlayerDead(data);});
+      this.get('socket').on('addPowerUpToMap', function(data){ that.addPowerUpToMap(data); });
+      this.get('socket').on('someoneLeft', function(data){ that.removeMarker(data); });
+      this.get('socket').on('someonePoweredUp', function(data){ that.hideMarker(data); });
     },
 
     markerRadarDisplay: function(marker){
