@@ -54,15 +54,19 @@ Game.prototype.generatePowerUp = function(powerUp, randomLat, randomLng) {
   //add random powerup to random location
   this.powerUp.name = powerUp;
 
-  var offset = 0.0025;
+  var offsetCollection = [ 0.00001, 0.00002, 0.00003, 0.00004, 0.00005, 0.00006, 0.00007, 0.00008, 0.00009 ];
   var sign = [true, false];
-  var latOffset, lngOffset, randomIndex, randomSign;
+  var offset, latOffset, lngOffset, randomIndex, randomSign;
 
   randomIndex = Math.floor(Math.random() * sign.length);
   randomSign = sign[randomIndex];
+  randomIndex = Math.floor(Math.random() * offsetCollection.length);
+  offset = offsetCollection[randomIndex];
   randomSign ? latOffset = offset : latOffset = -1 * offset;
   randomIndex = Math.floor(Math.random() * sign.length);
   randomSign = sign[randomIndex];
+  randomIndex = Math.floor(Math.random() * offsetCollection.length);
+  offset = offsetCollection[randomIndex];
   randomSign ? lngOffset = offset : lngOffset = -1 * offset;
 
   this.powerUp.lat = randomLat + latOffset;
