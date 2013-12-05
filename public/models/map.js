@@ -84,10 +84,13 @@ define(['backbone'], function(Backbone){
         that.map.setZoom(21);
 
         var playerLocation = {};
-        playerLocation.name = that.get('currentPlayer').get('name');
-        playerLocation.roomID = that.get('currentPlayer').get('roomID');
+        var player = that.get('currentPlayer');
+        playerLocation.name = player.get('name');
+        playerLocation.roomID = player.get('roomID');
         playerLocation.location = {lat: position.coords.latitude, lng:position.coords.longitude};
-
+        var currentTime = Date.now();
+        player.startTime = currentTime;
+        playerLocation.time = currentTime;
         that.get('socket').emit('newPlayerMarker', playerLocation);
         that.get('socket').emit('generatePowerUp', playerLocation);
       };
