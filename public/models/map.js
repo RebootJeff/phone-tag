@@ -11,7 +11,7 @@ define(['backbone'], function(Backbone){
     // Map options
     mapOptions: {
       center: new google.maps.LatLng(37.7837749, -122.4167),
-      minZoom: 10,
+      minZoom: 19,
       maxZoom: 21,
       draggable: false,
       panControl: false,
