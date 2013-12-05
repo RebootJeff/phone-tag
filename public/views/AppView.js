@@ -12,21 +12,35 @@ define(['backbone', 'routers/MainRouter'], function(Backbone, Router){
     },
 
     events: {
+      // Login events
       'submit': 'login',
       'click a.logout': 'logout',
+
+      // View render events
       'click a.home':  'renderHomeView',
       'click a.leaderboard': 'renderLeaderboardView',
       'click a.join': 'renderJoinView',
       'click a.game': 'renderGameView',
-      'click button.start': 'sendStartGame',
+      'click a.quit': 'renderQuitView',
       'click a.inventory': 'renderInventoryView',
+      'renderGameViews': 'renderGameView',
+
+      // Game events
+      'click button.start': 'sendStartGame',
       'click button.tag': 'tag',
-      'click #inventory li': 'inventory',
       'click button.powerUp': 'powerUp',
       'click a.quit': 'quitGame',
       'renderGameViews': 'renderGameView'
+      'click #inventory li': 'powerUpInventory',
+
+      // Map control events
+      'click button.zoomOut': 'zoomOut',
+      'click button.zoomIn': 'zoomIn',
+      'click button.toggleModal': 'toggleModal',
+      'click button.centerMap': 'centerMap'
     },
 
+    // Login/Logout functions
     login: function(e){
       e && e.preventDefault();
       // Todo send it to the server
@@ -42,10 +56,11 @@ define(['backbone', 'routers/MainRouter'], function(Backbone, Router){
       this.router.navigate('/', {trigger:true});
     },
 
-    sendStartGame: function(e){
-      e && e.preventDefault();
-      this.model.socket.emit('startGame', this.model.get('game').get('gameID'));
-    },
+    // checkAuth: function(){
+    //   if(!this.model.get('user')){
+    //     this.model.trigger('createPlayer');
+    //   }
+    // },
 
     quitGame: function(e){
       e && e.preventDefault();
@@ -81,16 +96,52 @@ define(['backbone', 'routers/MainRouter'], function(Backbone, Router){
       this.router.navigate('/inventory', {trigger:true});
     },
 
-    // checkAuth: function(){
-    //   if(!this.model.get('user')){
-    //     this.model.trigger('createPlayer');
-    //   }
-    // },
+    // Game functions
+    sendStartGame: function(e){
+      e && e.preventDefault();
+      this.model.socket.emit('startGame', this.model.get('game').get('gameID'));
+    },
 
     tag: function(e){
       e && e.preventDefault();
-      console.log('Tag clicked');
       this.model.get('game').trigger('tag');
+      this.tagCountdown();
+    },
+
+    tagCountdown: function(){
+      $('button.tag').prop('disabled',true);
+      setTimeout(function(){
+        clearInterval(timer);
+        $('button.tag').html('Tag');
+        $('button.tag').prop('disabled',false);
+      }, 15000);
+      var count = 15;
+      var timer = setInterval(function(){
+        count--;
+        $('button.tag').html(count);
+      }, 1000);
+    },
+
+    powerUpInventory: function(e){
+      e && e.preventDefault();
+      console.log('PowerUp Inventory is clicked:', e.currentTarget);
+    },
+
+    // Map functions
+    toggleModal: function(e){
+      e && e.preventDefault();
+      console.log('modalToggled');
+      $('.modal').toggleClass('hidden closed');
+    },
+
+    zoomOut: function(e){
+      e && e.preventDefault();
+      this.model.get('game').trigger('zoomOut');
+    },
+
+    zoomIn: function(e){
+      e && e.preventDefault();
+      this.model.get('game').trigger('zoomIn');
     },
 
     powerUp: function(e){
@@ -99,9 +150,9 @@ define(['backbone', 'routers/MainRouter'], function(Backbone, Router){
       this.model.get('game').trigger('powerUp');
     },
 
-    inventory: function(e){
+    centerMap: function(e){
       e && e.preventDefault();
-      console.log('Inventory is clicked:', e.currentTarget);
+      this.model.get('game').trigger('centerMap');
     }
 
   });

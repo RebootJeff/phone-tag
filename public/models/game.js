@@ -6,8 +6,11 @@ define(['backbone', './currentPlayer','../collections/otherPlayers'], function(B
       var currentPlayer = new CurrentPlayer({name: options.currentPlayer, roomID: this.get('gameID'), socket:this.socket});
       this.set('currentPlayer', currentPlayer);
       this.set('otherPlayers', new OtherPlayers());
-      this.on('tag', this.tagPlayers, this);
-      this.on('powerUp', this.powerUp, this);
+
+      // Map setup
+      this.mapSetup();
+
+      // Socket setup
       this.socket = options.socket;
       this.socketSetup();
     },
@@ -32,11 +35,23 @@ define(['backbone', './currentPlayer','../collections/otherPlayers'], function(B
       this.socket.on('sendLocationsToPlayer', function(data){that.updateLocations(data);});
     },
 
+    mapSetup: function(){
+      this.on('tag', this.tagPlayers, this);
+      this.on('centerMap', this.centerMap, this);
+      this.on('zoomOut', this.zoomOut, this);
+      this.on('zoomIn', this.zoomIn, this);
+      this.on('powerUp', this.powerUp, this);
+    },
+
     updateLocations: function(data){
       var players = this.get('otherPlayers').models;
       for (var i = 0; i < players.length; i++) {
         players[i].set('location', data[players[i].get('name')]);
       }
+    },
+
+    centerMap: function(){
+      this.get('map').centerMap();
     },
 
     tagPlayers: function(){
@@ -45,6 +60,14 @@ define(['backbone', './currentPlayer','../collections/otherPlayers'], function(B
 
     powerUp: function(){
       this.get('map').checkItemsToPowerUp();
+    },
+
+    zoomOut: function(){
+      this.get('map').zoomOut();
+    },
+
+    zoomIn: function(){
+      this.get('map').zoomIn();
     }
 
   });

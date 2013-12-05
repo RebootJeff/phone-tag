@@ -17,6 +17,9 @@ input[type='text'] {
   border: 0;
   border-radius: 8px;
 }
+.hidden {
+  display: none;
+}
 ::-webkit-input-placeholder {
   color: #666;
 }
@@ -92,4 +95,21 @@ h1 {
   -moz-transition-duration: 0.25s;
   -o-transition-duration: 0.25s;
   transition-duration: 0.25s;
+}
+.modal {
+  height: 50%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  z-index: 11;
+  background-color: #000;
+  transition-property: all;
+  -webkit-transition-duration: 0.5s;
+  -moz-transition-duration: 0.5s;
+  -o-transition-duration: 0.5s;
+  transition-duration: 0.5s;
+  transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+}
+.modal.closed {
+  height: 0;
 }
