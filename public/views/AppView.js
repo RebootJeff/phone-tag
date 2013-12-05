@@ -8,7 +8,7 @@ define(['backbone', 'routers/MainRouter'], function(Backbone, Router){
       // this.router.on('route', function(){console.log(this.model.get('user'));}, this);
       this.model.on('loggedIn', this.renderHomeView, this);
       this.model.on('renderGameViews', this.renderGameView, this);
-      Backbone.history.start({pushState: true});
+      Backbone.history.start({pushState: false});
     },
 
     events: {
