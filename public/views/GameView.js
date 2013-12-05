@@ -9,7 +9,7 @@ define(['backbone', 'handlebars', 'text!../templates/game.html','./MapView'], fu
     },
 
     startGame: function(){
-      var timeLeft, minLeft, secLeft;
+      var secToStart, timeLeft, minLeft, secLeft;
       var startTime = this.model.endTime - (this.model.get('timeLimit') * 60 * 1000);
       var that = this;
       $('#container').append('<div class="timer"></div>');
@@ -19,6 +19,9 @@ define(['backbone', 'handlebars', 'text!../templates/game.html','./MapView'], fu
           minLeft = Math.floor(timeLeft / (60 * 1000));
           secLeft = Math.floor((timeLeft % (60 * 1000)) / 1000);
           $('.timer').html('<p>'+minLeft+':'+secLeft+'</p>');
+        } else {
+          secToStart = Math.floor((startTime - Date.now()) / 1000);
+          $('.timer').html('<p>Game starting in '+secToStart+' seconds.</p>');
         }
       }, 1000);
     },
