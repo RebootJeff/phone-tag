@@ -22,6 +22,7 @@ module.exports = function(io){
       var player = new Player(socket, data.user, data.roomID);
       if(!_allGames[data.roomID]){
         game = new Game(data.roomID);
+        game.generatePowerUp();
         _allGames[data.roomID] = game;
       }else{
         game = _allGames[data.roomID];
@@ -52,9 +53,11 @@ module.exports = function(io){
 
     socket.on('sendLocationFromPlayer', function(data){
       var game = _allGames[data.roomID];
-      var player = game.getPlayer(data.name);
-      if( player ){
-        player.location = data.location;
+      if( game ){
+        var player = game.getPlayer(data.name);
+        if( player ){
+          player.location = data.location;
+        }
       }
     });
 
@@ -79,6 +82,29 @@ module.exports = function(io){
           }, 10000);
           io.sockets.in(gameID).emit('playerDead', playerKilled);
         }
+      }
+    });
+
+    socket.on('generatePowerUp', function(data){
+      var game = _allGames[data.roomID];
+      if( !game.powerUp.name ){
+        var powerUpCollection = ["poop"];
+        var randomIndex = Math.floor(Math.random() * powerUpCollection.length);
+        game.generatePowerUp(powerUpCollection[randomIndex], data.location.lat, data.location.lng);
+        io.sockets.in(data.roomID).emit('addPowerUpToMap', game.powerUp);
+      }
+    });
+
+    socket.on('addItemToPlayer', function(data){
+      var game = _allGames[data.roomID];
+      var player = game.players[data.player];
+      switch (data.item){
+        case 'poop':
+          player.addPowerUp(data.item);
+          socket.broadcast.to(data.roomID).emit('someonePoweredUp', data.player);
+          break;
+        default:
+          // something default
       }
     });
 
