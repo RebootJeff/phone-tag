@@ -38,6 +38,9 @@ define([ 'jquery', 'backbone', '../views/GameView', '../models/game', '../views/
       if($('#game').length === 0){
         var game = this.app.get('game');
         new GameView({model: game, socket: game.socket});
+        var that = this;
+        // Display loading window while map is calibrating
+        setTimeout(function(){that.slidePageFrom($('#loadingView'), $('#game'), 'right');}, 4000);
       } else {
         this.slidePageFrom($('#inventory'), $('#game'), 'left');
       }
