@@ -18,6 +18,9 @@ define(['backbone', 'handlebars', 'text!../templates/game.html','./MapView'], fu
           timeLeft = that.model.endTime - Date.now();
           minLeft = Math.floor(timeLeft / (60 * 1000));
           secLeft = Math.floor((timeLeft % (60 * 1000)) / 1000);
+          if (secLeft < 10) {
+            secLeft = '0'+secLeft;
+          }
           $('.timer').html('<p>'+minLeft+':'+secLeft+'</p>');
         } else {
           secToStart = Math.floor((startTime - Date.now()) / 1000);
