@@ -5,7 +5,9 @@ define(['backbone'], function(Backbone){
       this.socket = io.connect();
       // this.socket = io.connect('http://hadooken.herokuapp.com');
       this.on('setUser', this.setUser, this);
-      this.socket.on('renderGameViews', that.renderGameViews);
+      this.socket.on('renderGameViews', function(data){
+        that.renderGameViews(data, that);
+      });
     },
 
     setUser: function(){
@@ -13,10 +15,9 @@ define(['backbone'], function(Backbone){
       this.trigger('loggedIn');
     },
 
-    renderGameViews: function(data){
-      var that = this;
-      this.set('currentGameRoomID', data.roomID);
-      var currentGame = this.get('currentGame');
+    renderGameViews: function(data, that){
+      that.set('currentGameRoomID', data.roomID);
+      var currentGame = that.get('currentGame');
       var currentPlayer = currentGame.get('currentPlayer');
       currentGame.set('timeLimit', data.timeLimit);
       currentGame.set('roomID', data.roomID);

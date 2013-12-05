@@ -34,9 +34,9 @@ define(['backbone', 'routers/MainRouter'], function(Backbone, Router){
       'click button.zoomOut': 'zoomOut',
       'click button.zoomIn': 'zoomIn',
       'click button.toggleModal': 'toggleModal',
-      'click button.centerMap': 'centerMap'
+      'click button.centerMap': 'centerMap',
 
-      'renderGameViews': 'renderGameView'
+      'renderGameViews': 'renderGameView',
     },
 
     // Login/Logout functions

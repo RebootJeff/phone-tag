@@ -1,10 +1,10 @@
 define(['backbone', 'handlebars', '../templates/map', '../models/map'], function(Backbone, Handlebars, MapTemplate, Map){
   var MapView = Backbone.View.extend({
-    template: Handlebars.compile(MapTemplate),
+    template: Handlebars.compile(MapTemplate)(),
 
     initialize: function(options){
       this.render();
-      var map = new Map({currentPlayer: options.currentPlayer, socket: options.socket});
+      var map = new Map({game: options.game, currentPlayer: options.currentPlayer, socket: options.socket});
       options.game.set('map', map);
       this.model = map;
     },
