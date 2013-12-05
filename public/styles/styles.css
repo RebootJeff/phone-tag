@@ -22,9 +22,6 @@ input[type='text'] {
   border: 0;
   border-radius: 8px;
 }
-.hidden {
-  display: none;
-}
 ::-webkit-input-placeholder {
   color: #666;
 }
@@ -104,13 +101,15 @@ table {
   -o-transition-duration: 0.25s;
   transition-duration: 0.25s;
 }
+
 #map-canvas {
   position: absolute;
   width: 100%;
   height: 50%;
 }
+
 .modal {
-  height: 50%;
+  height: 41%;
   width: 100%;
   position: absolute;
   top: 0;
@@ -124,5 +123,10 @@ table {
   transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
 }
 .modal.closed {
-  height: 0;
+  top: -50%;
+}
+#map-canvas {
+  position: absolute;
+  width: 100%;
+  height: 50%;
 }

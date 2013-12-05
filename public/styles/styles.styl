@@ -32,9 +32,6 @@ input[type='text']
   border: 0
   border-radius: 8px
 
-.hidden
-  display: none
-
 // NOTE: These placeholder text styles won't work if combined into 1 multi-selector
 // Reference Source:
 //   http://stackoverflow.com/questions/2610497/change-an-inputs-html5-placeholder-color-with-css
@@ -115,7 +112,7 @@ transition-duration(n)
 // map
 
 .modal
-  height: 50%
+  height: 41%
   width: 100%
   position: absolute
   top: 0
@@ -126,7 +123,7 @@ transition-duration(n)
   transition-timing-function: cubic-bezier(0, 1, 0.5, 1)
 
 .modal.closed
-  height: 0
+  top: -50%
 
 #map-canvas
   position: absolute

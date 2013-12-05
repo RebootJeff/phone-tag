@@ -36,7 +36,7 @@ define(function(){
     "</section>" +
   "</section>" +
 
-  "<section class='hidden modal closed'>" +
+  "<section class='modal closed'>" +
     "<h1>Search Controls</h1>" +
     "<button class='toggleModal'>X</button>" +
     "<button class='centerMap'><img src='../styles/images/map-center.png'></button>" +

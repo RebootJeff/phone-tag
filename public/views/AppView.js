@@ -136,7 +136,7 @@ define(['backbone', 'routers/MainRouter'], function(Backbone, Router){
     toggleModal: function(e){
       e && e.preventDefault();
       console.log('modalToggled');
-      $('.modal').toggleClass('hidden closed');
+      $('.modal').toggleClass('closed');
     },
 
     zoomOut: function(e){
