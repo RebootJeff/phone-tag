@@ -103,6 +103,21 @@ define(['backbone', 'routers/MainRouter'], function(Backbone, Router){
     tag: function(e){
       e && e.preventDefault();
       this.model.get('game').trigger('tag');
+      this.tagCountdown();
+    },
+
+    tagCountdown: function(){
+      $('button.tag').prop('disabled',true);
+      setTimeout(function(){
+        clearInterval(timer);
+        $('button.tag').html('Tag');
+        $('button.tag').prop('disabled',false);
+      }, 15000);
+      var count = 15;
+      var timer = setInterval(function(){
+        count--;
+        $('button.tag').html(count);
+      }, 1000);
     },
 
     powerUp: function(e){
