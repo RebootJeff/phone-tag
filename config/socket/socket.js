@@ -31,7 +31,7 @@ module.exports = function(io){
       this.join(_count);
       io.sockets.in(_count).emit('playerAdded', game.players);
       if (game.playerCount >= _maxPlayers){
-        io.sockets.in(_count).emit('renderGameViews', {roomID:_count});
+        io.sockets.in(_count).emit('renderGameViews', {roomID:_count, timeLimit:game.timeLimit});
         _count++;
       }
     });
@@ -44,13 +44,17 @@ module.exports = function(io){
     // });
 
     socket.on('newPlayerMarker', function(data){
-      console.log('hereeeees the DATA!!!!', data);
       var game = _allGames[data.roomID];
       var player = game.getPlayer(data.name);
       player.location = data.location;
+      player.syncTime = Date.now();
+      player.startTime = data.time;
       io.sockets.in(data.roomID).emit('createMarker', data);
-      if (Object.keys(game.players).length === _maxPlayers){
+      game.playersReady++;
+      if (game.playersReady === _maxPlayers){
+        var timers = game.gameStart();
         sendLocations(data.roomID);
+        io.sockets.in(data.roomID).emit('startGame', timers);
       }
     });
 
@@ -89,6 +93,7 @@ module.exports = function(io){
         io.sockets.in(gameID).emit('sendLocationsToPlayer', newLocations);
       }, 2000);
     };
+
   });
 
 };

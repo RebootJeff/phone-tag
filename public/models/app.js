@@ -8,6 +8,7 @@ define(['backbone'], function(Backbone){
         that.set('currentGameRoomID', data.roomID);
         var currentGame = that.get('currentGame');
         var currentPlayer = currentGame.get('currentPlayer');
+        currentGame.set('timeLimit', data.timeLimit);
         currentGame.set('roomID', data.roomID);
         currentPlayer.set('roomID', data.roomID);
         setTimeout(function(){
