@@ -1,6 +1,6 @@
-define(['backbone', 'handlebars', 'text!../templates/map.html', '../models/map'], function(Backbone, Handlebars, MapTemplate, Map){
+define(['backbone', 'handlebars', '../templates/map', '../models/map'], function(Backbone, Handlebars, MapTemplate, Map){
   var MapView = Backbone.View.extend({
-    template: MapTemplate,
+    template: Handlebars.compile(MapTemplate),
 
     initialize: function(options){
       this.render();
@@ -10,7 +10,7 @@ define(['backbone', 'handlebars', 'text!../templates/map.html', '../models/map']
     },
 
     render: function(){
-      $('#game .content').append(Handlebars.compile(this.template)());
+      $('#game .content').append(this.template);
       return this;
     }
 
