@@ -218,9 +218,52 @@ define(['backbone'], function(Backbone){
       this.get('socket').emit('tagPlayers', response);
     },
 
+    tagAnimate: function(){
+      var radius = 0;
+      var that = this;
+      var timer = setInterval(function(){
+        if(that.circle){
+          that.circle.setMap(null);
+        }
+        var circleOptions = {
+          strokeColor: '#FF0000',
+          strokeOpacity: 0.8,
+          strokeWeight: 2,
+          fillColor: '#FF0000',
+          fillOpacity: 0.35,
+          map: that.map,
+          center: that.currentPlayerMarker.position,
+          radius: radius
+        };
+        that.circle = new google.maps.Circle(circleOptions);
+        if(radius >= 10){
+          clearInterval(timer);
+          that.circle.setMap(null);
+        }
+        radius+=0.25;
+      }, 25);
+    },
+
+    tagCountdown: function(){
+      $('button.tag').prop('disabled',true);
+      setTimeout(function(){
+        clearInterval(timer);
+        $('button.tag').html('Tag');
+        $('button.tag').prop('disabled',false);
+      }, 10000);
+      var count = 10;
+      var timer = setInterval(function(){
+        count--;
+        $('button.tag').html('You died - '+count);
+      }, 1000);
+    },
+
     setPlayerDead: function(player){
       var marker;
-
+      if(player.name === this.get('currentPlayer').get('name')){
+        this.tagCountdown();
+        return this.currentPlayerMarker.setIcon('../styles/images/heart-broken.png');
+      }
       for(var i = 0; i < this.markers.length; i++){
         marker = this.markers[i];
         if(marker.id === player.name){
