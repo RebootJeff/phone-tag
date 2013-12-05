@@ -1,7 +1,7 @@
 var Game = function(room) {
 
-  this.timeLimit = 10;    //in minutes
-  this.loadTime = 10;     //in seconds
+  this.timeLimit = 2;    //in minutes
+  this.loadTime = 5;     //in seconds
 
   this.roomID = room;
 

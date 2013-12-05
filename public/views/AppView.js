@@ -63,7 +63,7 @@ define(['backbone', 'routers/MainRouter'], function(Backbone, Router){
 
     quitGame: function(e){
       e && e.preventDefault();
-      var gameID = this.model.get('game').get('gameID');
+      var gameID = this.model.get('currentGame').get('gameID');
       var username = this.model.get('user');
       var obj = { gameID: gameID, username: username };
       this.model.socket.emit('leaveGame', obj);
@@ -104,12 +104,12 @@ define(['backbone', 'routers/MainRouter'], function(Backbone, Router){
     // Game functions
     // sendStartGame: function(e){
     //   e && e.preventDefault();
-    //   this.model.socket.emit('startGame', this.model.get('game').get('gameID'));
+    //   this.model.socket.emit('startGame', this.model.get('currentGame').get('gameID'));
     // },
 
     tag: function(e){
       e && e.preventDefault();
-      this.model.get('game').trigger('tag');
+      this.model.get('currentGame').trigger('tag');
       this.tagCountdown();
     },
 
@@ -141,23 +141,23 @@ define(['backbone', 'routers/MainRouter'], function(Backbone, Router){
 
     zoomOut: function(e){
       e && e.preventDefault();
-      this.model.get('game').trigger('zoomOut');
+      this.model.get('currentGame').trigger('zoomOut');
     },
 
     zoomIn: function(e){
       e && e.preventDefault();
-      this.model.get('game').trigger('zoomIn');
+      this.model.get('currentGame').trigger('zoomIn');
     },
 
     powerUp: function(e){
       e && e.preventDefault();
       console.log('Pick Up clicked');
-      this.model.get('game').trigger('powerUp');
+      this.model.get('currentGame').trigger('powerUp');
     },
 
     centerMap: function(e){
       e && e.preventDefault();
-      this.model.get('game').trigger('centerMap');
+      this.model.get('currentGame').trigger('centerMap');
     }
 
   });
