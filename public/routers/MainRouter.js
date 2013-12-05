@@ -26,8 +26,8 @@ define(['backbone', '../views/GameView', '../models/game', '../views/HomeView', 
     },
 
     join: function(){
-      this.app.set('game', new Game({currentPlayer: this.app.get('user'), socket: this.app.socket}));
-      new JoinView({model: this.app.get('game'), user: this.app.get('user')});
+      this.app.set('currentGame', new Game({playerName: this.app.get('user'), socket: this.app.socket}));
+      new JoinView({model: this.app.get('currentGame'), user: this.app.get('user')});
     },
 
     leaderboard: function(){
@@ -36,11 +36,12 @@ define(['backbone', '../views/GameView', '../models/game', '../views/HomeView', 
 
     game: function(){
       if($('#game').length === 0){
-        var game = this.app.get('game');
-        new GameView({model: game, socket: game.socket});
+        var game = this.app.get('currentGame');
         var that = this;
-        // Display loading window while map is calibrating
-        setTimeout(function(){that.slidePageFrom($('#loadingView'), $('#game'), 'right');}, 4000);
+        new GameView({model: game, socket: game.socket});
+        setTimeout(function(){
+          that.slidePageFrom($('#loadingView'), $('#game'), 'right');
+        }, 2000);
       } else {
         this.slidePageFrom($('#inventory'), $('#game'), 'left');
       }

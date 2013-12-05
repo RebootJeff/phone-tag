@@ -4,7 +4,7 @@ define(['backbone', 'handlebars', '../templates/map', '../models/map'], function
 
     initialize: function(options){
       this.render();
-      var map = new Map({currentPlayer: options.currentPlayer, socket: options.socket});
+      var map = new Map({game: options.game, currentPlayer: options.currentPlayer, socket: options.socket});
       options.game.set('map', map);
       this.model = map;
     },

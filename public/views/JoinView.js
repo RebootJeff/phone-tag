@@ -9,10 +9,11 @@ define(['backbone', 'handlebars', '../templates/join', '../models/currentPlayer'
 
     render: function(){
       $('#container').html(this.template);
-      var playerList = this.model.get('otherPlayers').models;
-      for (var i = 0; i < playerList.length; i++) {
-        $('tbody').append('<tr><td>' + playerList[i].get('name') + '</td></tr>');
-      }
+      var playerList = this.model.get('otherPlayers');
+      playerList.map(function(model){
+        $('tbody').append('<tr><td>' + model.get('name') + '</td></tr>');
+      });
+
       return this;
     }
 
