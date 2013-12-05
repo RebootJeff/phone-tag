@@ -5,19 +5,19 @@ define(['backbone', 'handlebars', 'text!../templates/game.html','./MapView'], fu
     initialize: function(options){
       this.render();
       new MapView({currentPlayer: this.model.get('currentPlayer'), socket: options.socket});
-      this.on('startGame', this.startGame, this);
+      this.model.on('startGame', this.startGame, this);
     },
 
     startGame: function(){
       var timeLeft, minLeft, secLeft;
-      var startTime = this.model.endTime - (this.model.timeLimit * 60 * 1000);
+      var startTime = this.model.endTime - (this.model.get('timeLimit') * 60 * 1000);
       var that = this;
       $('#container').append('<div class="timer"></div>');
       setInterval(function(){
         if (Date.now() >= startTime) {
-          timeLeft = this.model.endTime - Date.now();
+          timeLeft = that.model.endTime - Date.now();
           minLeft = Math.floor(timeLeft / (60 * 1000));
-          secLeft = (timeLeft % (60 * 1000)) / 1000;
+          secLeft = Math.floor((timeLeft % (60 * 1000)) / 1000);
           $('.timer').html('<p>'+minLeft+':'+secLeft+'</p>');
         }
       }, 1000);

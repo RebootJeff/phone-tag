@@ -32,9 +32,9 @@ define(['backbone', './currentPlayer','../collections/otherPlayers'], function(B
       });
       this.socket.on('startGame', function(data){
         var player = that.get('currentPlayer');
-        this.startTime = player.startTime;
-        this.endTime = player.endTime = data[player.name];
-        that.trigger('startGame', this);
+        that.startTime = player.startTime;
+        that.endTime = player.endTime = data[player.get('name')];
+        that.trigger('startGame', that);
       });
       // this.socket.on('sendLocationsToPlayer', function(data){
       //   that.updateLocations(data);

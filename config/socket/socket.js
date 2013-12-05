@@ -19,10 +19,8 @@ module.exports = function(io){
     socket.on('joinGame', function(userData){
       var game, player;
       if (_allGames[_count] && _allGames[_count].playerCount < _maxPlayers) {
-        console.log('joining game ', _count);
         game = _allGames[_count];
       } else {
-        console.log('creating game ', _count);
         game = new Game(_count);
         _allGames[_count] = game;
       }
@@ -52,7 +50,7 @@ module.exports = function(io){
       io.sockets.in(data.roomID).emit('createMarker', data);
       game.playersReady++;
       if (game.playersReady === _maxPlayers){
-        var timers = game.gameStart();
+        var timers = game.startGame();
         sendLocations(data.roomID);
         io.sockets.in(data.roomID).emit('startGame', timers);
       }

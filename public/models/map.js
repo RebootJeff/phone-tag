@@ -85,7 +85,7 @@ define(['backbone'], function(Backbone){
         playerLocation.roomID = player.get('roomID');
         playerLocation.location = {lat: position.coords.latitude, lng:position.coords.longitude};
         var currentTime = Date.now();
-        player.set('startTime', currentTime);
+        player.startTime = currentTime;
         playerLocation.time = currentTime;
         that.get('socket').emit('newPlayerMarker', playerLocation);
       };
