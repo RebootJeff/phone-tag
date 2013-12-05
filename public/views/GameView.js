@@ -1,9 +1,10 @@
-define(['backbone', 'handlebars', 'text!../templates/game.html','./MapView'], function(Backbone, Handlebars, GameTemplate, MapView){
+define(['backbone', 'handlebars', '../templates/game','./MapView'], function(Backbone, Handlebars, GameTemplate, MapView){
   var GameView = Backbone.View.extend({
-    template: GameTemplate,
+    template: Handlebars.compile(GameTemplate),
 
     initialize: function(options){
       this.render();
+
       new MapView({currentPlayer: this.model.get('currentPlayer'), socket: options.socket});
       this.model.on('startGame', this.startGame, this);
       this.model.on('renderScores', this.renderScores, this);
@@ -41,7 +42,7 @@ define(['backbone', 'handlebars', 'text!../templates/game.html','./MapView'], fu
     },
 
     render: function(){
-      $('#container').html(Handlebars.compile(this.template));
+      $('#container').html(this.template);
       return this;
     }
 

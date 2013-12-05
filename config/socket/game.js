@@ -1,5 +1,3 @@
-var Player = require('./player');
-
 var Game = function(room) {
 
   this.timeLimit = 10;    //in minutes
@@ -18,6 +16,10 @@ var Game = function(room) {
 
   this.winners = [];
   this.mapLocation = [];
+  this.powerUp = {};
+  this.powerUp.name = null;
+  this.powerUp.lat = null;
+  this.powerUp.lng = null;
 
 };
 
@@ -74,8 +76,25 @@ Game.prototype.sendStats = function(data) {
 
 };
 
-Game.prototype.addPowerUp = function() {
+Game.prototype.generatePowerUp = function(powerUp, randomLat, randomLng) {
   //add random powerup to random location
+  this.powerUp.name = powerUp;
+
+  var offset = 0.0025;
+  var sign = [true, false];
+  var latOffset, lngOffset, randomIndex, randomSign;
+
+  randomIndex = Math.floor(Math.random() * sign.length);
+  randomSign = sign[randomIndex];
+  randomSign ? latOffset = offset : latOffset = -1 * offset;
+  randomIndex = Math.floor(Math.random() * sign.length);
+  randomSign = sign[randomIndex];
+  randomSign ? lngOffset = offset : lngOffset = -1 * offset;
+
+  this.powerUp.lat = randomLat + latOffset;
+  this.powerUp.lng = randomLng + lngOffset;
+
+  return this;
 };
 
 module.exports = Game;

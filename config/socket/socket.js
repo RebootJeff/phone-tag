@@ -58,17 +58,59 @@ module.exports = function(io){
 
     socket.on('sendLocationFromPlayer', function(data){
       var game = _allGames[data.roomID];
-      var player = game.getPlayer(data.name);
-      if( player ){
-        player.location = data.location;
+      if( game ){
+        var player = game.getPlayer(data.name);
+        if( player ){
+          player.location = data.location;
+        }
       }
     });
 
-    socket.on('tapPlayer', function(data){
-      player = data.player;
-      id = data.socketId;
-      Players.find();
-      socket(id).emit('dead', { message: 'you are dead' });
+    socket.on('tagPlayers', function(response){
+      console.log('Players tagged, YAY!');
+      var gameID = response.roomID,
+          game = _allGames[gameID],
+          taggedPlayers = response.taggedPlayers,
+          tagger = game.getPlayer(response.tagger),
+          player;
+
+      for(var i = 0; i < taggedPlayers.length; i++){
+        player = game.getPlayer(taggedPlayers[i].player);
+        if(player.isAlive){
+          player.isAlive = false;
+          player.deaths++;
+          tagger.kills++;
+          playerKilled = {name: player.name, roomID: gameID};
+          setTimeout(function(){
+            player.isAlive = true;
+            io.sockets.in(gameID).emit('playerAlive', playerKilled);
+          }, 10000);
+          io.sockets.in(gameID).emit('playerDead', playerKilled);
+        }
+      }
+    });
+
+    socket.on('generatePowerUp', function(data){
+      var game = _allGames[data.roomID];
+      if( !game.powerUp.name ){
+        var powerUpCollection = ["poop"];
+        var randomIndex = Math.floor(Math.random() * powerUpCollection.length);
+        game.generatePowerUp(powerUpCollection[randomIndex], data.location.lat, data.location.lng);
+        io.sockets.in(data.roomID).emit('addPowerUpToMap', game.powerUp);
+      }
+    });
+
+    socket.on('addItemToPlayer', function(data){
+      var game = _allGames[data.roomID];
+      var player = game.players[data.player];
+      switch (data.item){
+        case 'poop':
+          player.addPowerUp(data.item);
+          socket.broadcast.to(data.roomID).emit('someonePoweredUp', data.player);
+          break;
+        default:
+          // something default
+      }
     });
 
     // data = { gameID: gameID, username: username };

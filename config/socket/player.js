@@ -22,15 +22,8 @@ var Player = function(socket, user, room) {
   this.deaths = 0;
 };
 
-Player.prototype.setPowerup = function(powerUp) {
-  switch (powerUp) {
-    case 'invincible':
-      this.isInvincible = true;
-      this.duration = 10;
-      break;
-    default:
-      console.log('I am DEFAULT!');
-  }
+Player.prototype.addPowerUp = function(powerUp) {
+  this.powerUp = powerUp;
 };
 
 Player.prototype.dead = function() {

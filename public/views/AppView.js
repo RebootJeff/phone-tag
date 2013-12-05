@@ -8,24 +8,38 @@ define(['backbone', 'routers/MainRouter'], function(Backbone, Router){
       // this.router.on('route', function(){console.log(this.model.get('user'));}, this);
       this.model.on('loggedIn', this.renderHomeView, this);
       this.model.on('renderGameViews', this.renderGameView, this);
-      Backbone.history.start({pushState: true});
+      Backbone.history.start({pushState: false});
     },
 
     events: {
+      // Login events
       'submit': 'login',
       'click a.logout': 'logout',
+
+      // View render events
       'click a.home':  'renderHomeView',
       'click a.leaderboard': 'renderLeaderboardView',
       'click a.join': 'renderJoinView',
       'click a.game': 'renderGameView',
-      // 'click button.start': 'sendStartGame',
       'click a.inventory': 'renderInventoryView',
+
+      // Game events
+      // 'click button.start': 'sendStartGame',
+      'click #inventory li': 'powerUpInventory',
       'click button.tag': 'tag',
-      'click #inventory li': 'inventory',
-      'click a.quit': 'renderQuitView',
+      'click button.powerUp': 'powerUp',
+      'click a.quit': 'quitGame',
+
+      // Map control events
+      'click button.zoomOut': 'zoomOut',
+      'click button.zoomIn': 'zoomIn',
+      'click button.toggleModal': 'toggleModal',
+      'click button.centerMap': 'centerMap'
+
       'renderGameViews': 'renderGameView'
     },
 
+    // Login/Logout functions
     login: function(e){
       e && e.preventDefault();
       // Todo send it to the server
@@ -41,10 +55,20 @@ define(['backbone', 'routers/MainRouter'], function(Backbone, Router){
       // });
     },
 
-    // sendStartGame: function(e){
-    //   e && e.preventDefault();
-    //   this.model.socket.emit('startGame', this.model.get('game').get('gameID'));
+    // checkAuth: function(){
+    //   if(!this.model.get('user')){
+    //     this.model.trigger('createPlayer');
+    //   }
     // },
+
+    quitGame: function(e){
+      e && e.preventDefault();
+      var gameID = this.model.get('game').get('gameID');
+      var username = this.model.get('user');
+      var obj = { gameID: gameID, username: username };
+      this.model.socket.emit('leaveGame', obj);
+      this.router.navigate('/', {trigger:true});
+    },
 
     renderHomeView: function(e){
       e && e.preventDefault();
@@ -71,29 +95,69 @@ define(['backbone', 'routers/MainRouter'], function(Backbone, Router){
       this.router.navigate('/inventory', {trigger:true});
     },
 
-    renderQuitView: function(e){
-      e && e.preventDefault();
-      var gameID = this.model.get('game').get('gameID');
-      var username = this.model.get('user');
-      var obj = { gameID: gameID, username: username };
-      this.model.socket.emit('leaveGame', obj);
-      this.router.navigate('/', {trigger:true});
-    },
-
     // checkAuth: function(){
     //   if(!this.model.get('user')){
     //     this.model.trigger('createPlayer');
     //   }
     // },
 
+    // Game functions
+    // sendStartGame: function(e){
+    //   e && e.preventDefault();
+    //   this.model.socket.emit('startGame', this.model.get('game').get('gameID'));
+    // },
+
     tag: function(e){
       e && e.preventDefault();
-      console.log('Tag clicked');
+      this.model.get('game').trigger('tag');
+      this.tagCountdown();
     },
 
-    inventory: function(e){
+    tagCountdown: function(){
+      $('button.tag').prop('disabled',true);
+      setTimeout(function(){
+        clearInterval(timer);
+        $('button.tag').html('Tag');
+        $('button.tag').prop('disabled',false);
+      }, 15000);
+      var count = 15;
+      var timer = setInterval(function(){
+        count--;
+        $('button.tag').html(count);
+      }, 1000);
+    },
+
+    powerUpInventory: function(e){
       e && e.preventDefault();
-      console.log('Inventory is clicked:', e.currentTarget);
+      console.log('PowerUp Inventory is clicked:', e.currentTarget);
+    },
+
+    // Map functions
+    toggleModal: function(e){
+      e && e.preventDefault();
+      console.log('modalToggled');
+      $('.modal').toggleClass('hidden closed');
+    },
+
+    zoomOut: function(e){
+      e && e.preventDefault();
+      this.model.get('game').trigger('zoomOut');
+    },
+
+    zoomIn: function(e){
+      e && e.preventDefault();
+      this.model.get('game').trigger('zoomIn');
+    },
+
+    powerUp: function(e){
+      e && e.preventDefault();
+      console.log('Pick Up clicked');
+      this.model.get('game').trigger('powerUp');
+    },
+
+    centerMap: function(e){
+      e && e.preventDefault();
+      this.model.get('game').trigger('centerMap');
     }
 
   });

@@ -1,13 +1,13 @@
-define(['backbone', 'handlebars', 'text!../templates/login.html'], function(Backbone, Handlebars, LoginTemplate){
+define(['backbone', 'handlebars', '../templates/login'], function(Backbone, Handlebars, LoginTemplate){
   var LoginView = Backbone.View.extend({
-    template: LoginTemplate,
+    template: Handlebars.compile(LoginTemplate),
 
     initialize: function(){
       this.render();
     },
 
     render: function(){
-      $('#container').html(Handlebars.compile(this.template));
+      $('#container').html(this.template);
       return this;
     }
   });

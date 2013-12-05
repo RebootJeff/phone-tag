@@ -1,4 +1,4 @@
-define([ 'jquery', 'backbone', '../views/GameView', '../models/game', '../views/HomeView', '../views/LoginView', '../views/JoinView', '../models/map'], function($, Backbone, GameView, Game, HomeView, LoginView, JoinView, Map){
+define(['backbone', '../views/GameView', '../models/game', '../views/HomeView', '../views/LoginView', '../views/JoinView', '../models/map'], function(Backbone, GameView, Game, HomeView, LoginView, JoinView, Map){
   var Router = Backbone.Router.extend({
     initialize: function(options){
       this.app = options.app;
@@ -40,9 +40,9 @@ define([ 'jquery', 'backbone', '../views/GameView', '../models/game', '../views/
         var that = this;
         new GameView({model: game, socket: game.socket});
         setTimeout(function(){
-          that.slidePageFrom($('#loadMap'), $('#game'), 'right');
+          that.slidePageFrom($('#loadingView'), $('#game'), 'right');
         }, 5000);
-      } else if (this.app.get('currentGame').get('started')) {
+      } else {
         this.slidePageFrom($('#inventory'), $('#game'), 'left');
       }
     },

@@ -7,6 +7,11 @@ define(['backbone', './currentPlayer','../collections/otherPlayers'], function(B
       var currentPlayer = new CurrentPlayer({name: options.playerName, socket:this.socket});
       this.set('currentPlayer', currentPlayer);
       this.set('otherPlayers', new OtherPlayers());
+
+      // Map setup
+      this.mapSetup();
+
+      // Socket setup
       this.socket = options.socket;
       this.socketSetup();
     },
@@ -46,6 +51,34 @@ define(['backbone', './currentPlayer','../collections/otherPlayers'], function(B
       // this.socket.on('sendLocationsToPlayer', function(data){
       //   that.updateLocations(data);
       // });
+    },
+
+    mapSetup: function(){
+      this.on('tag', this.tagPlayers, this);
+      this.on('centerMap', this.centerMap, this);
+      this.on('zoomOut', this.zoomOut, this);
+      this.on('zoomIn', this.zoomIn, this);
+      this.on('powerUp', this.powerUp, this);
+    },
+
+    centerMap: function(){
+      this.get('map').centerMap();
+    },
+
+    tagPlayers: function(){
+      this.get('map').checkPlayersToTag();
+    },
+
+    powerUp: function(){
+      this.get('map').checkItemsToPowerUp();
+    },
+
+    zoomOut: function(){
+      this.get('map').zoomOut();
+    },
+
+    zoomIn: function(){
+      this.get('map').zoomIn();
     }
 
     // updateLocations: function(data){
