@@ -4,7 +4,7 @@ define(['backbone', 'handlebars', 'text!../templates/game.html','./MapView'], fu
 
     initialize: function(options){
       this.render();
-      new MapView({currentPlayer: this.model.get('currentPlayer'), socket: options.socket});
+      new MapView({currentPlayer: this.model.get('currentPlayer'), game: this.model, socket: options.socket});
     },
 
     render: function(){

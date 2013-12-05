@@ -6,6 +6,8 @@ define(['backbone', './currentPlayer','../collections/otherPlayers'], function(B
       var currentPlayer = new CurrentPlayer({name: options.currentPlayer, roomID: this.get('gameID'), socket:this.socket});
       this.set('currentPlayer', currentPlayer);
       this.set('otherPlayers', new OtherPlayers());
+      this.on('tag', this.tagPlayers, this);
+      this.on('powerUp', this.powerUp, this);
       this.socket = options.socket;
       this.socketSetup();
     },
@@ -35,6 +37,14 @@ define(['backbone', './currentPlayer','../collections/otherPlayers'], function(B
       for (var i = 0; i < players.length; i++) {
         players[i].set('location', data[players[i].get('name')]);
       }
+    },
+
+    tagPlayers: function(){
+      this.get('map').checkPlayersToTag();
+    },
+
+    powerUp: function(){
+      this.get('map').checkItemsToPowerUp();
     }
 
   });

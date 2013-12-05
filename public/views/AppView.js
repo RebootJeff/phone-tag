@@ -22,6 +22,7 @@ define(['backbone', 'routers/MainRouter'], function(Backbone, Router){
       'click a.inventory': 'renderInventoryView',
       'click button.tag': 'tag',
       'click #inventory li': 'inventory',
+      'click button.powerUp': 'powerUp',
       'click a.quit': 'quitGame',
       'renderGameViews': 'renderGameView'
     },
@@ -89,6 +90,13 @@ define(['backbone', 'routers/MainRouter'], function(Backbone, Router){
     tag: function(e){
       e && e.preventDefault();
       console.log('Tag clicked');
+      this.model.get('game').trigger('tag');
+    },
+
+    powerUp: function(e){
+      e && e.preventDefault();
+      console.log('Pick Up clicked');
+      this.model.get('game').trigger('powerUp');
     },
 
     inventory: function(e){
