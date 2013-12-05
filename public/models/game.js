@@ -20,6 +20,10 @@ define(['backbone', './currentPlayer','../collections/otherPlayers'], function(B
       this.trigger('joinRender', this);
     },
 
+    endGame: function(){
+      this.socket.emit('gameover', {roomID:this.get('roomID')});
+    },
+
     socketSetup: function(){
       var that = this;
       var user = this.get('currentPlayer');
@@ -35,6 +39,9 @@ define(['backbone', './currentPlayer','../collections/otherPlayers'], function(B
         that.startTime = player.startTime;
         that.endTime = player.endTime = data[player.get('name')];
         that.trigger('startGame', that);
+      });
+      this.socket.on('renderScores', function(data){
+        that.trigger('renderScores', data);
       });
       // this.socket.on('sendLocationsToPlayer', function(data){
       //   that.updateLocations(data);

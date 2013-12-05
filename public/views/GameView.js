@@ -6,6 +6,7 @@ define(['backbone', 'handlebars', 'text!../templates/game.html','./MapView'], fu
       this.render();
       new MapView({currentPlayer: this.model.get('currentPlayer'), socket: options.socket});
       this.model.on('startGame', this.startGame, this);
+      this.model.on('renderScores', this.renderScores, this);
     },
 
     startGame: function(){
@@ -13,7 +14,7 @@ define(['backbone', 'handlebars', 'text!../templates/game.html','./MapView'], fu
       var startTime = this.model.endTime - (this.model.get('timeLimit') * 60 * 1000);
       var that = this;
       $('#container').append('<div class="timer"></div>');
-      setInterval(function(){
+      var gameTimer = setInterval(function(){
         if (Date.now() >= startTime) {
           timeLeft = that.model.endTime - Date.now();
           minLeft = Math.floor(timeLeft / (60 * 1000));
@@ -26,7 +27,17 @@ define(['backbone', 'handlebars', 'text!../templates/game.html','./MapView'], fu
           secToStart = Math.floor((startTime - Date.now()) / 1000);
           $('.timer').html('<p>Game starting in '+secToStart+' seconds.</p>');
         }
+        if (timeLeft <= 0) {
+          clearInterval(gameTimer);
+          this.model.endGame();
+        }
       }, 1000);
+    },
+
+    renderScores: function(data){
+      data.map(function(player){
+        $('.scoreboard').append('<li>'+player.name+': '+player.score+' tags</li>');
+      });
     },
 
     render: function(){

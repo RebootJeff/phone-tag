@@ -83,6 +83,11 @@ module.exports = function(io){
       socket.broadcast.to(data.gameID).emit('someoneLeft', obj);
     });
 
+    socket.on('gameover', function(data){
+      var game = _allGames[data.roomID];
+      io.sockets.in(data.roomID).emit('renderScores', game.players);
+    });
+
     var sendLocations = function(gameID){
       var game = _allGames[gameID];
       var newLocations;
