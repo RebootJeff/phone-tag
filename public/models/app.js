@@ -3,7 +3,7 @@ define(['backbone'], function(Backbone){
     initialize: function(){
       var that = this;
       this.on('setUser', this.setUser, this);
-      this.socket = io.connect();
+      this.socket = io.connect('http://hadooken.herokuapp.com');
       this.socket.on('renderGameViews', function(){
         that.trigger('renderGameViews');
       });
