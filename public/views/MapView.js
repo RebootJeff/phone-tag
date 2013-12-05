@@ -1,6 +1,6 @@
 define(['backbone', 'handlebars', '../templates/map', '../models/map'], function(Backbone, Handlebars, MapTemplate, Map){
   var MapView = Backbone.View.extend({
-    template: Handlebars.compile(MapTemplate),
+    template: Handlebars.compile(MapTemplate)(),
 
     initialize: function(options){
       this.render();

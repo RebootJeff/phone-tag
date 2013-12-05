@@ -30,7 +30,7 @@ define(['backbone', 'routers/MainRouter'], function(Backbone, Router){
       'click button.tag': 'tag',
       'click button.powerUp': 'powerUp',
       'click a.quit': 'quitGame',
-      'renderGameViews': 'renderGameView'
+      'renderGameViews': 'renderGameView',
       'click #inventory li': 'powerUpInventory',
 
       // Map control events
