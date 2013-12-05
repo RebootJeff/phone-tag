@@ -219,6 +219,18 @@ define(['backbone'], function(Backbone){
         var timer = setInterval(function(){marker.setVisible(false);}, timeShown);
         marker.timer = timer;
       }
+    },
+
+    zoomOut: function(){
+      this.map.setZoom(19);
+    },
+
+    zoomIn: function(){
+      this.map.setZoom(21);
+    },
+
+    centerMap: function(){
+      this.map.setCenter(this.currentPlayerMarker.position);
     }
   });
   return map;
