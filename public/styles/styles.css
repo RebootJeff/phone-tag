@@ -17,9 +17,6 @@ input[type='text'] {
   border: 0;
   border-radius: 8px;
 }
-.hidden {
-  display: none;
-}
 ::-webkit-input-placeholder {
   color: #666;
 }
@@ -97,7 +94,7 @@ h1 {
   transition-duration: 0.25s;
 }
 .modal {
-  height: 50%;
+  height: 41%;
   width: 100%;
   position: absolute;
   top: 0;
@@ -111,5 +108,5 @@ h1 {
   transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
 }
 .modal.closed {
-  height: 0;
+  top: -50%;
 }
