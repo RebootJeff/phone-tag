@@ -1,7 +1,18 @@
-Codename: Phone Tag
+Phone Tag (working title)
 =========
 
 Phone Tag is a smartphone geolocation-based game. Players use the game's map to find enemies to tag and power-ups to grab.
+
+# Contents
+
+- Usage
+  - Requirements
+  - Installation
+  - Gameplay
+- Development
+  - Repo Organization
+  - Technology Used
+  - Authors
 
 # Usage
 
@@ -26,7 +37,7 @@ WIP: Installation for Android will be made easy when the Phone Tag dev team gets
 1. Get friends.
 2. Make sure your phones' GPS is enabled and well-hydrated.
 3. Open Phone Tag on your phones.
-4. Enter your screen name. If your screen name isn't unique, the game will implode in disgust.
+4. Enter your screen names. If your screen names aren't unique, Phone Tag will implode in disgust.
 5. Tap the `Join` button.
 6. Wait for players to join.
 7. Game will automatically start when minimum number of players is reached.
@@ -78,9 +89,29 @@ Phone Tag is spiteful and it hates you. Phone Tag will randomly activate monster
 
 ## The Technology
 
+### Tech Stack
+
+- **Backbone**: client-side framework
+- **jQuery**: DOM manipulator
+- **Hammer.js**: touchscreen event library
+- **Lodash**: utility library
+- **RequireJS**: code/dependency manager
+- **Node.js**: server-side app platform
+  - **Express**: server-side framework
+- **Socket.io**: real-time, event-driven, client-server comms
+- **Stylus**: CSS pre-processor
+
+### Dev Tools
+
+- **FRIGGIN' PHONEGAP**: smartphone app builder (so hard to set up; so powerful after setup)
+- **git**: version control magician
+- **npm**: package commander-in-chief for back-end libraries
+- **Bower**: package commander-in-chief for front-end libraries
+- **Heroku**: server
+
 ## Authors
 
-1. [Leighton Kaina](https://github.com/)
-2. [Ryan Roxas](https://github.com/)
-3. [Ken Huh](https://github.com/)
-4. [Jeff Lee](https://github.com/)
+1. [Leighton Kaina](https://github.com/lkaina)
+2. [Ryan Roxas](https://github.com/rohaus)
+3. [Ken Huh](https://github.com/Ken123777)
+4. [Jeff Lee](https://github.com/RebootJeff)
