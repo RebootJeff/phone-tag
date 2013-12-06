@@ -6,7 +6,7 @@ module.exports = function(io){
   var _allGames = {};
   var _count = 1;
 
-  var _maxPlayers = 1;
+  var _maxPlayers = 3;
 
   io.sockets.on('connection', function(socket) {
     // socket.on('createGame', function(data){
