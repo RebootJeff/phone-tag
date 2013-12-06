@@ -221,26 +221,24 @@ define(['backbone'], function(Backbone){
     tagAnimate: function(){
       var radius = 0;
       var that = this;
+      var circleOptions = {
+        strokeColor: '#FF0000',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#FF0000',
+        fillOpacity: 0.35,
+        map: that.map,
+        center: this.currentPlayerMarker.position,
+        radius: radius
+      };
+      that.circle = new google.maps.Circle(circleOptions);
       var timer = setInterval(function(){
-        if(that.circle){
-          that.circle.setMap(null);
-        }
-        var circleOptions = {
-          strokeColor: '#FF0000',
-          strokeOpacity: 0.8,
-          strokeWeight: 2,
-          fillColor: '#FF0000',
-          fillOpacity: 0.35,
-          map: that.map,
-          center: that.currentPlayerMarker.position,
-          radius: radius
-        };
-        that.circle = new google.maps.Circle(circleOptions);
+        radius+=0.25;
+        that.circle.setRadius(radius);
         if(radius >= 10){
           clearInterval(timer);
           that.circle.setMap(null);
         }
-        radius+=0.25;
       }, 25);
     },
 
