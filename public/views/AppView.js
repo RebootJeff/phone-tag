@@ -21,14 +21,14 @@ define(['backbone', 'routers/MainRouter'], function(Backbone, Router){
       'click a.leaderboard': 'renderLeaderboardView',
       'click a.join': 'renderJoinView',
       'click a.game': 'renderGameView',
-      'click a.inventory': 'renderInventoryView',
 
       // Game events
       // 'click button.start': 'sendStartGame',
       'click #inventory li': 'powerUpInventory',
       'click button.tag': 'tag',
       'click button.powerUp': 'powerUp',
-      'click a.quit': 'quitGame',
+      'click button.inventory': 'renderInventoryView',
+      'click button.quit': 'quitGame',
 
       // Map control events
       'click button.zoomOut': 'zoomOut',
