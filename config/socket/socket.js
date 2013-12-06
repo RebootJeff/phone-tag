@@ -6,7 +6,7 @@ module.exports = function(io){
   var _allGames = {};
   var _count = 1;
 
-  var _maxPlayers = 3;
+  var _maxPlayers = 2;
 
   io.sockets.on('connection', function(socket) {
     // socket.on('createGame', function(data){
@@ -65,6 +65,12 @@ module.exports = function(io){
         }
       }
     });
+
+    socket.on('tag', function(response){
+      var gameID = response.roomID,
+          game = _allGames[gameID];
+      io.sockets.in(gameID).emit('animateTag', response);
+    }),
 
     socket.on('tagPlayers', function(response){
       console.log('Players tagged, YAY!');
