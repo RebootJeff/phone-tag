@@ -11,14 +11,13 @@ define(function(){
   \
   <section id='game' class='page right'> \
     <header class='header'> \
-      <a class='quit' href='#'>Quit</a> \
-      <h1>Map</h1> \
-      <a class='inventory' href='#inventory'>Inventory</a> \
+      <button class='quit'><img src='../styles/images/exit.png'></button> \
+      <button class='inventory'><img src='../styles/images/cabinet.png'></button> \
     </header> \
     <section class='content'> \
-      <button class='toggleModal'>Map Controls</button> \
+      <button class='toggleModal'><img src='../styles/images/map.png'></button> \
       <button class='tag'>Tag</button> \
-      <button class='powerUp'>POWER UP</button> \
+      <button class='powerUp'><img src='../styles/images/lightning.png'</button> \
     </section> \
   </section> \
   \
@@ -39,9 +38,9 @@ define(function(){
   \
   <section class='modal closed'> \
     <h1>Search Controls</h1> \
-    <button class='toggleModal'>X</button> \
+    <button class='toggleModal'><img src='../styles/images/cancel-circle.png'></button> \
     <button class='centerMap'><img src='../styles/images/map-center.png'></button> \
-    <button class='zoomOut' href='#'>-</button> \
-    <button class='zoomIn' href='#'>+</button> \
+    <button class='zoomOut'><img src='../styles/images/minus.png'></button> \
+    <button class='zoomIn'><img src='../styles/images/plus.png'></button> \
   </section>";
 });
