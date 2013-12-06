@@ -67,6 +67,7 @@ define(['backbone', './currentPlayer','../collections/otherPlayers'], function(B
 
     tagPlayers: function(){
       this.get('map').checkPlayersToTag();
+      this.get('map').tagAnimate();
     },
 
     powerUp: function(){

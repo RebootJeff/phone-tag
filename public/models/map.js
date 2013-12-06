@@ -158,8 +158,20 @@ define(['backbone'], function(Backbone){
         map: that.map,
         title: title
       });
+      var powerUpRadius = {
+        strokeColor: 'yellow',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: 'yellow',
+        fillOpacity: 0.35,
+        map: that.map,
+        center: myLatlng,
+        radius: 13
+      };
 
-      this.powerUp = {marker: marker, name: title};
+      marker.setIcon('../styles/images/power.png');
+      powerUpCircle = new google.maps.Circle(powerUpRadius);
+      this.powerUp = {marker: marker, name: title, circle: powerUpCircle };
     },
 
     handleError: function(err){
@@ -190,9 +202,11 @@ define(['backbone'], function(Backbone){
     checkItemsToPowerUp: function(){
       var marker = this.powerUp.marker;
       marker.distanceFromCurrentPlayer = google.maps.geometry.spherical.computeDistanceBetween(this.currentPlayerMarker.position, marker.position);
-      if( marker && marker.distanceFromCurrentPlayer < 10 ){
+      if( marker && marker.distanceFromCurrentPlayer <= 13 ){
         var data = { player: this.get('currentPlayer').get('name'), roomID: this.get('currentPlayer').get('roomID'), item: this.powerUp.name };
         this.get('socket').emit('addItemToPlayer', data);
+        this.powerUp.marker.setMap(null);
+        this.powerUp.circle.setMap(null);
         this.powerUp = null;
       }
     },
@@ -218,9 +232,50 @@ define(['backbone'], function(Backbone){
       this.get('socket').emit('tagPlayers', response);
     },
 
+    tagAnimate: function(){
+      var radius = 0;
+      var that = this;
+      var circleOptions = {
+        strokeColor: '#FF0000',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#FF0000',
+        fillOpacity: 0.35,
+        map: that.map,
+        center: this.currentPlayerMarker.position,
+        radius: radius
+      };
+      that.circle = new google.maps.Circle(circleOptions);
+      var timer = setInterval(function(){
+        radius+=0.25;
+        that.circle.setRadius(radius);
+        if(radius >= 10){
+          clearInterval(timer);
+          that.circle.setMap(null);
+        }
+      }, 25);
+    },
+
+    tagCountdown: function(){
+      $('button.tag').prop('disabled',true);
+      setTimeout(function(){
+        clearInterval(timer);
+        $('button.tag').html('Tag');
+        $('button.tag').prop('disabled',false);
+      }, 10000);
+      var count = 10;
+      var timer = setInterval(function(){
+        count--;
+        $('button.tag').html('You died - '+count);
+      }, 1000);
+    },
+
     setPlayerDead: function(player){
       var marker;
-
+      if(player.name === this.get('currentPlayer').get('name')){
+        this.tagCountdown();
+        return this.currentPlayerMarker.setIcon('../styles/images/heart-broken.png');
+      }
       for(var i = 0; i < this.markers.length; i++){
         marker = this.markers[i];
         if(marker.id === player.name){
