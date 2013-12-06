@@ -22,9 +22,6 @@ input[type='text'] {
   border: 0;
   border-radius: 8px;
 }
-.hidden {
-  display: none;
-}
 ::-webkit-input-placeholder {
   color: #666;
 }
