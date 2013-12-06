@@ -8,14 +8,16 @@ var Player = function(socket, user, room) {
   this.playerSight = 0;
   this.lat = 0;
   this.lon = 0;
+  this.powerUps = {};
 
   //state variables
   this.isActive = true;
   this.isAlive = true;
   this.canShoot = true;
-  this.isVisible = true;
-  this.isInvincible = false;
-  this.hasDecoy = false;
+
+  //powerup statuses
+  this.invisible = false;
+  this.invincible = false;
 
   //game statistics
   this.kills = 0;
@@ -23,7 +25,14 @@ var Player = function(socket, user, room) {
 };
 
 Player.prototype.addPowerUp = function(powerUp) {
-  this.powerUp = powerUp;
+  this.powerUps[powerUp];
+};
+
+Player.prototype.usePowerUp = function(powerUp) {
+  if (this.powerUps[powerUp]){
+    this.powerUps[powerUp] = false;
+    this[powerUp] = !this[powerUp];
+  }
 };
 
 Player.prototype.dead = function() {

@@ -92,7 +92,7 @@ define(['backbone'], function(Backbone){
         player.startTime = currentTime;
         playerLocation.time = currentTime;
         that.get('socket').emit('newPlayerMarker', playerLocation);
-        that.get('socket').emit('generatePowerUp', playerLocation);
+        // that.get('socket').emit('generatePowerUp', playerLocation);
       };
       navigator.geolocation.getCurrentPosition(setCurrentPosition, that.handleError, that.gpsOptions);
     },

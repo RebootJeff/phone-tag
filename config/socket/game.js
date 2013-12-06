@@ -1,6 +1,9 @@
+var Player = require('./player');
+var PowerUp = require('./powerup');
+
 var Game = function(room) {
 
-  this.timeLimit = 0.25;    //in minutes
+  this.timeLimit = 1;    //in minutes
   this.loadTime = 5;     //in seconds
 
   this.roomID = room;
@@ -11,15 +14,12 @@ var Game = function(room) {
 
   this.gameStarted = false;
   this.gameEnded = false;
-  this.startTime = null;
+  this.initTime = null;
   this.endTime = null;
 
   this.winners = [];
   this.mapLocation = [];
-  this.powerUp = {};
-  this.powerUp.name = null;
-  this.powerUp.lat = null;
-  this.powerUp.lng = null;
+  this.powerUpList = ['invisible', 'invincible'];
 
 };
 
@@ -42,14 +42,17 @@ Game.prototype.startGame = function(){
   var currentTime = Date.now();
 
   this.gameStarted = true;
-  this.startTime = currentTime;
-  this.endTime = this.startTime + loadTime + timeLimit;
+  this.initTime = currentTime;
+  this.startTime = this.initTime + loadTime;
+  this.endTime = this.initTime + loadTime + timeLimit;
 
   for(var playerName in this.players) {
     player = this.players[playerName];
     playerTimers[player.name] = player.startTime + (currentTime - player.syncTime) + loadTime + timeLimit;
   }
   return playerTimers;
+
+  this.generatePowerUps();
 }
 
 Game.prototype.endGame = function(){
@@ -76,29 +79,32 @@ Game.prototype.sendStats = function(data) {
 
 };
 
-Game.prototype.generatePowerUp = function(powerUp, randomLat, randomLng) {
+Game.prototype.generatePowerUps = function() {
   //add random powerup to random location
-  this.powerUp.name = powerUp;
+  var randInt, powerUpName, randPlayer, latOffset, lngOffset, randPlayerLat, randPlayerLng, currentTime;
+  var offset = 0.0001;
+  var tolerance = 1000;
+  var powerUpCount = 0;
+  var randPowerUpTimes = []; //need to fill
+  setInterval(function(){
+    currentTime = Date.now();
+    if (currentTime > randPowerUpTimes[powerUpCount] - tolerance && currentTime < randPowerUpTimes[powerUpCount] + tolerance ) {
+      randInt = Math.floor(Math.random() * this.powerUpList.length);
+      powerUpName = this.powerUpList[randInt];
+      randPlayer = this.players[Object.keys(this.players)[Math.floor(Math.random()*this.playerCount)]];
 
-  var offsetCollection = [ 0.00001, 0.00002, 0.00003, 0.00004, 0.00005, 0.00006, 0.00007, 0.00008, 0.00009 ];
-  var sign = [true, false];
-  var offset, latOffset, lngOffset, randomIndex, randomSign;
+      latOffset = (Math.random()*offset) - (offset / 2);
+      lngOffset = (Math.random()*offset) - (offset / 2);
+      randPlayerLat = randPlayer.position.lat + latOffset;
+      randPlayerLng = randPlayer.position.lng + lngOffset;
 
-  randomIndex = Math.floor(Math.random() * sign.length);
-  randomSign = sign[randomIndex];
-  randomIndex = Math.floor(Math.random() * offsetCollection.length);
-  offset = offsetCollection[randomIndex];
-  randomSign ? latOffset = offset : latOffset = -1 * offset;
-  randomIndex = Math.floor(Math.random() * sign.length);
-  randomSign = sign[randomIndex];
-  randomIndex = Math.floor(Math.random() * offsetCollection.length);
-  offset = offsetCollection[randomIndex];
-  randomSign ? lngOffset = offset : lngOffset = -1 * offset;
+      var powerUp = new PowerUp({name:powerUpName,location:{lat:randPlayerLat, lng:randPlayerLng});
+      powerUpCount++;
 
-  this.powerUp.lat = randomLat + latOffset;
-  this.powerUp.lng = randomLng + lngOffset;
+      io.sockets.in(this.roomID).emit('sendPowerUp', powerUp);
+    }
+  }, 1000);
 
-  return this;
 };
 
 module.exports = Game;

@@ -30,7 +30,6 @@ define(['backbone', 'routers/MainRouter'], function(Backbone, Router){
       'click button.inventory': 'renderInventoryView',
       'click button.quit': 'quitGame',
       'renderGameViews': 'renderGameView',
-      'click #inventory li': 'powerUpInventory',
 
       // Map control events
       'click button.zoomOut': 'zoomOut',
