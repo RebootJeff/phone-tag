@@ -1,6 +1,6 @@
-var Player = function(socket, user, room) {
-  this.name = user;
-  this.room = room;
+var Player = function(socket, playerName, game) {
+  this.name = playerName;
+  this.game = game;
   this.location = {};
   this.socketID = socket.id;
   this.score = 0;
@@ -8,22 +8,42 @@ var Player = function(socket, user, room) {
   this.playerSight = 0;
   this.lat = 0;
   this.lon = 0;
+  this.powerUps = {};
 
   //state variables
   this.isActive = true;
   this.isAlive = true;
   this.canShoot = true;
-  this.isVisible = true;
-  this.isInvincible = false;
-  this.hasDecoy = false;
+
+  //powerup statuses
+  this.invisible = false;
+  this.invincible = false;
 
   //game statistics
   this.kills = 0;
   this.deaths = 0;
+
+  this.powerUpDuration = 10000;
 };
 
-Player.prototype.addPowerUp = function(powerUp) {
-  this.powerUp = powerUp;
+Player.prototype.addPowerUp = function(powerUpName) {
+  if (this.powerUps[powerUpName]){
+    this.powerUps[powerUpName]++;
+  } else {
+    this.powerUps[powerUpName] = 1;
+  }
+};
+
+Player.prototype.usePowerUp = function(powerUpData) {
+  var that = this;
+  if (this.powerUps[powerUpData.name]){
+    this.powerUps[powerUpData.name]--;
+    this[powerUpData.name] = true;
+    setTimeout(function(){
+      this[powerUpData.name] = false;
+      this.socketID.emit('powerUpExpired', {powerUp: powerUpData.name});
+    }, that.powerUpDuration);
+  }
 };
 
 Player.prototype.dead = function() {

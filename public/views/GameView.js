@@ -5,7 +5,7 @@ define(['backbone', 'handlebars', '../templates/game','./MapView'], function(Bac
     initialize: function(options){
       this.render();
 
-      new MapView({game:this.model, currentPlayer: this.model.get('currentPlayer'), socket: options.socket});
+      new MapView({game:sodel, currentPlayer: this.model.get('currentPlayer'), socket: options.socket});
       this.model.on('startGame', this.startGame, this);
       this.model.on('renderScores', this.renderScores, this);
     },

@@ -3,7 +3,7 @@ define(['backbone', './currentPlayer','../collections/otherPlayers'], function(B
     initialize: function(options){
       // Create players
       // this.set('gameID', 1);
-      // var currentPlayer = new CurrentPlayer({name: options.currentPlayer, roomID: this.get('gameID'), socket:this.socket});
+      // var currentPlayer = new CurrentPlayer({name: options.currentPlayer, gameID: this.get('gameID'), socket:this.socket});
       var currentPlayer = new CurrentPlayer({name: options.playerName, socket:this.socket});
       this.set('currentPlayer', currentPlayer);
       this.set('otherPlayers', new OtherPlayers());
@@ -26,7 +26,8 @@ define(['backbone', './currentPlayer','../collections/otherPlayers'], function(B
     },
 
     endGame: function(){
-      this.socket.emit('gameover', {roomID:this.get('roomID')});
+      var that = this;
+      this.socket.emit('gameover', {gameID:that.get('gameID')});
     },
 
     socketSetup: function(){
@@ -34,7 +35,7 @@ define(['backbone', './currentPlayer','../collections/otherPlayers'], function(B
       var user = this.get('currentPlayer');
 
       // Socket connection and listeners
-      // this.socket.emit('joinGame', {user: user.get('name'), roomID: user.get('roomID')});
+      // this.socket.emit('joinGame', {user: user.get('name'), gameID: user.get('gameID')});
       this.socket.emit('joinGame', {user: user.get('name')});
       this.socket.on('playerAdded', function(data){
         that.addPlayers(data);
@@ -43,10 +44,22 @@ define(['backbone', './currentPlayer','../collections/otherPlayers'], function(B
         var player = that.get('currentPlayer');
         that.startTime = player.startTime;
         that.endTime = player.endTime = data[player.get('name')];
-        that.trigger('startGame', that);
+        that.trigger('startGame');
       });
       this.socket.on('renderScores', function(data){
         that.trigger('renderScores', data);
+      });
+      this.socket.on('sendPowerUp', function(data){
+        that.addPowerUp(data);
+      });
+      this.socket.on('powerUpExpired', function(data){
+        that.powerUpExpired(data);
+      })
+      this.socket.on('playerDead', function(data){
+        that.setPlayerDead(data);
+      });
+      this.socket.on('playerAlive', function(data){
+        that.setPlayerAlive(data);
       });
       // this.socket.on('sendLocationsToPlayer', function(data){
       //   that.updateLocations(data);
@@ -58,7 +71,7 @@ define(['backbone', './currentPlayer','../collections/otherPlayers'], function(B
       this.on('centerMap', this.centerMap, this);
       this.on('zoomOut', this.zoomOut, this);
       this.on('zoomIn', this.zoomIn, this);
-      this.on('powerUp', this.powerUp, this);
+      // this.on('powerUp', this.powerUp, this);
     },
 
     centerMap: function(){
@@ -70,9 +83,6 @@ define(['backbone', './currentPlayer','../collections/otherPlayers'], function(B
       this.get('map').tagAnimate();
     },
 
-    powerUp: function(){
-      this.get('map').checkItemsToPowerUp();
-    },
 
     zoomOut: function(){
       this.get('map').zoomOut();
@@ -80,8 +90,28 @@ define(['backbone', './currentPlayer','../collections/otherPlayers'], function(B
 
     zoomIn: function(){
       this.get('map').zoomIn();
+    },
+
+    addPowerUp: function(data){
+      this.get('map').addPowerUpToMap(data);
+    },
+
+    powerUpExpired: function(data){
+      this.get('map').powerUpExpired(data);
     }
 
+    setPlayerDead: function(player, respawn){
+      var currentPlayer = this.get('currentPlayer');
+      if (player.name === currentPlayer.get('name')){
+        currentPlayer.set('isAlive', false);
+        this.get('map').addPowerUpToMap(respawn);
+      }
+      var deadPlayer = this.get('otherPlayers').find(function(model){
+        return model.get('name') === player.name;
+      });
+      deadPlayer.set('isAlive', false);
+      this.get('map').setPlayerDead(player.name);
+    }
     // updateLocations: function(data){
     //   var players = this.get('otherPlayers').models;
     //   for (var i = 0; i < players.length; i++) {
