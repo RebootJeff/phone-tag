@@ -15,6 +15,7 @@ var Game = function(id) {
   this.gameStarted = false;
   this.gameEnded = false;
   this.initTime = null;
+  this.startTime = null;
   this.endTime = null;
 
   this.winners = [];
@@ -75,43 +76,50 @@ Game.prototype.getPlayer = function(playerName) {
   return this.players[playerName];
 };
 
-Game.prototype.generateRespawn = function(playerName) {
+Game.prototype.generateRespawn = function(player) {
   var latOffset, lngOffset, playerLat, playerLng, socket;
   var range = 0.0001;
-  var tolerance = 1000;
 
-  player = this.players[playerName];
   latOffset = (Math.random()*range) - (range / 2);
   lngOffset = (Math.random()*range) - (range / 2);
   playerLat = player.position.lat + latOffset;
   playerLng = player.position.lng + lngOffset;
 
-  return new PowerUp({name:'respawn',location:{lat:randPlayerLat, lng:randPlayerLng}, playerName:player.name);
+  return new PowerUp({name:'respawn',location:{lat:randPlayerLat, lng:randPlayerLng}, playerName:playerName);
 };
 
 Game.prototype.generatePowerUps = function() {
-  //add random powerup to random location
-  var randInt, powerUpName, randPlayer, latOffset, lngOffset, randPlayerLat, randPlayerLng, currentTime;
+  var randInt, dropTime, powerUp, powerUpName, randPlayer, latOffset, lngOffset, randPlayerLat, randPlayerLng, currentTime;
+
+  var that = this;
   var range = 0.0001;
   var tolerance = 1000;
   var powerUpCount = 0;
-  var randPowerUpTimes = []; //need to fill
+  var randPowerUpTimes = [];
+  var timeBetweenDrops = 2;  //min
+  var maxDrops = Math.floor((timeLimit - 1) / timeBetweenDrops);
+
+  for (var i = 1; i < timeLimit - 1; i+=timeBetweenDrops){
+    dropTime = this.startTime + Math.random() * (timeBetweenDrops * 60 * 1000);
+    randPowerUpTimes.push(dropTime);
+  }
+
   setInterval(function(){
     currentTime = Date.now();
-    if (currentTime > randPowerUpTimes[powerUpCount] - tolerance && currentTime < randPowerUpTimes[powerUpCount] + tolerance ) {
-      randInt = Math.floor(Math.random() * this.powerUpList.length);
-      powerUpName = this.powerUpList[randInt];
-      randPlayer = this.players[Object.keys(this.players)[Math.floor(Math.random()*this.playerCount)]];
+    if (powerUpCount < maxDrops && currentTime > randPowerUpTimes[powerUpCount] - tolerance && currentTime < randPowerUpTimes[powerUpCount] + tolerance ) {
+      randInt = Math.floor(Math.random() * that.powerUpList.length);
+      powerUpName = that.powerUpList[randInt];
+      randPlayer = that.players[Object.keys(that.players)[Math.floor(Math.random()*that.playerCount)]];
 
       latOffset = (Math.random()*range) - (range / 2);
       lngOffset = (Math.random()*range) - (range / 2);
       randPlayerLat = randPlayer.position.lat + latOffset;
       randPlayerLng = randPlayer.position.lng + lngOffset;
 
-      var powerUp = new PowerUp({name:powerUpName,location:{lat:randPlayerLat, lng:randPlayerLng}, playerName:null});
+      powerUp = new PowerUp({name:powerUpName,location:{lat:randPlayerLat, lng:randPlayerLng}, playerName:null});
       powerUpCount++;
 
-      io.sockets.in(this.gameID).emit('sendPowerUp', powerUp);
+      io.sockets.in(that.gameID).emit('sendPowerUp', powerUp);
     }
   }, 1000);
 

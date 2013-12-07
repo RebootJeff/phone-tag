@@ -54,8 +54,8 @@ define(['backbone'], function(Backbone){
       var that = this;
       this.get('socket').on('createMarker', function(data){that.createMarker(data);});
       this.get('socket').on('sendLocationsToPlayer', function(data){that.updateMarkers(data);});
-      this.get('socket').on('playerAlive', function(data){that.setPlayerAlive(data);});
-      this.get('socket').on('playerDead', function(data){that.setPlayerDead(data);});
+      // this.get('socket').on('playerAlive', function(data){that.setPlayerAlive(data);});
+      // this.get('socket').on('playerDead', function(data){that.setPlayerDead(data);});
       this.get('socket').on('addPowerUpToMap', function(data){ that.addPowerUpToMap(data); });
       this.get('socket').on('someoneLeft', function(data){ that.removeMarker(data); });
       this.get('socket').on('someonePoweredUp', function(data){ that.hideMarker(data); });
@@ -158,27 +158,39 @@ define(['backbone'], function(Backbone){
     },
 
     addPowerUpToMap: function(powerUp){
-      var that = this;
-      var lat = powerUp.lat;
-      var lng = powerUp.lng;
+      // var that = this;
+      var powerUpRadius;
       var title = powerUp.name;
 
-      var myLatlng = new google.maps.LatLng(lat, lng);
+      var myLatlng = new google.maps.LatLng(powerUp.location.lat, powerUp.location.lng);
       var marker = new google.maps.Marker({
         position: myLatlng,
-        map: that.map,
+        map: this.map,
         title: title
       });
-      var powerUpRadius = {
-        strokeColor: 'yellow',
-        strokeOpacity: 0.8,
-        strokeWeight: 2,
-        fillColor: 'yellow',
-        fillOpacity: 0.35,
-        map: that.map,
-        center: myLatlng,
-        radius: 13
-      };
+      if (title === 'respawn'){
+        powerUpRadius = {
+          strokeColor: 'blue',
+          strokeOpacity: 0.8,
+          strokeWeight: 2,
+          fillColor: 'blue',
+          fillOpacity: 0.35,
+          map: this.map,
+          center: myLatlng,
+          radius: 25
+        };
+      } else {
+        powerUpRadius = {
+          strokeColor: 'yellow',
+          strokeOpacity: 0.8,
+          strokeWeight: 2,
+          fillColor: 'yellow',
+          fillOpacity: 0.35,
+          map: this.map,
+          center: myLatlng,
+          radius: 13
+        };
+      }
 
       marker.setIcon('../styles/images/power.png');
       powerUpCircle = new google.maps.Circle(powerUpRadius);
@@ -284,7 +296,6 @@ define(['backbone'], function(Backbone){
     setPlayerDead: function(player){
       var marker;
       if(player.name === this.get('currentPlayer').get('name')){
-        // this.tagCountdown();
         return this.currentPlayerMarker.setIcon('../styles/images/heart-broken.png');
       }
       for(var i = 0; i < this.markers.length; i++){

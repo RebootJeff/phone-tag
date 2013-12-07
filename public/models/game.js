@@ -43,10 +43,16 @@ define(['backbone', './currentPlayer','../collections/otherPlayers'], function(B
         var player = that.get('currentPlayer');
         that.startTime = player.startTime;
         that.endTime = player.endTime = data[player.get('name')];
-        that.trigger('startGame', that);
+        that.trigger('startGame');
       });
       this.socket.on('renderScores', function(data){
         that.trigger('renderScores', data);
+      });
+      this.socket.on('playerDead', function(data){
+        that.setPlayerDead(data);
+      });
+      this.socket.on('playerAlive', function(data){
+        that.setPlayerAlive(data);
       });
       // this.socket.on('sendLocationsToPlayer', function(data){
       //   that.updateLocations(data);
@@ -80,8 +86,20 @@ define(['backbone', './currentPlayer','../collections/otherPlayers'], function(B
 
     zoomIn: function(){
       this.get('map').zoomIn();
-    }
+    },
 
+    setPlayerDead: function(player, respawn){
+      var currentPlayer = this.get('currentPlayer');
+      if (player.name === currentPlayer.get('name')){
+        currentPlayer.set('isAlive', false);
+        this.get('map').addPowerUpToMap(respawn);
+      }
+      var deadPlayer = this.get('otherPlayers').find(function(model){
+        return model.get('name') === player.name;
+      }
+      deadPlayer.set('isAlive', false);
+      this.get('map').setPlayerDead(player.name);
+    }
     // updateLocations: function(data){
     //   var players = this.get('otherPlayers').models;
     //   for (var i = 0; i < players.length; i++) {
