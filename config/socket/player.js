@@ -1,5 +1,5 @@
 var Player = function(socket, playerName, game) {
-  this.name = name;
+  this.name = playerName;
   this.game = game;
   this.location = {};
   this.socketID = socket.id;

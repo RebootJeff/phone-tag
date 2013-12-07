@@ -26,7 +26,8 @@ define(['backbone', './currentPlayer','../collections/otherPlayers'], function(B
     },
 
     endGame: function(){
-      this.socket.emit('gameover', {gameID:this.get('gameID')});
+      var that = this;
+      this.socket.emit('gameover', {gameID:that.get('gameID')});
     },
 
     socketSetup: function(){
@@ -48,6 +49,9 @@ define(['backbone', './currentPlayer','../collections/otherPlayers'], function(B
       this.socket.on('renderScores', function(data){
         that.trigger('renderScores', data);
       });
+      this.socket.on('sendPowerUp', function(data){
+        that.addPowerUp
+      });
       this.socket.on('playerDead', function(data){
         that.setPlayerDead(data);
       });
@@ -64,7 +68,7 @@ define(['backbone', './currentPlayer','../collections/otherPlayers'], function(B
       this.on('centerMap', this.centerMap, this);
       this.on('zoomOut', this.zoomOut, this);
       this.on('zoomIn', this.zoomIn, this);
-      this.on('powerUp', this.powerUp, this);
+      // this.on('powerUp', this.powerUp, this);
     },
 
     centerMap: function(){
@@ -76,9 +80,9 @@ define(['backbone', './currentPlayer','../collections/otherPlayers'], function(B
       this.get('map').tagAnimate();
     },
 
-    powerUp: function(){
-      this.get('map').checkItemsToPowerUp();
-    },
+    // powerUp: function(){
+    //   this.get('map').checkItemsToPowerUp();
+    // },
 
     zoomOut: function(){
       this.get('map').zoomOut();
@@ -96,7 +100,7 @@ define(['backbone', './currentPlayer','../collections/otherPlayers'], function(B
       }
       var deadPlayer = this.get('otherPlayers').find(function(model){
         return model.get('name') === player.name;
-      }
+      });
       deadPlayer.set('isAlive', false);
       this.get('map').setPlayerDead(player.name);
     }

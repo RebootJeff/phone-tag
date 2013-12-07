@@ -94,15 +94,9 @@ module.exports = function(io){
 
     socket.on('addItemToPlayer', function(data){
       var game = _allGames[data.gameID];
-      var player = game.players[data.playerName];
-      switch (data.item){
-        case 'poop':
-          player.addPowerUp(data.item);
-          socket.broadcast.to(data.gameID).emit('someonePoweredUp', data.playerName);
-          break;
-        default:
-          // something default
-      }
+      var player = game.getPlayer(data.playerName);
+      player.addPowerUp(data.item);
+      io.sockets.in(data.gameID).emit('removePowerUp', {powerUpID:data.powerUpID});
     });
 
     // data = { gameID: gameID, playerName: playerName };

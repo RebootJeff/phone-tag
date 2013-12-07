@@ -85,7 +85,7 @@ Game.prototype.generateRespawn = function(player) {
   playerLat = player.position.lat + latOffset;
   playerLng = player.position.lng + lngOffset;
 
-  return new PowerUp({name:'respawn',location:{lat:randPlayerLat, lng:randPlayerLng}, playerName:playerName);
+  return new PowerUp({name:'respawn',location:{lat:randPlayerLat, lng:randPlayerLng}, playerName:playerName});
 };
 
 Game.prototype.generatePowerUps = function() {
@@ -116,7 +116,7 @@ Game.prototype.generatePowerUps = function() {
       randPlayerLat = randPlayer.position.lat + latOffset;
       randPlayerLng = randPlayer.position.lng + lngOffset;
 
-      powerUp = new PowerUp({name:powerUpName,location:{lat:randPlayerLat, lng:randPlayerLng}, playerName:null});
+      powerUp = new PowerUp({id:powerUpCount, name:powerUpName, location:{lat:randPlayerLat, lng:randPlayerLng}, playerName:null});
       powerUpCount++;
 
       io.sockets.in(that.gameID).emit('sendPowerUp', powerUp);

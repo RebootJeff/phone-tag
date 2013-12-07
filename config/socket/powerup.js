@@ -1,7 +1,8 @@
-var PowerUp = function(name, location, playerName) {
-  this.name = name
-  this.location = location;
-  this.playerName = playerName;
+var PowerUp = function(data) {
+  this.id = data.id
+  this.name = data.name
+  this.location = data.location;
+  this.playerName = data.playerName;
 };
 
 PowerUp.prototype.dropPowerUp = function(location) {
