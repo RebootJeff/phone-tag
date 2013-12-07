@@ -5,14 +5,15 @@ Phone Tag is a smartphone geolocation-based game. Players use the game's map to 
 
 # Contents
 
-- Usage
-  - Requirements
-  - Installation
-  - Gameplay
-- Development
-  - Repo Organization
-  - Technology Used
-  - Authors
+- [Usage](#usage)
+  - [Requirements](#requirements)
+  - [Installation](#installation)
+  - [Gameplay](#gameplay)
+- [Development](#development)
+  - [Repo Organization](#repo-organization)
+  - [Technology Used](#the-technology)
+  - [Challenges](#challenges)
+  - [Authors](#authors)
 
 # Usage
 
@@ -34,7 +35,7 @@ WIP: Installation for Android will be made easy when the Phone Tag dev team gets
 
 ## Starting a game
 
-1. Get friends.
+1. Get friends. Gather them. Hug them.
 2. Make sure your phones' GPS is enabled and well-hydrated.
 3. Open Phone Tag on your phones.
 4. Enter your screen names. If your screen names aren't unique, Phone Tag will implode in disgust.
@@ -42,9 +43,11 @@ WIP: Installation for Android will be made easy when the Phone Tag dev team gets
 6. Wait for players to join.
 7. Game will automatically start when minimum number of players is reached.
 
+(WIP: insert Screenshots for README)
+
 ## Gameplay
 
-The objective of the game is to tag players while avoiding getting tagged. Games last 10 minutes. There are no teams. Those friends I told you to get in step 1 are now your enemies. The map helps you find your enemies. The power-ups help you in various ways. Your ability to run is crucial, but your knowledge of the real-life play environment could come in handy. Please do not chase/lure players into busy streets. That's frowned upon with much curvature.
+The objective of the game is to tag players while avoiding getting tagged. Games last 10 minutes. There are no teams. Plot twist: those friends I told you to get in step 1 are actually your enemies. The map helps you find your enemies. The power-ups help you in various ways. Your ability to run is crucial, but your knowledge of the real-life play environment could come in handy. Please do not chase/lure players into busy streets. That's frowned upon with much curvature.
 
 **_Note:_ Gameplay mechanics are constantly being tweaked. Most features, rules, values, and morals are subject to change. "Pecans rule!" is the only constant truth in life.**
 
@@ -54,6 +57,8 @@ The objective of the game is to tag players while avoiding getting tagged. Games
 - **Cooldown:** When you hit the tag button, you will not be able to attempt another tag for 15 gigantic seconds. I suggest you behave accordingly.
 - **Broadcast:** Much like how gunfire notifies nearby ears that a gun has been fired, any time someone hits the tag button, other players may notice because the map will show it. When pondering the reasons to hit your own tag button, consider that you will be revealing your location on the map.
 - **Death:** If you are tagged by someone, you will be "dead" for 10 seconds. During this time, you can't tag other players nor pick up power-ups. Sucks to be you. Perhaps now is a good time to run to a new location (towards a power-up, towards an enemy) in hopes of reaching your destination after 10 seconds. After your 10-second death, you will be able to resume playing normally. Life is so good.
+
+(WIP: insert Screenshots for README)
 
 ### The Map
 
@@ -65,6 +70,7 @@ You thought your dog was awesome, but the map will be your best friend while pla
 - Power-ups are shown (not flashed) on the map.
 - When someone hits their tag button, they reveal their position on the map. If you spot a circle on the map that grows rapidly before vanishing, you just spotted the location of someone who is now in cooldown.
 
+(WIP: insert Screenshots for README)
 
 ### Power-Ups
 
@@ -77,15 +83,52 @@ Phone Tag is generous and it loves you. Phone Tag demonstrates its affection for
   - Triggered: manually
   - Duration: 20 seconds
 
+(WIP: insert Screenshots for README)
+
 ### Environmental Threats
 
 Phone Tag is spiteful and it hates you. Phone Tag will randomly activate monsters, bombs, storms, etc. to harm all players that don't run away quickly enough.
 
 - Pac-Man: WIP. Be afraid. Be very afraid.
 
+(WIP: insert Screenshots for README)
+
 # Development
 
-## Repo Orgnization
+## Repo Organization
+
+There are 2 repos. There is the [phone-tag](https://github.com/RebootJeff/phone-tag) repo and the [phone-tag-phonegap](https://github.com/RebootJeff/phone-tag) repo. The former contains server files and desktop browser client files (which should be generally be ignored). The latter contains files for a PhoneGap-generated client.
+
+### phone-tag repo
+
+- app: (WIP)
+  - controllers: (WIP) user authentication
+  - models: (WIP) MongoDB schema
+  - views: HTML meant for desktop browser client
+- config: middleware setup, API, and other server settings
+  - socket: server-side game logic and socket 
+- public: front-end files for desktop browser client (maintenance of PhoneGap-based client takes priority over maintenance of this folder)
+- test: server-side tests
+- `server.js`: starts the server
+- 
+### phone-tag-phonegap repo
+
+- .cordova, platforms, plugins: folders for PhoneGap to munch on
+  - platforms/AndroidManifest.xml: most files in the 3 folders listed above don't need tweaking, but this one did (for location-related permissions)
+- www: source code/files
+  - img: folder for icons
+  - js: app source code
+    - collections: Backbone collections
+    - models: Backbone models (client's game logic)
+    - routers: Backbone router
+    - templates: HTML templates as js files (to work around an issue of using RequireJS in PhoneGap)
+    - views: Backbone views (user interaction via Hammer.js)
+    - `main.js`: RequireJS configuration + Backbone app bootstrapper
+  - res: app branding
+  - spec: default PhoneGap testing files
+  - styles: CSS and Stylus source code
+  - `config.xml`: PhoneGap smartphone app settings
+  - `index.html`: Client starter (open a socket + load code via RequireJS)
 
 ## The Technology
 
@@ -108,6 +151,14 @@ Phone Tag is spiteful and it hates you. Phone Tag will randomly activate monster
 - **npm**: package commander-in-chief for back-end libraries
 - **Bower**: package commander-in-chief for front-end libraries
 - **Heroku**: server
+
+## Challenges
+
+- Dev workflow for mobile development is far less straightforward than developing for a desktop browser.
+  - Running code in the desktop browser requires running a local server to act like a client proxy (unusual) while running another local server to act as the back-end (per usual).
+  - Many things will go wrong when setting up PhoneGap. PhoneGap setup is the counter-balance to the fun experienced for the rest of the dev process.
+- Deciding which game logic belongs on the client and which game logic belongs on the server led to many debates within the dev team.
+- Making decisions about game mechanics still results in many battles within the dev team, but we keep it civil because we're gentlemen.
 
 ## Authors
 
