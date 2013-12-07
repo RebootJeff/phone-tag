@@ -106,7 +106,7 @@ Game.prototype.generatePowerUp = function(powerUp, randomLat, randomLng) {
 Game.prototype.generatePacman = function() {
   var player = this.players[Object.keys(this.players)[Math.floor(Math.random() * this.playerCount)]];
   var location = player.location;
-  var offset = 0.0001;
+  var offset = 0.001;
   var directions = ['left', 'right'];
   var latOffset, lngOffset, direction;
   latOffset = Math.random() * offset * 2 - offset / 2;
