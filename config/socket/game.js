@@ -97,7 +97,7 @@ Game.prototype.generatePowerUps = function() {
   var randInt, dropTime, powerUp, powerUpName, randPlayer, latOffset, lngOffset, randPlayerLat, randPlayerLng, currentTime;
 
   var that = this;
-  var range = 0.0001;
+  var range = 0.001;
   var tolerance = 1000;
   var powerUpCount = 0;
   var randPowerUpTimes = [];
