@@ -87,10 +87,10 @@ Game.prototype.generateRespawn = function(player) {
 
   latOffset = (Math.random()*range) - (range / 2);
   lngOffset = (Math.random()*range) - (range / 2);
-  playerLat = player.position.lat + latOffset;
-  playerLng = player.position.lng + lngOffset;
+  playerLat = player.location.lat + latOffset;
+  playerLng = player.location.lng + lngOffset;
 
-  return new PowerUp({name:'respawn',location:{lat:playerLat, lng:playerLng}, playerName:playerName});
+  return new PowerUp({name:'respawn',location:{lat:playerLat, lng:playerLng}, playerName: player.name});
 };
 
 Game.prototype.generatePowerUps = function() {
