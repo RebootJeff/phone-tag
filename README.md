@@ -1,11 +1,4 @@
-Codename: Phone Tag
+Phone Tag (working title) - Server
 =========
 
-Mobile, geolocation-based game of tag
-
-# Authors
-
-1. Leighton Kaina
-2. Ryan Roxas
-3. Ken Huh
-4. Jeff Lee
+See [phone-tag-phonegap README.md](https://github.com/RebootJeff/phone-tag-phonegap/blob/master/README.md) for more info than you could ever want.

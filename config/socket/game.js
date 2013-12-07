@@ -21,6 +21,8 @@ var Game = function(room) {
   this.powerUp.lat = null;
   this.powerUp.lng = null;
 
+  this.pacman ={};
+
 };
 
 Game.prototype.addPlayer = function(player){
@@ -50,7 +52,7 @@ Game.prototype.startGame = function(){
     playerTimers[player.name] = player.startTime + (currentTime - player.syncTime) + loadTime + timeLimit;
   }
   return playerTimers;
-}
+};
 
 Game.prototype.endGame = function(){
   this.gameEnded = true;
@@ -100,5 +102,23 @@ Game.prototype.generatePowerUp = function(powerUp, randomLat, randomLng) {
 
   return this;
 };
+
+Game.prototype.generatePacman = function() {
+  var player = this.players[Object.keys(this.players)[Math.floor(Math.random() * this.playerCount)]];
+  var location = player.location;
+  var offset = 0.001;
+  var directions = ['left', 'right'];
+  var latOffset, lngOffset, direction;
+  latOffset = Math.random() * offset * 2 - offset / 2;
+  lngOffset = Math.random() * offset * 2 - offset / 2;
+  direction = Math.floor(Math.random()*directions.length);
+
+  this.pacman.lat = location.lat + latOffset;
+  this.pacman.lng = location.lng + lngOffset;
+  this.pacman.direction = directions[direction];
+
+  return this.pacman;
+};
+
 
 module.exports = Game;
