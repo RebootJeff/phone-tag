@@ -6,7 +6,7 @@ module.exports = function(io){
   var _allGames = {};
   var _count = 1;
 
-  var _maxPlayers = 2;
+  var _maxPlayers = 1;
 
   io.sockets.on('connection', function(socket) {
     // socket.on('createGame', function(data){
@@ -67,9 +67,13 @@ module.exports = function(io){
     });
 
     socket.on('tag', function(response){
-      var gameID = response.roomID,
+      var gameID = response.gameID,
           game = _allGames[gameID];
       io.sockets.in(gameID).emit('animateTag', response);
+
+      setInterval(function(){
+        io.sockets.in(gameID).emit('addPacmanToMap', game.generatePacman());
+      }, 5000);
     }),
 
     socket.on('tagPlayers', function(response){
@@ -94,6 +98,20 @@ module.exports = function(io){
           io.sockets.in(gameID).emit('playerDead', playerKilled);
         }
       }
+    });
+
+    socket.on('setPlayerDead', function(response){
+      var gameID = response.roomID,
+          game = _allGames[gameID];
+      console.log('setPlayerDead', response.player);
+      io.sockets.in(gameID).emit('playerDead', response);
+    });
+
+    socket.on('setPlayerAlive', function(response){
+      var gameID = response.roomID,
+          game = _allGames[gameID];
+      console.log('setPlayerAlive', response.player);
+      io.sockets.in(gameID).emit('playerAlive', response);
     });
 
     socket.on('generatePowerUp', function(data){
