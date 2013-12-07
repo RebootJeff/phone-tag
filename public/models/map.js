@@ -50,6 +50,17 @@ define(['backbone'], function(Backbone){
 
     powerUp: null,
 
+    socketSetup: function(){
+      var that = this;
+      this.get('socket').on('createMarker', function(data){that.createMarker(data);});
+      this.get('socket').on('sendLocationsToPlayer', function(data){that.updateMarkers(data);});
+      this.get('socket').on('playerAlive', function(data){that.setPlayerAlive(data);});
+      this.get('socket').on('playerDead', function(data){that.setPlayerDead(data);});
+      this.get('socket').on('addPowerUpToMap', function(data){ that.addPowerUpToMap(data); });
+      this.get('socket').on('someoneLeft', function(data){ that.removeMarker(data); });
+      this.get('socket').on('someonePoweredUp', function(data){ that.hideMarker(data); });
+      this.get('socket').on('sendRespawn', function(data){ that.sendRespawn(data); });
+    },
     // Map functions
     createMap: function(){
       this.map = new google.maps.Map($("#map-canvas")[0], this.mapOptions);
@@ -85,8 +96,8 @@ define(['backbone'], function(Backbone){
 
         var playerLocation = {};
         var player = that.get('currentPlayer');
-        playerLocation.name = player.get('name');
-        playerLocation.roomID = player.get('roomID');
+        playerLocation.playerName = player.get('name');
+        playerLocation.gameID = player.get('gameID');
         playerLocation.location = {lat: position.coords.latitude, lng:position.coords.longitude};
         var currentTime = Date.now();
         player.startTime = currentTime;
@@ -117,7 +128,7 @@ define(['backbone'], function(Backbone){
     },
 
     removeMarker: function(data){
-      var playerName = data.username;
+      var playerName = data.name;
       var newLocations = data.newLocations;
       var markers = this.markers;
       for( var i = 0; i < markers.length; i++ ){
@@ -187,8 +198,8 @@ define(['backbone'], function(Backbone){
         var currentPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 
         var playerLocation = {};
-        playerLocation.name = that.get('currentPlayer').get('name');
-        playerLocation.roomID = that.get('currentPlayer').get('roomID');
+        playerLocation.playerName = that.get('currentPlayer').get('name');
+        playerLocation.gameID = that.get('currentPlayer').get('gameID');
         playerLocation.location = {lat: position.coords.latitude, lng:position.coords.longitude};
 
         that.currentPlayerMarker = marker;
@@ -203,7 +214,7 @@ define(['backbone'], function(Backbone){
       var marker = this.powerUp.marker;
       marker.distanceFromCurrentPlayer = google.maps.geometry.spherical.computeDistanceBetween(this.currentPlayerMarker.position, marker.position);
       if( marker && marker.distanceFromCurrentPlayer <= 13 ){
-        var data = { player: this.get('currentPlayer').get('name'), roomID: this.get('currentPlayer').get('roomID'), item: this.powerUp.name };
+        var data = { playerName: this.get('currentPlayer').get('name'), gameID: this.get('currentPlayer').get('gameID'), item: this.powerUp.name };
         this.get('socket').emit('addItemToPlayer', data);
         this.powerUp.marker.setMap(null);
         this.powerUp.circle.setMap(null);
@@ -220,14 +231,14 @@ define(['backbone'], function(Backbone){
       for(var i = 0; i < this.markers.length; i++){
         marker = this.markers[i];
         if(marker.distanceFromCurrentPlayer < 10 && marker.id !== this.get('currentPlayer').get('name')){
-          player = {player: marker.id, roomID: this.get('currentPlayer').get('roomID')};
+          player = {playerName: marker.id, gameID: this.get('currentPlayer').get('gameID')};
           tagged.push(player);
         }
       }
       response = {
         taggedPlayers: tagged,
-        tagger: this.get('currentPlayer').get('name'),
-        roomID: this.get('currentPlayer').get('roomID')
+        taggerName: this.get('currentPlayer').get('name'),
+        gameID: this.get('currentPlayer').get('gameID')
       };
       this.get('socket').emit('tagPlayers', response);
     },
@@ -256,24 +267,24 @@ define(['backbone'], function(Backbone){
       }, 25);
     },
 
-    tagCountdown: function(){
-      $('button.tag').prop('disabled',true);
-      setTimeout(function(){
-        clearInterval(timer);
-        $('button.tag').html('Tag');
-        $('button.tag').prop('disabled',false);
-      }, 10000);
-      var count = 10;
-      var timer = setInterval(function(){
-        count--;
-        $('button.tag').html('You died - '+count);
-      }, 1000);
-    },
+    // tagCountdown: function(){
+    //   $('button.tag').prop('disabled',true);
+    //   setTimeout(function(){
+    //     clearInterval(timer);
+    //     $('button.tag').html('Tag');
+    //     $('button.tag').prop('disabled',false);
+    //   }, 10000);
+    //   var count = 10;
+    //   var timer = setInterval(function(){
+    //     count--;
+    //     $('button.tag').html('You died - '+count);
+    //   }, 1000);
+    // },
 
     setPlayerDead: function(player){
       var marker;
       if(player.name === this.get('currentPlayer').get('name')){
-        this.tagCountdown();
+        // this.tagCountdown();
         return this.currentPlayerMarker.setIcon('../styles/images/heart-broken.png');
       }
       for(var i = 0; i < this.markers.length; i++){
@@ -297,17 +308,6 @@ define(['backbone'], function(Backbone){
           return marker.setIcon('../styles/images/evil.png');
         }
       }
-    },
-
-    socketSetup: function(){
-      var that = this;
-      this.get('socket').on('createMarker', function(data){that.createMarker(data);});
-      this.get('socket').on('sendLocationsToPlayer', function(data){that.updateMarkers(data);});
-      this.get('socket').on('playerAlive', function(data){that.setPlayerAlive(data);});
-      this.get('socket').on('playerDead', function(data){that.setPlayerDead(data);});
-      this.get('socket').on('addPowerUpToMap', function(data){ that.addPowerUpToMap(data); });
-      this.get('socket').on('someoneLeft', function(data){ that.removeMarker(data); });
-      this.get('socket').on('someonePoweredUp', function(data){ that.hideMarker(data); });
     },
 
     markerRadarDisplay: function(marker){

@@ -1,6 +1,6 @@
-var Player = function(socket, user, room) {
-  this.name = user;
-  this.room = room;
+var Player = function(socket, playerName, game) {
+  this.name = name;
+  this.game = game;
   this.location = {};
   this.socketID = socket.id;
   this.score = 0;

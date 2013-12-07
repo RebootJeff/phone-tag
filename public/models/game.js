@@ -3,7 +3,7 @@ define(['backbone', './currentPlayer','../collections/otherPlayers'], function(B
     initialize: function(options){
       // Create players
       // this.set('gameID', 1);
-      // var currentPlayer = new CurrentPlayer({name: options.currentPlayer, roomID: this.get('gameID'), socket:this.socket});
+      // var currentPlayer = new CurrentPlayer({name: options.currentPlayer, gameID: this.get('gameID'), socket:this.socket});
       var currentPlayer = new CurrentPlayer({name: options.playerName, socket:this.socket});
       this.set('currentPlayer', currentPlayer);
       this.set('otherPlayers', new OtherPlayers());
@@ -26,7 +26,7 @@ define(['backbone', './currentPlayer','../collections/otherPlayers'], function(B
     },
 
     endGame: function(){
-      this.socket.emit('gameover', {roomID:this.get('roomID')});
+      this.socket.emit('gameover', {gameID:this.get('gameID')});
     },
 
     socketSetup: function(){
@@ -34,7 +34,7 @@ define(['backbone', './currentPlayer','../collections/otherPlayers'], function(B
       var user = this.get('currentPlayer');
 
       // Socket connection and listeners
-      // this.socket.emit('joinGame', {user: user.get('name'), roomID: user.get('roomID')});
+      // this.socket.emit('joinGame', {user: user.get('name'), gameID: user.get('gameID')});
       this.socket.emit('joinGame', {user: user.get('name')});
       this.socket.on('playerAdded', function(data){
         that.addPlayers(data);

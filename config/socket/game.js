@@ -1,12 +1,12 @@
 var Player = require('./player');
 var PowerUp = require('./powerup');
 
-var Game = function(room) {
+var Game = function(id) {
 
   this.timeLimit = 1;    //in minutes
   this.loadTime = 5;     //in seconds
 
-  this.roomID = room;
+  this.gameID = id;
 
   this.players = {};
   this.playerCount = 0;
@@ -67,16 +67,12 @@ Game.prototype.updateLocations = function(){
   return currentLocations;
 };
 
-Game.prototype.getRoomID = function(){
-  return this.roomID;
+Game.prototype.getGameID = function(){
+  return this.gameID;
 };
 
 Game.prototype.getPlayer = function(playerName) {
   return this.players[playerName];
-};
-
-Game.prototype.sendStats = function(data) {
-
 };
 
 Game.prototype.generateRespawn = function(playerName) {
@@ -85,15 +81,12 @@ Game.prototype.generateRespawn = function(playerName) {
   var tolerance = 1000;
 
   player = this.players[playerName];
-  socket = player.socket;
   latOffset = (Math.random()*range) - (range / 2);
   lngOffset = (Math.random()*range) - (range / 2);
   playerLat = player.position.lat + latOffset;
   playerLng = player.position.lng + lngOffset;
 
-  var respawn = new PowerUp({name:'respawn',location:{lat:randPlayerLat, lng:randPlayerLng});
-
-  socket.emit('sendRespawn', respawn);
+  return new PowerUp({name:'respawn',location:{lat:randPlayerLat, lng:randPlayerLng}, playerName:player.name);
 };
 
 Game.prototype.generatePowerUps = function() {
@@ -115,12 +108,16 @@ Game.prototype.generatePowerUps = function() {
       randPlayerLat = randPlayer.position.lat + latOffset;
       randPlayerLng = randPlayer.position.lng + lngOffset;
 
-      var powerUp = new PowerUp({name:powerUpName,location:{lat:randPlayerLat, lng:randPlayerLng});
+      var powerUp = new PowerUp({name:powerUpName,location:{lat:randPlayerLat, lng:randPlayerLng}, playerName:null});
       powerUpCount++;
 
-      io.sockets.in(this.roomID).emit('sendPowerUp', powerUp);
+      io.sockets.in(this.gameID).emit('sendPowerUp', powerUp);
     }
   }, 1000);
+
+};
+
+Game.prototype.sendStats = function(data) {
 
 };
 
