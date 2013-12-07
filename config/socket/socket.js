@@ -72,7 +72,7 @@ module.exports = function(io){
           player.isAlive = false;
           player.deaths++;
           tagger.kills++;
-          playerKilled = {name: player.name, gameID: gameID};
+          playerKilled = {name: player.name, gameID: player.gameID};
           respawn = game.generateRespawn(player);
           io.sockets.in(data.gameID).emit('playerDead', playerKilled, respawn);
         }
