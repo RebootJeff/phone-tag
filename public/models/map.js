@@ -4,8 +4,8 @@ define(['backbone'], function(Backbone){
     initialize: function(options){
       google.maps.visualRefresh = true;
       this.createMap();
-      this.setCurrentMarker();
       this.socketSetup();
+      this.setCurrentMarker();
     },
 
     // Map options
@@ -58,8 +58,8 @@ define(['backbone'], function(Backbone){
       this.get('socket').on('sendLocationsToPlayer', function(data){that.updateMarkers(data);});
       // this.get('socket').on('playerAlive', function(data){that.setPlayerAlive(data);});
       // this.get('socket').on('playerDead', function(data){that.setPlayerDead(data);});
-      this.get('socket').on('addPowerUpToMap', function(data){ that.addPowerUpToMap(data); });
-      this.get('socket').on('removePowerUp', function(data){ that.removePowerUpFromMap(data); });
+      // this.get('socket').on('addPowerUpToMap', function(data){ that.addPowerUpToMap(data); });
+      this.get('socket').on('removePowerUpFromMap', function(data){ that.removePowerUpFromMap(data); });
       this.get('socket').on('someoneLeft', function(data){ that.removeMarker(data); });
       this.get('socket').on('someonePoweredUp', function(data){ that.hideMarker(data); });
       this.get('socket').on('sendRespawn', function(data){ that.sendRespawn(data); });
@@ -224,6 +224,11 @@ define(['backbone'], function(Backbone){
       marker.setIcon('../styles/images/power.png');
       powerUpCircle = new google.maps.Circle(powerUpRadius);
       this.powerUpMarkers[marker.id] = {marker: marker, name: title, circle: powerUpCircle };
+      if (!this.powerUpCounter) {
+        gen trackPowerUpTimer = setInterval(function(){
+          this.trackPowerUps();
+        }, 1000);
+      }
       this.powerUpCounter++;
     },
 
@@ -241,7 +246,6 @@ define(['backbone'], function(Backbone){
           } else {
             this.get('socket').emit('addItemToPlayer', data);
           }
-          // this.removePowerUpFromMap(marker);
         }
       }
     },
@@ -250,6 +254,11 @@ define(['backbone'], function(Backbone){
       var marker = this.powerUpMarkers[data.powerUpID];
       marker.setMap(null);
       delete this.powerUpMarkers[data.powerUpID];
+      this.powerUpCounter--;
+      if (!this.powerUpCounter) {
+        clearInterval(trackPowerUpTimer);
+      }
+
     },
 
     checkPlayersToTag: function(){

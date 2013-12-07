@@ -95,8 +95,14 @@ module.exports = function(io){
     socket.on('addItemToPlayer', function(data){
       var game = _allGames[data.gameID];
       var player = game.getPlayer(data.playerName);
-      player.addPowerUp(data.item);
-      io.sockets.in(data.gameID).emit('removePowerUp', {powerUpID:data.powerUpID});
+      player.addPowerUp(data.powerUpName);
+      io.sockets.in(data.gameID).emit('removePowerUpFromMap', {powerUpID:data.powerUpID});
+    });
+
+    socket.on('usePowerUp', function(data){
+      var game = _allGames[data.gameID];
+      var player = game.getPlayer(data.playerName);
+      player.usePowerUp({powerUpID:data.powerUpID, powerUpName:data.powerUpName});
     });
 
     // data = { gameID: gameID, playerName: playerName };

@@ -22,16 +22,27 @@ var Player = function(socket, playerName, game) {
   //game statistics
   this.kills = 0;
   this.deaths = 0;
+
+  this.powerUpDuration = 10000;
 };
 
-Player.prototype.addPowerUp = function(powerUp) {
-  this.powerUps[powerUp];
+Player.prototype.addPowerUp = function(powerUpName) {
+  if (this.powerUps[powerUpName]){
+    this.powerUps[powerUpName]++;
+  } else {
+    this.powerUps[powerUpName] = 1;
+  }
 };
 
-Player.prototype.usePowerUp = function(powerUp) {
-  if (this.powerUps[powerUp]){
-    this.powerUps[powerUp] = false;
-    this[powerUp] = !this[powerUp];
+Player.prototype.usePowerUp = function(powerUpData) {
+  var that = this;
+  if (this.powerUps[powerUpData.name]){
+    this.powerUps[powerUpData.name]--;
+    this[powerUpData.name] = true;
+    setTimeout(function(){
+      this[powerUpData.name] = false;
+      this.socketID.emit('powerUpExpired', {powerUp: powerUpData.name});
+    }, that.powerUpDuration);
   }
 };
 

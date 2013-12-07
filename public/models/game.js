@@ -50,8 +50,11 @@ define(['backbone', './currentPlayer','../collections/otherPlayers'], function(B
         that.trigger('renderScores', data);
       });
       this.socket.on('sendPowerUp', function(data){
-        that.addPowerUp
+        that.addPowerUp(data);
       });
+      this.socket.on('powerUpExpired', function(data){
+        that.powerUpExpired(data);
+      })
       this.socket.on('playerDead', function(data){
         that.setPlayerDead(data);
       });
@@ -80,9 +83,6 @@ define(['backbone', './currentPlayer','../collections/otherPlayers'], function(B
       this.get('map').tagAnimate();
     },
 
-    // powerUp: function(){
-    //   this.get('map').checkItemsToPowerUp();
-    // },
 
     zoomOut: function(){
       this.get('map').zoomOut();
@@ -91,6 +91,14 @@ define(['backbone', './currentPlayer','../collections/otherPlayers'], function(B
     zoomIn: function(){
       this.get('map').zoomIn();
     },
+
+    addPowerUp: function(data){
+      this.get('map').addPowerUpToMap(data);
+    },
+
+    powerUpExpired: function(data){
+      this.get('map').powerUpExpired(data);
+    }
 
     setPlayerDead: function(player, respawn){
       var currentPlayer = this.get('currentPlayer');
