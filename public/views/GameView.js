@@ -5,7 +5,7 @@ define(['backbone', 'handlebars', '../templates/game','./MapView'], function(Bac
     initialize: function(options){
       this.render();
 
-      new MapView({game:this.model, currentPlayer: this.model.get('currentPlayer'), socket: options.socket});
+      new MapView({game:sodel, currentPlayer: this.model.get('currentPlayer'), socket: options.socket});
       this.model.on('startGame', this.startGame, this);
       this.model.on('renderScores', this.renderScores, this);
     },
@@ -16,7 +16,7 @@ define(['backbone', 'handlebars', '../templates/game','./MapView'], function(Bac
       var that = this;
       $('#container').append('<div class="timer"></div>');
       var gameTimer = setInterval(function(){
-        if (Date.now() >= startTime) {
+        if (Date.now() >= startTime && Date.now() < that.model.endTime) {
           timeLeft = that.model.endTime - Date.now();
           minLeft = Math.floor(timeLeft / (60 * 1000));
           secLeft = Math.floor((timeLeft % (60 * 1000)) / 1000);
@@ -24,20 +24,20 @@ define(['backbone', 'handlebars', '../templates/game','./MapView'], function(Bac
             secLeft = '0'+secLeft;
           }
           $('.timer').html('<p>'+minLeft+':'+secLeft+'</p>');
-        } else {
+        } else if (Date.now() < startTime) {
           secToStart = Math.floor((startTime - Date.now()) / 1000);
           $('.timer').html('<p>Game starting in '+secToStart+' seconds.</p>');
-        }
-        if (timeLeft <= 0) {
+        } else {
+          $('.timer').html('<p>0:00</p>');
           clearInterval(gameTimer);
-          this.model.endGame();
+          that.model.endGame();
         }
       }, 1000);
     },
 
     renderScores: function(data){
-      data.map(function(player){
-        $('.scoreboard').append('<li>'+player.name+': '+player.score+' tags</li>');
+      _.map(data, function(player){
+        $('.timer').append('<li>'+player.name+': '+player.score+' tags</li>');
       });
     },
 

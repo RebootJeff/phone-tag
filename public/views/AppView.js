@@ -30,7 +30,6 @@ define(['backbone', 'routers/MainRouter'], function(Backbone, Router){
       'click button.inventory': 'renderInventoryView',
       'click button.quit': 'quitGame',
       'renderGameViews': 'renderGameView',
-      'click #inventory li': 'powerUpInventory',
 
       // Map control events
       'click button.zoomOut': 'zoomOut',
@@ -64,9 +63,9 @@ define(['backbone', 'routers/MainRouter'], function(Backbone, Router){
     quitGame: function(e){
       e && e.preventDefault();
       var gameID = this.model.get('currentGame').get('gameID');
-      var username = this.model.get('user');
-      var obj = { gameID: gameID, username: username };
-      this.model.socket.emit('leaveGame', obj);
+      var playerName = this.model.get('user');
+      var quitter = { gameID: gameID, playerName: playerName };
+      this.model.socket.emit('leaveGame', quitter);
       this.router.navigate('/', {trigger:true});
     },
 
@@ -110,22 +109,22 @@ define(['backbone', 'routers/MainRouter'], function(Backbone, Router){
     tag: function(e){
       e && e.preventDefault();
       this.model.get('currentGame').trigger('tag');
-      this.tagCountdown();
+      // this.tagCountdown();
     },
 
-    tagCountdown: function(){
-      $('button.tag').prop('disabled',true);
-      setTimeout(function(){
-        clearInterval(timer);
-        $('button.tag').html('Tag');
-        $('button.tag').prop('disabled',false);
-      }, 15000);
-      var count = 15;
-      var timer = setInterval(function(){
-        count--;
-        $('button.tag').html(count);
-      }, 1000);
-    },
+    // tagCountdown: function(){
+    //   $('button.tag').prop('disabled',true);
+    //   setTimeout(function(){
+    //     clearInterval(timer);
+    //     $('button.tag').html('Tag');
+    //     $('button.tag').prop('disabled',false);
+    //   }, 15000);
+    //   var count = 15;
+    //   var timer = setInterval(function(){
+    //     count--;
+    //     $('button.tag').html(count);
+    //   }, 1000);
+    // },
 
     powerUpInventory: function(e){
       e && e.preventDefault();

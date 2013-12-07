@@ -16,12 +16,12 @@ define(['backbone'], function(Backbone){
     },
 
     renderGameViews: function(data, that){
-      that.set('currentGameRoomID', data.roomID);
+      that.set('currentGameRoomID', data.gameID);
       var currentGame = that.get('currentGame');
       var currentPlayer = currentGame.get('currentPlayer');
       currentGame.set('timeLimit', data.timeLimit);
-      currentGame.set('roomID', data.roomID);
-      currentPlayer.set('roomID', data.roomID);
+      currentGame.set('gameID', data.gameID);
+      currentPlayer.set('gameID', data.gameID);
       setTimeout(function(){
         that.trigger('renderGameViews');
       }, 5000);
