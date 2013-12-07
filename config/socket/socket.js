@@ -8,7 +8,8 @@ module.exports = function(io){
 
   var _maxPlayers = 1;
 
-  io.sockets.on('connection', function(socket) {
+  io.sockets.on('connection', function(socket){
+
     socket.on('joinGame', function(data){
       var game, player;
       if (_allGames[_id] && _allGames[_id].playerCount < _maxPlayers) {
@@ -37,6 +38,10 @@ module.exports = function(io){
       io.sockets.in(data.gameID).emit('createMarker', data);
       game.playersReady++;
       if (game.playersReady === _maxPlayers){
+        setInterval(function(){
+          io.sockets.in(data.gameID).emit('sendPowerUp', game.generatePowerUps());
+          io.sockets.in(data.gameID).emit('addPacmanToMap', game.generatePacman());
+        }, 15000);
         var timers = game.startGame();
         sendLocations(data.gameID);
         io.sockets.in(data.gameID).emit('startGame', timers);
@@ -53,11 +58,7 @@ module.exports = function(io){
       var gameID = data.gameID,
           game = _allGames[gameID];
       io.sockets.in(gameID).emit('animateTag', data);
-
-      setInterval(function(){
-        io.sockets.in(gameID).emit('addPacmanToMap', game.generatePacman());
-      }, 30000);
-    }),
+    });
 
     socket.on('tagPlayers', function(data){
       var player, playerKilled, respawn;
@@ -100,6 +101,8 @@ module.exports = function(io){
         var randomIndex = Math.floor(Math.random() * powerUpCollection.length);
         game.generatePowerUp(powerUpCollection[randomIndex], data.location.lat, data.location.lng);
         io.sockets.in(data.roomID).emit('addPowerUpToMap', game.powerUp);
+      }
+    });
 
     socket.on('playerRespawn', function(data){
       var game = _allGames[data.gameID];
@@ -160,8 +163,6 @@ module.exports = function(io){
       }, 2000);
     };
 
-
   });
-
 };
 
