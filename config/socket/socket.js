@@ -66,6 +66,16 @@ module.exports = function(io){
       }
     });
 
+    socket.on('tag', function(response){
+      var gameID = response.gameID,
+          game = _allGames[gameID];
+      io.sockets.in(gameID).emit('animateTag', response);
+
+      setInterval(function(){
+        io.sockets.in(gameID).emit('addPacmanToMap', game.generatePacman());
+      }, 5000);
+    }),
+
     socket.on('tagPlayers', function(response){
       console.log('Players tagged, YAY!');
       var gameID = response.roomID,
@@ -88,6 +98,20 @@ module.exports = function(io){
           io.sockets.in(gameID).emit('playerDead', playerKilled);
         }
       }
+    });
+
+    socket.on('setPlayerDead', function(response){
+      var gameID = response.roomID,
+          game = _allGames[gameID];
+      console.log('setPlayerDead', response.player);
+      io.sockets.in(gameID).emit('playerDead', response);
+    });
+
+    socket.on('setPlayerAlive', function(response){
+      var gameID = response.roomID,
+          game = _allGames[gameID];
+      console.log('setPlayerAlive', response.player);
+      io.sockets.in(gameID).emit('playerAlive', response);
     });
 
     socket.on('generatePowerUp', function(data){
