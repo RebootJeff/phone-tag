@@ -73,7 +73,7 @@ module.exports = function(io){
 
       setInterval(function(){
         io.sockets.in(gameID).emit('addPacmanToMap', game.generatePacman());
-      }, 5000);
+      }, 30000);
     }),
 
     socket.on('tagPlayers', function(response){
