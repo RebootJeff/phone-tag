@@ -6,7 +6,7 @@ module.exports = function(io){
   var _allGames = {};
   var _id = 1;
 
-  var _maxPlayers = 1;
+  var _maxPlayers = 2;
 
   io.sockets.on('connection', function(socket){
 
@@ -15,7 +15,7 @@ module.exports = function(io){
       if (_allGames[_id] && _allGames[_id].playerCount < _maxPlayers) {
         game = _allGames[_id];
       } else {
-        game = new Game(_id);
+        game = new Game(_id, io);
         _allGames[_id] = game;
       }
       player = new Player(socket, data.user, _id);
@@ -38,10 +38,6 @@ module.exports = function(io){
       io.sockets.in(data.gameID).emit('createMarker', data);
       game.playersReady++;
       if (game.playersReady === _maxPlayers){
-        setInterval(function(){
-          io.sockets.in(data.gameID).emit('sendPowerUp', game.generatePowerUps());
-          io.sockets.in(data.gameID).emit('addPacmanToMap', game.generatePacman());
-        }, 15000);
         var timers = game.startGame();
         sendLocations(data.gameID);
         io.sockets.in(data.gameID).emit('startGame', timers);
@@ -61,6 +57,7 @@ module.exports = function(io){
     });
 
     socket.on('tagPlayers', function(data){
+      console.log('tagPlayer:',data);
       var player, playerKilled, respawn;
       var game = _allGames[data.gameID];
       var taggedPlayers = data.taggedPlayers;
@@ -72,9 +69,8 @@ module.exports = function(io){
           player.isAlive = false;
           player.deaths++;
           tagger.kills++;
-          playerKilled = {name: player.name, gameID: player.gameID};
           respawn = game.generateRespawn(player);
-          io.sockets.in(data.gameID).emit('playerDead', playerKilled, respawn);
+          io.sockets.in(data.gameID).emit('playerDead', {name: player.name, gameID: data.gameID, respawn: respawn});
         }
       }
     });
@@ -160,7 +156,7 @@ module.exports = function(io){
       setInterval(function(){
         newLocations = game.updateLocations();
         io.sockets.in(gameID).emit('sendLocationsToPlayer', newLocations);
-      }, 2000);
+      }, 1000);
     };
 
   });
