@@ -6,7 +6,7 @@ module.exports = function(io){
   var _allGames = {};
   var _id = 1;
 
-  var _maxPlayers = 1;
+  var _maxPlayers = 2;
 
   io.sockets.on('connection', function(socket){
 
@@ -61,6 +61,7 @@ module.exports = function(io){
     });
 
     socket.on('tagPlayers', function(data){
+      console.log('tagPlayer:',data);
       var player, playerKilled, respawn;
       var game = _allGames[data.gameID];
       var taggedPlayers = data.taggedPlayers;
@@ -72,9 +73,8 @@ module.exports = function(io){
           player.isAlive = false;
           player.deaths++;
           tagger.kills++;
-          playerKilled = {name: player.name, gameID: player.gameID};
           respawn = game.generateRespawn(player);
-          io.sockets.in(data.gameID).emit('playerDead', playerKilled, respawn);
+          io.sockets.in(data.gameID).emit('playerDead', {name: player.name, gameID: data.gameID, respawn: respawn});
         }
       }
     });
@@ -160,7 +160,7 @@ module.exports = function(io){
       setInterval(function(){
         newLocations = game.updateLocations();
         io.sockets.in(gameID).emit('sendLocationsToPlayer', newLocations);
-      }, 2000);
+      }, 1000);
     };
 
   });
