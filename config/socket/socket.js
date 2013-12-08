@@ -68,7 +68,7 @@ module.exports = function(io){
 
       for(var i = 0; i < taggedPlayers.length; i++){
         player = game.getPlayer(taggedPlayers[i].playerName);
-        if(player.isAlive){
+        if(player.isTaggable()){
           player.isAlive = false;
           player.deaths++;
           tagger.kills++;
