@@ -4,7 +4,7 @@ var PowerUp = require('./powerup');
 var Game = function(id) {
 
   this.timeLimit = 2;    //in minutes
-  this.loadTime = 2;     //in seconds
+  this.loadTime = 4;     //in seconds
 
   this.gameID = id;
 
