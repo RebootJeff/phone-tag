@@ -40,8 +40,8 @@ Player.prototype.usePowerUp = function(powerUpData) {
     this.powerUps[powerUpData.name]--;
     this[powerUpData.name] = true;
     setTimeout(function(){
-      this[powerUpData.name] = false;
-      this.socketID.emit('powerUpExpired', {powerUp: powerUpData.name});
+      that[powerUpData.name] = false;
+      that.socketID.emit('powerUpExpired', {powerUp: powerUpData.name});
     }, that.powerUpDuration);
   }
 };
@@ -52,6 +52,10 @@ Player.prototype.dead = function() {
 
 Player.prototype.gameOver = function() {
   this.isActive = false;
+};
+
+Player.prototype.isTaggable = function() {
+  return this.isActive && this.isAlive && !this.invincible;
 };
 
 module.exports = Player;
