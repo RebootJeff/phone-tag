@@ -38,10 +38,6 @@ module.exports = function(io){
       io.sockets.in(data.gameID).emit('createMarker', data);
       game.playersReady++;
       if (game.playersReady === _maxPlayers){
-        // setInterval(function(){
-        //   io.sockets.in(data.gameID).emit('sendPowerUp', game.generatePowerUps());
-        //   io.sockets.in(data.gameID).emit('addPacmanToMap', game.generatePacman());
-        // }, 15000);
         var timers = game.startGame();
         sendLocations(data.gameID);
         io.sockets.in(data.gameID).emit('startGame', timers);

@@ -1,5 +1,6 @@
 var Player = require('./player');
 var PowerUp = require('./powerup');
+var PacMan = require('./pacman');
 
 var Game = function(id, io) {
 
@@ -22,8 +23,6 @@ var Game = function(id, io) {
   this.winners = [];
   this.mapLocation = [];
   this.powerUpList = ['invisible', 'invincible'];
-
-  this.pacman = {};
 
 };
 
@@ -56,7 +55,7 @@ Game.prototype.startGame = function(){
   }
 
   this.generatePowerUps();
-  // this.generatePacman();
+  this.generatePacman();
 
   return playerTimers;
 };
@@ -106,7 +105,7 @@ Game.prototype.generatePowerUps = function() {
   var maxDrops = Math.floor((this.timeLimit - 1) / timeBetweenDrops);
 
   for (var i = timeBetweenDrops / 2; i < this.timeLimit - 1 - timeBetweenDrops / 2; i+=timeBetweenDrops){
-    dropTime = this.startTime + i + Math.random() * timeBetweenDrops) * 60 * 1000);
+    dropTime = this.startTime + ((i + Math.random() * timeBetweenDrops) * 60 * 1000);
     randPowerUpTimes.push(dropTime);
   }
 
@@ -133,37 +132,38 @@ Game.prototype.generatePowerUps = function() {
 Game.prototype.generatePacman = function() {
   var player = this.players[Object.keys(this.players)[Math.floor(Math.random() * this.playerCount)]];
   var location = player.location;
-  var offset = 0.001;
+  var range = 0.001;
   var directions = ['left', 'right'];
-  var latOffset, lngOffset, direction;
+  var latOffset, lngOffset, randInt, pacLat, pacLng, direction, pacMan;
 
   var that = this;
-  var counter = 0;
+  var pacmanCount = 0;
   var tolerance = 1000;
   var randPacmanTimes = [];
   var timeBetweenDrops = 0.5;  //min
   var maxDrops = Math.floor((this.timeLimit - 1) / timeBetweenDrops);
 
-  for (var i = 1; i < this.timeLimit - 1; i+=timeBetweenDrops){
-    dropTime = this.startTime + Math.random() * (timeBetweenDrops * 60 * 1000);
+  for (var i = timeBetweenDrops / 2; i < this.timeLimit - 1 - timeBetweenDrops / 2; i+=timeBetweenDrops){
+    dropTime = this.startTime + ((i + Math.random() * timeBetweenDrops) * 60 * 1000);
     randPacmanTimes.push(dropTime);
   }
 
   setInterval(function(){
     currentTime = Date.now();
-    if (currentTime > randPacmanTimes[counter] - tolerance && currentTime < randPacmanTimes[counter] + tolerance ) {
-      latOffset = Math.random() * offset * 2 - offset / 2;
-      lngOffset = Math.random() * offset * 2 - offset / 2;
-      direction = Math.floor(Math.random()*directions.length);
+    if (pacmanCount < maxDrops && currentTime > randPacmanTimes[pacmanCount] - tolerance && currentTime < randPacmanTimes[pacmanCount] + tolerance ) {
+      latOffset = Math.random() * range * 2 - range / 2;
+      lngOffset = Math.random() * range * 2 - range / 2;
+      randInt = Math.floor(Math.random()*directions.length);
 
-      this.pacman.lat = location.lat + latOffset;
-      this.pacman.lng = location.lng + lngOffset;
-      this.pacman.direction = directions[direction];
-      that.io.sockets.in(that.gameID).emit('addPacmanToMap', that.pacman);
-      counter++;
+      pacLat = location.lat + latOffset;
+      pacLng = location.lng + lngOffset;
+      direction = directions[randInt];
+
+      pacMan = new PacMan({id:pacmanCount, location:{lat:pacLat, lng:pacLng}, direction:direction});
+      pacmanCount++;
+      that.io.sockets.in(that.gameID).emit('addPacmanToMap', pacMan);
     }
   }, 1000);
-  return this.pacman;
 };
 
 Game.prototype.sendStats = function(data) {
