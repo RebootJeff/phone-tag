@@ -15,7 +15,7 @@ module.exports = function(io){
       if (_allGames[_id] && _allGames[_id].playerCount < _maxPlayers) {
         game = _allGames[_id];
       } else {
-        game = new Game(_id);
+        game = new Game(_id, io);
         _allGames[_id] = game;
       }
       player = new Player(socket, data.user, _id);
@@ -38,10 +38,6 @@ module.exports = function(io){
       io.sockets.in(data.gameID).emit('createMarker', data);
       game.playersReady++;
       if (game.playersReady === _maxPlayers){
-        setInterval(function(){
-          io.sockets.in(data.gameID).emit('sendPowerUp', game.generatePowerUps());
-          io.sockets.in(data.gameID).emit('addPacmanToMap', game.generatePacman());
-        }, 15000);
         var timers = game.startGame();
         sendLocations(data.gameID);
         io.sockets.in(data.gameID).emit('startGame', timers);
