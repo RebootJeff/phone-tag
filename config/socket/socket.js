@@ -140,7 +140,13 @@ module.exports = function(io){
 
     socket.on('gameover', function(data){
       var game = _allGames[data.gameID];
-      io.sockets.in(data.gameID).emit('renderScores', game.players);
+      if(!game.gameEnded){
+        game.gameEnded = true;
+        var response = game.sendStats();
+        console.log("gameover, game.players is:",game.players);
+        console.log("response is:",response);
+        io.sockets.in(data.gameID).emit('renderScores', response);
+      }
     });
 
     // socket.on('createGame', function(data){
