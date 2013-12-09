@@ -28,7 +28,6 @@ module.exports = function(io){
       }
     });
 
-
     socket.on('newPlayerMarker', function(data){
       var game = _allGames[data.gameID];
       var player = game.getPlayer(data.playerName);
@@ -57,7 +56,6 @@ module.exports = function(io){
     });
 
     socket.on('tagPlayers', function(data){
-      console.log('tagPlayer:',data);
       var player, playerKilled, respawn;
       var game = _allGames[data.gameID];
       var taggedPlayers = data.taggedPlayers;
@@ -70,24 +68,25 @@ module.exports = function(io){
           player.deaths++;
           tagger.kills++;
           respawn = game.generateRespawn(player);
-          io.sockets.in(data.gameID).emit('playerDead', {name: player.name, gameID: data.gameID, respawn: respawn});
+          io.sockets.in(data.gameID).emit('playerDead', {playerName: player.name, gameID: data.gameID, respawn: respawn});
         }
       }
     });
 
     socket.on('setPlayerDead', function(data){
-      var gameID = data.gameID;
-      var game = _allGames[gameID];
-      var player = game.getPlayer(data.name);
-      respawn = game.generateRespawn(player);
-      io.sockets.in(gameID).emit('playerDead', player, respawn);
+      var gameID = data.gameID,
+          game = _allGames[gameID],
+          response = {};
+      var player = game.getPlayer(data.playerName);
+      response.playerName = data.playerName;
+      response.respawn = game.generateRespawn(player);
+      io.sockets.in(gameID).emit('playerDead', response);
     });
 
     socket.on('setPlayerAlive', function(response){
-      var gameID = response.roomID,
+      var gameID = response.gameID,
           game = _allGames[gameID];
-      console.log('setPlayerAlive', response.player);
-      io.sockets.in(gameID).emit('playerAlive', response);
+      io.sockets.in(gameID).emit('playerAlive', response.playerName);
     });
 
     socket.on('generatePowerUp', function(data){
