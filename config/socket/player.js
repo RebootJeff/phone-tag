@@ -3,7 +3,6 @@ var Player = function(socket, playerName, game) {
   this.game = game;
   this.location = {};
   this.socketID = socket.id;
-  this.score = 0;
   this.team = null;
   this.playerSight = 0;
   this.lat = 0;
