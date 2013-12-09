@@ -6,7 +6,7 @@ module.exports = function(io){
   var _allGames = {};
   var _id = 1;
 
-  var _maxPlayers = 2;
+  var _maxPlayers = 1;
 
   io.sockets.on('connection', function(socket){
 
@@ -45,8 +45,12 @@ module.exports = function(io){
 
     socket.on('sendLocationFromPlayer', function(data){
       var game = _allGames[data.gameID];
-      var player = game.getPlayer(data.playerName);
-      player.location = data.location;
+      if (game){
+        var player = game.getPlayer(data.playerName);
+        if (player){
+          player.location = data.location;
+        }
+      }
     });
 
     socket.on('tag', function(data){
@@ -118,6 +122,7 @@ module.exports = function(io){
       var game = _allGames[data.gameID];
       var player = game.getPlayer(data.playerName);
       player.addPowerUp(data.powerUpName);
+      socket.emit('addPowerUpToInventory', {powerUpID: data.powerUpID, powerUpName: data.powerUpName});
       io.sockets.in(data.gameID).emit('removePowerUpFromMap', {powerUpID:data.powerUpID});
     });
 
