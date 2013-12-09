@@ -4,7 +4,7 @@ var PacMan = require('./pacman');
 
 var Game = function(id, io) {
 
-  this.timeLimit = 10;    //in minutes
+  this.timeLimit = 2;    //in minutes
   this.loadTime = 1;     //in seconds
 
   this.io = io;
