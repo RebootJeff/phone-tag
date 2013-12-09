@@ -36,12 +36,15 @@ Player.prototype.addPowerUp = function(powerUpName) {
 
 Player.prototype.usePowerUp = function(powerUpData) {
   var that = this;
+  var powerUp;
   if (this.powerUps[powerUpData.name]){
     this.powerUps[powerUpData.name]--;
     this[powerUpData.name] = true;
+    powerUp = {powerUpName:powerUpData.name, playerName:that.name};
+    that.io.sockets.in(that.game).emit('powerUpUsed', powerUp);
     setTimeout(function(){
-      this[powerUpData.name] = false;
-      this.socketID.emit('powerUpExpired', {powerUp: powerUpData.name});
+      that[powerUpData.name] = false;
+      that.io.sockets.in(that.game).emit('powerUpExpired', powerUp);
     }, that.powerUpDuration);
   }
 };

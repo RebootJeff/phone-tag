@@ -6,7 +6,7 @@ module.exports = function(io){
   var _allGames = {};
   var _id = 1;
 
-  var _maxPlayers = 2;
+  var _maxPlayers = 1;
 
   io.sockets.on('connection', function(socket){
 
