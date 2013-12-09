@@ -130,9 +130,10 @@ module.exports = function(io){
       var game = _allGames[data.gameID];
       var player = game.getPlayer(data.playerName);
       player.usePowerUp({powerUpID:data.powerUpID, powerUpName:data.powerUpName});
+      data.powerUpValue = true;
       io.sockets.in(data.gameID).emit('powerUpUsed', data);
       setTimeout(function(){
-        player[data.name] = false;
+        player[data.name] = data.powerUpValue = false;
         io.sockets.in(data.gameID).emit('powerUpExpired', data);
       }, player.powerUpDuration);
     });
