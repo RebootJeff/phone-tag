@@ -168,8 +168,17 @@ Game.prototype.generatePacman = function() {
 };
 
 Game.prototype.sendStats = function(data) {
-
+  var stats = {};
+  stats.players = this.players;
+  for(var name in this.players){
+    var player = this.players[name];
+    player.score = player.kills - player.deaths;
+    stats.winner = stats.winner || player;
+    if(stats.winner.score > player.score){
+      stats.winner = player;
+    }
+  }
+  return stats;
 };
-
 
 module.exports = Game;
