@@ -10,7 +10,7 @@ var Player = function(socket, playerName, game) {
   this.powerUps = {};
 
   //state variables
-  this.isActive = true;
+  this.active = true;
   this.alive = true;
   this.canShoot = true;
 
@@ -55,7 +55,7 @@ Player.prototype.gameOver = function() {
 };
 
 Player.prototype.isTaggable = function() {
-  return this.isActive && this.isAlive && !this.invincible;
+  return this.active && this.alive && !this.invincible;
 };
 
 module.exports = Player;
