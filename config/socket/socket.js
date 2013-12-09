@@ -51,7 +51,10 @@ module.exports = function(io){
 
     socket.on('tag', function(data){
       var gameID = data.gameID,
-          game = _allGames[gameID];
+          game = _allGames[gameID],
+          player = game.getPlayer(data.playerName);
+
+      player.totalTags++;
       io.sockets.in(gameID).emit('animateTag', data);
     });
 
@@ -63,10 +66,11 @@ module.exports = function(io){
 
       for(var i = 0; i < taggedPlayers.length; i++){
         player = game.getPlayer(taggedPlayers[i].playerName);
-        if(player.isAlive){
-          player.isAlive = false;
+        if(player.alive){
+          player.alive = false;
           player.deaths++;
           tagger.kills++;
+          tagger.totalTags++;
           respawn = game.generateRespawn(player);
           io.sockets.in(data.gameID).emit('playerDead', {playerName: player.name, gameID: data.gameID, respawn: respawn});
         }
@@ -90,12 +94,12 @@ module.exports = function(io){
     });
 
     socket.on('generatePowerUp', function(data){
-      var game = _allGames[data.roomID];
+      var game = _allGames[data.gameID];
       if( !game.powerUp.name ){
         var powerUpCollection = ["poop"];
         var randomIndex = Math.floor(Math.random() * powerUpCollection.length);
         game.generatePowerUp(powerUpCollection[randomIndex], data.location.lat, data.location.lng);
-        io.sockets.in(data.roomID).emit('addPowerUpToMap', game.powerUp);
+        io.sockets.in(data.gameID).emit('addPowerUpToMap', game.powerUp);
       }
     });
 
@@ -103,8 +107,8 @@ module.exports = function(io){
       var game = _allGames[data.gameID];
       var player = game.players[data.playerName];
 
-      if(!player.isAlive){
-        player.isAlive = true;
+      if(!player.alive){
+        player.alive = true;
       }
 
       io.sockets.in(data.gameID).emit('playerRevived', data.playerName);
