@@ -80,7 +80,7 @@ module.exports = function(io){
       var game = _allGames[gameID];
       var player = game.getPlayer(data.name);
       respawn = game.generateRespawn(player);
-      io.sockets.in(gameID).emit('playerDead', player, respawn);
+      io.sockets.in(data.gameID).emit('playerDead', {name: player.name, gameID: data.gameID, respawn: respawn});
     });
 
     socket.on('setPlayerAlive', function(response){
