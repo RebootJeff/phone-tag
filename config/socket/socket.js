@@ -55,7 +55,10 @@ module.exports = function(io){
 
     socket.on('tag', function(data){
       var gameID = data.gameID,
-          game = _allGames[gameID];
+          game = _allGames[gameID],
+          player = game.getPlayer(data.playerName);
+
+      player.totalTags++;
       io.sockets.in(gameID).emit('animateTag', data);
     });
 
@@ -67,7 +70,7 @@ module.exports = function(io){
 
       for(var i = 0; i < taggedPlayers.length; i++){
         player = game.getPlayer(taggedPlayers[i].playerName);
-        if(player.isAlive){
+        if(player.isTaggable()){
           player.isAlive = false;
           player.deaths++;
           tagger.kills++;
@@ -94,12 +97,12 @@ module.exports = function(io){
     });
 
     socket.on('generatePowerUp', function(data){
-      var game = _allGames[data.roomID];
+      var game = _allGames[data.gameID];
       if( !game.powerUp.name ){
         var powerUpCollection = ["poop"];
         var randomIndex = Math.floor(Math.random() * powerUpCollection.length);
         game.generatePowerUp(powerUpCollection[randomIndex], data.location.lat, data.location.lng);
-        io.sockets.in(data.roomID).emit('addPowerUpToMap', game.powerUp);
+        io.sockets.in(data.gameID).emit('addPowerUpToMap', game.powerUp);
       }
     });
 
@@ -107,8 +110,8 @@ module.exports = function(io){
       var game = _allGames[data.gameID];
       var player = game.players[data.playerName];
 
-      if(!player.isAlive){
-        player.isAlive = true;
+      if(!player.alive){
+        player.alive = true;
       }
 
       io.sockets.in(data.gameID).emit('playerRevived', data.playerName);
@@ -142,7 +145,13 @@ module.exports = function(io){
 
     socket.on('gameover', function(data){
       var game = _allGames[data.gameID];
-      io.sockets.in(data.gameID).emit('renderScores', game.players);
+      if(!game.gameEnded){
+        game.gameEnded = true;
+        var response = game.sendStats();
+        console.log("gameover, game.players is:",game.players);
+        console.log("response is:",response);
+        io.sockets.in(data.gameID).emit('renderScores', response);
+      }
     });
 
     // socket.on('createGame', function(data){

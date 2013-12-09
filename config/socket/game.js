@@ -4,8 +4,8 @@ var PacMan = require('./pacman');
 
 var Game = function(id, io) {
 
-  this.timeLimit = 10;    //in minutes
-  this.loadTime = 2;     //in seconds
+  this.timeLimit = 2;    //in minutes
+  this.loadTime = 1;     //in seconds
 
   this.io = io;
   this.gameID = id;
@@ -146,7 +146,6 @@ Game.prototype.generatePacman = function() {
   var randPacmanTimes = [];
   var timeBetweenDrops = 0.5;  //min
   var maxDrops = Math.floor((this.timeLimit - 1) / timeBetweenDrops);
-
   for (var i = timeBetweenDrops / 2; i < this.timeLimit - 1 - timeBetweenDrops / 2; i+=timeBetweenDrops){
     dropTime = this.startTime + ((i + Math.random() * timeBetweenDrops) * 60 * 1000);
     randPacmanTimes.push(dropTime);
@@ -171,8 +170,17 @@ Game.prototype.generatePacman = function() {
 };
 
 Game.prototype.sendStats = function(data) {
-
+  var stats = {};
+  stats.players = this.players;
+  for(var name in this.players){
+    var player = this.players[name];
+    player.score = player.kills - player.deaths;
+    stats.winner = stats.winner || player;
+    if(stats.winner.score > player.score){
+      stats.winner = player;
+    }
+  }
+  return stats;
 };
-
 
 module.exports = Game;
