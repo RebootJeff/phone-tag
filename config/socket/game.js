@@ -4,7 +4,7 @@ var PacMan = require('./pacman');
 
 var Game = function(id, io) {
 
-  this.timeLimit = 10;    //in minutes
+  this.timeLimit = 0.5;    //in minutes
   this.loadTime = 2;     //in seconds
 
   this.io = io;
@@ -114,7 +114,7 @@ Game.prototype.generatePowerUps = function() {
 
   setInterval(function(){
     currentTime = Date.now();
-    if (this.powerUpCount < maxDrops && currentTime > randPowerUpTimes[this.powerUpCount] - tolerance && currentTime < randPowerUpTimes[this.powerUpCount] + tolerance ) {
+    if (that.powerUpCount < maxDrops && currentTime > randPowerUpTimes[that.powerUpCount] - tolerance && currentTime < randPowerUpTimes[that.powerUpCount] + tolerance ) {
       randInt = Math.floor(Math.random() * that.powerUpList.length);
       powerUpName = that.powerUpList[randInt];
       randPlayer = that.players[Object.keys(that.players)[Math.floor(Math.random()*that.playerCount)]];
@@ -124,9 +124,8 @@ Game.prototype.generatePowerUps = function() {
       randPlayerLat = randPlayer.location.lat + latOffset;
       randPlayerLng = randPlayer.location.lng + lngOffset;
 
-      powerUp = new PowerUp({id:this.powerUpCount, name:powerUpName, location:{lat:randPlayerLat, lng:randPlayerLng}, playerName:null});
-      this.powerUpCount++;
-
+      powerUp = new PowerUp({id:that.powerUpCount, name:powerUpName, location:{lat:randPlayerLat, lng:randPlayerLng}, playerName:null});
+      that.powerUpCount++;
       that.io.sockets.in(that.gameID).emit('sendPowerUp', powerUp);
     }
   }, 1000);
@@ -145,7 +144,6 @@ Game.prototype.generatePacman = function() {
   var randPacmanTimes = [];
   var timeBetweenDrops = 0.5;  //min
   var maxDrops = Math.floor((this.timeLimit - 1) / timeBetweenDrops);
-
   for (var i = timeBetweenDrops / 2; i < this.timeLimit - 1 - timeBetweenDrops / 2; i+=timeBetweenDrops){
     dropTime = this.startTime + ((i + Math.random() * timeBetweenDrops) * 60 * 1000);
     randPacmanTimes.push(dropTime);
