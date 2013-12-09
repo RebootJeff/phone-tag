@@ -20,6 +20,8 @@ var Game = function(id, io) {
   this.startTime = null;
   this.endTime = null;
 
+  this.powerUpCount = 0;
+
   this.winners = [];
   this.mapLocation = [];
   this.powerUpList = ['invisible', 'invincible'];
@@ -82,7 +84,7 @@ Game.prototype.getPlayer = function(playerName) {
 };
 
 Game.prototype.generateRespawn = function(player) {
-  var latOffset, lngOffset, playerLat, playerLng, socket;
+  var latOffset, lngOffset, playerLat, playerLng, respawn;
   var range = 0.0001;
 
   latOffset = (Math.random()*range) - (range / 2);
@@ -90,7 +92,9 @@ Game.prototype.generateRespawn = function(player) {
   playerLat = player.location.lat + latOffset;
   playerLng = player.location.lng + lngOffset;
 
-  return new PowerUp({name:'respawn',location:{lat:playerLat, lng:playerLng}, playerName: player.name});
+  respawn = new PowerUp({id:this.powerUpCount , name:'respawn',location:{lat:playerLat, lng:playerLng}, playerName: player.name});
+  this.powerUpCount++;
+  return respawn;
 };
 
 Game.prototype.generatePowerUps = function() {
@@ -99,7 +103,6 @@ Game.prototype.generatePowerUps = function() {
   var that = this;
   var range = 0.001;
   var tolerance = 1000;
-  var powerUpCount = 0;
   var randPowerUpTimes = [];
   var timeBetweenDrops = 0.5;  //min
   var maxDrops = Math.floor((this.timeLimit - 1) / timeBetweenDrops);
@@ -111,7 +114,7 @@ Game.prototype.generatePowerUps = function() {
 
   setInterval(function(){
     currentTime = Date.now();
-    if (powerUpCount < maxDrops && currentTime > randPowerUpTimes[powerUpCount] - tolerance && currentTime < randPowerUpTimes[powerUpCount] + tolerance ) {
+    if (that.powerUpCount < maxDrops && currentTime > randPowerUpTimes[that.powerUpCount] - tolerance && currentTime < randPowerUpTimes[that.powerUpCount] + tolerance ) {
       randInt = Math.floor(Math.random() * that.powerUpList.length);
       powerUpName = that.powerUpList[randInt];
       randPlayer = that.players[Object.keys(that.players)[Math.floor(Math.random()*that.playerCount)]];
@@ -121,9 +124,8 @@ Game.prototype.generatePowerUps = function() {
       randPlayerLat = randPlayer.location.lat + latOffset;
       randPlayerLng = randPlayer.location.lng + lngOffset;
 
-      powerUp = new PowerUp({id:powerUpCount, name:powerUpName, location:{lat:randPlayerLat, lng:randPlayerLng}, playerName:null});
-      powerUpCount++;
-
+      powerUp = new PowerUp({id:that.powerUpCount, name:powerUpName, location:{lat:randPlayerLat, lng:randPlayerLng}, playerName:null});
+      that.powerUpCount++;
       that.io.sockets.in(that.gameID).emit('sendPowerUp', powerUp);
     }
   }, 1000);
@@ -142,7 +144,6 @@ Game.prototype.generatePacman = function() {
   var randPacmanTimes = [];
   var timeBetweenDrops = 0.5;  //min
   var maxDrops = Math.floor((this.timeLimit - 1) / timeBetweenDrops);
-
   for (var i = timeBetweenDrops / 2; i < this.timeLimit - 1 - timeBetweenDrops / 2; i+=timeBetweenDrops){
     dropTime = this.startTime + ((i + Math.random() * timeBetweenDrops) * 60 * 1000);
     randPacmanTimes.push(dropTime);
@@ -167,8 +168,17 @@ Game.prototype.generatePacman = function() {
 };
 
 Game.prototype.sendStats = function(data) {
-
+  var stats = {};
+  stats.players = this.players;
+  for(var name in this.players){
+    var player = this.players[name];
+    player.score = player.kills - player.deaths;
+    stats.winner = stats.winner || player;
+    if(stats.winner.score > player.score){
+      stats.winner = player;
+    }
+  }
+  return stats;
 };
-
 
 module.exports = Game;

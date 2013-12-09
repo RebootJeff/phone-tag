@@ -3,7 +3,6 @@ var Player = function(socket, playerName, game) {
   this.game = game;
   this.location = {};
   this.socketID = socket.id;
-  this.score = 0;
   this.team = null;
   this.playerSight = 0;
   this.lat = 0;
@@ -12,7 +11,7 @@ var Player = function(socket, playerName, game) {
 
   //state variables
   this.isActive = true;
-  this.isAlive = true;
+  this.alive = true;
   this.canShoot = true;
 
   //powerup statuses
@@ -22,6 +21,7 @@ var Player = function(socket, playerName, game) {
   //game statistics
   this.kills = 0;
   this.deaths = 0;
+  this.totalTags = 0;
 
   this.powerUpDuration = 10000;
 };
