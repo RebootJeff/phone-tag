@@ -3,9 +3,8 @@ var PowerUp = require('./powerup');
 var PacMan = require('./pacman');
 
 var Game = function(id, io) {
-
   this.timeLimit = 2;    //in minutes
-  this.loadTime = 1;     //in seconds
+  this.loadTime = 10;     //in seconds
 
   this.io = io;
   this.gameID = id;
@@ -25,7 +24,7 @@ var Game = function(id, io) {
   this.winners = [];
   this.mapLocation = [];
   this.powerUpList = ['invisible', 'invincible'];
-
+  this.addedPowerUps = {};
 };
 
 Game.prototype.addPlayer = function(player){
@@ -85,7 +84,8 @@ Game.prototype.getPlayer = function(playerName) {
 
 Game.prototype.generateRespawn = function(player) {
   var latOffset, lngOffset, playerLat, playerLng, respawn;
-  var range = 0.000;
+  var range = 0.001;
+
   latOffset = (Math.random()*range) - (range / 2);
   lngOffset = Math.sqrt((range * range) - (latOffset * latOffset));
   lngOffset = Math.random() < 0.5 ? lngOffset : lngOffset * -1;
@@ -101,11 +101,10 @@ Game.prototype.generatePowerUps = function() {
   var randInt, dropTime, powerUp, powerUpName, randPlayer, latOffset, lngOffset, randPlayerLat, randPlayerLng, currentTime;
 
   var that = this;
-  var range = 0.000;
-  // var range = 0.001;
+  var range = 0.001;
   var tolerance = 1000;
   var randPowerUpTimes = [];
-  var timeBetweenDrops = 0.2;  //min
+  var timeBetweenDrops = 0.5;  //min
   var maxDrops = Math.floor((this.timeLimit - 1) / timeBetweenDrops);
 
   for (var i = timeBetweenDrops / 2; i < this.timeLimit - 1 - timeBetweenDrops / 2; i+=timeBetweenDrops){
@@ -128,6 +127,7 @@ Game.prototype.generatePowerUps = function() {
       powerUp = new PowerUp({id:that.powerUpCount, name:powerUpName, location:{lat:randPlayerLat, lng:randPlayerLng}, playerName:null});
       that.powerUpCount++;
 
+      that.addedPowerUps[that.powerUpCount] = false;
       that.io.sockets.in(that.gameID).emit('sendPowerUp', powerUp);
     }
   }, 1000);
