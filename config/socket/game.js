@@ -103,7 +103,7 @@ Game.prototype.generatePowerUps = function() {
   var range = 0.001;
   var tolerance = 1000;
   var randPowerUpTimes = [];
-  var timeBetweenDrops = 0.5;  //min
+  var timeBetweenDrops = 0.3;  //min
   var maxDrops = Math.floor((this.timeLimit - 1) / timeBetweenDrops);
 
   for (var i = timeBetweenDrops / 2; i < this.timeLimit - 1 - timeBetweenDrops / 2; i+=timeBetweenDrops){
