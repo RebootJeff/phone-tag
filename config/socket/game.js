@@ -85,10 +85,10 @@ Game.prototype.getPlayer = function(playerName) {
 
 Game.prototype.generateRespawn = function(player) {
   var latOffset, lngOffset, playerLat, playerLng, respawn;
-  var range = 0.0001;
-
+  var range = 0.000;
   latOffset = (Math.random()*range) - (range / 2);
-  lngOffset = (Math.random()*range) - (range / 2);
+  lngOffset = Math.sqrt((range * range) - (latOffset * latOffset));
+  lngOffset = Math.random() < 0.5 ? lngOffset : lngOffset * -1;
   playerLat = player.location.lat + latOffset;
   playerLng = player.location.lng + lngOffset;
 
