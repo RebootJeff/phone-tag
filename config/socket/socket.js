@@ -70,7 +70,7 @@ module.exports = function(io){
       for(var i = 0; i < taggedPlayers.length; i++){
         player = game.getPlayer(taggedPlayers[i].playerName);
         if(player.isTaggable()){
-          player.isAlive = false;
+          player.alive = false;
           player.deaths++;
           tagger.kills++;
           respawn = game.generateRespawn(player);
