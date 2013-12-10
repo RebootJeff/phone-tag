@@ -92,7 +92,7 @@ module.exports = function(io){
     socket.on('setPlayerAlive', function(response){
       var gameID = response.gameID,
           game = _allGames[gameID];
-      io.sockets.in(gameID).emit('playerAlive', response.playerName);
+      io.sockets.in(gameID).emit('playerAlive', response);
     });
 
     socket.on('generatePowerUp', function(data){
@@ -113,16 +113,19 @@ module.exports = function(io){
         player.alive = true;
       }
 
-      io.sockets.in(data.gameID).emit('playerRevived', data.playerName);
+      io.sockets.in(data.gameID).emit('playerRevived', data);
     });
 
 
     socket.on('addItemToPlayer', function(data){
       var game = _allGames[data.gameID];
       var player = game.getPlayer(data.playerName);
-      player.addPowerUp(data.powerUpName);
-      socket.emit('addPowerUpToInventory', {powerUpID: data.powerUpID, powerUpName: data.powerUpName});
-      io.sockets.in(data.gameID).emit('removePowerUpFromMap', {powerUpID:data.powerUpID});
+      if(!game.addedPowerUps[data.powerUpID]){
+        game.addedPowerUps[data.powerUpID] = true;
+        player.addPowerUp(data.powerUpName);
+        socket.emit('addPowerUpToInventory', {powerUpID: data.powerUpID, powerUpName: data.powerUpName});
+        io.sockets.in(data.gameID).emit('removePowerUpFromMap', {powerUpID:data.powerUpID});
+      }
     });
 
     socket.on('usePowerUp', function(data){
